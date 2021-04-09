@@ -1,5 +1,5 @@
 {
-  "name": "hello-next",
+  "name": "apollo-foods",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -13,13 +13,6 @@
   "dependencies": {
     "next": "9.5.5",
     "react": "16.14.0",
-    "react-dom": "16.14.0",
-    "react-markdown": "5.0.2"
-  },
-  "devDependencies": {
-    "@types/next-auth": "3.1.14",
-    "@types/node": "14.14.6",
-    "@types/react": "16.9.56",
-    "typescript": "4.0.5"
+    "react-dom": "16.14.0"
   }
 }
