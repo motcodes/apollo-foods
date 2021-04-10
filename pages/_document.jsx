@@ -1,11 +1,11 @@
 import React from 'react'
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document'
-import { createCss } from '@stitches/react'
-
-export const { getCssString } = createCss()
+import { globalStyles } from '../components/theme/globalStyles'
+import { getCssString } from '../stitches.config'
 
 export default class Document extends NextDocument {
   render() {
+    globalStyles()
     return (
       <Html lang="en">
         <Head>
