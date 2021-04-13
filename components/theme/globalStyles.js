@@ -11,13 +11,14 @@ export const globalStyles = global({
   '*': {
     m: 0,
     p: 0,
-    fontFamily: 'Blatant',
   },
   html: {
+    fontFamily: 'Blatant',
     lineHeight: 1.15,
     '-webkit-text-size-adjust': '100%',
   },
   body: {
+    fontFamily: 'Blatant',
     m: 0,
   },
   main: {
