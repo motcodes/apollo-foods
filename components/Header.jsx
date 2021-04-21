@@ -1,15 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React from 'react'
+import { useRouter } from 'next/router'
 
 const Header = () => {
-  const router = useRouter();
-  const isActive = (pathname) => router.pathname === pathname;
+  const router = useRouter()
+  const isActive = (pathname) => router.pathname === pathname
 
-  return (
-    <nav>
-      <h1>Apollo Foods</h1>
-    </nav>
-  );
-};
+  return <nav>{/* <h1>Apollo Foods</h1> */}</nav>
+}
 
-export default Header;
+export default Header
