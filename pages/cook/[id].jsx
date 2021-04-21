@@ -16,6 +16,7 @@ export default function Meal(props) {
   const { data, isLoading, isError } = useMealById(props.data.idMeal, {
     initialData: props.data,
   })
+  console.log(data)
   return (
     <div>
       <h1>{data && data.idMeal}</h1>

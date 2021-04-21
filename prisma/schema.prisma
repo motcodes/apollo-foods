@@ -25,14 +25,18 @@ generator client {
 // to create the tables run: 
 // npx prisma db push --preview-feature
 
+// to open db studio
+// npx prisma studio
+
 // Usermodel
 model User {
-  id          Int         @default(autoincrement()) @id
-  name        String
+  id          Int         @default(autoincrement())
   email       String?     @unique
+  username    String      @unique @id
+  name        String?
+  bio         String
   createdAt   DateTime    @default(now()) @map(name: "created_at")
   updatedAt   DateTime    @updatedAt @map(name: "updated_at")
-  bio         String
   creations   Creation[]
   socialLinks SocialLinks[]
   @@map(name:"users")
@@ -45,13 +49,13 @@ model Creation {
   packageImage  String?     // load for showcase instead of 3d Object
   mealType      String?
   createdAt     DateTime    @default(now()) @map(name: "created_at")
-  author        User?       @relation(fields: [authorId], references:[id])
-  authorId      Int?
+  author        User?       @relation(fields: [authorId], references:[username])
+  authorId      String?
 }
 
 model SocialLinks {
   link    String    @id
   name    String 
-  author        User?       @relation(fields: [authorId], references:[id])
-  authorId      Int?
+  author        User?       @relation(fields: [authorId], references:[username])
+  authorId      String?
 }
