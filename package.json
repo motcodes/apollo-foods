@@ -19,10 +19,10 @@
     "npm": "^6.14.8"
   },
   "dependencies": {
-    "@react-three/drei": "^4.1.8",
-    "@react-three/fiber": "^6.0.16",
-    "@stitches/react": "^0.1.7",
-    "next": "^10.1.3",
+    "@react-three/drei": "^4.3.2",
+    "@react-three/fiber": "^6.0.17",
+    "@stitches/react": "^0.1.9",
+    "next": "^10.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "swr": "^0.5.5",
