@@ -3,12 +3,13 @@ import React, { useEffect, Suspense } from 'react'
 import Layout from '../components/Layout'
 import { fetcher, mealDbRandom } from '../lib'
 import { Canvas } from '@react-three/fiber'
-import { LogoModel } from '../components/Logo'
+import { PouchModel } from '../components/Pouch'
 import {
   useGLTF,
   OrthographicCamera,
   PerspectiveCamera,
   OrbitControls,
+  Stage,
 } from '@react-three/drei'
 import { useState } from 'react'
 import { useRef } from 'react'
@@ -42,40 +43,33 @@ const Index = (props) => {
     }
   }, [])
 
-  const myCamera = useRef()
+  const ref = useRef()
 
   return (
     <Layout>
       <div className="page">
         <main>
           <Canvas
-            style={{ width: '100vw', height: '100vh', background: 'black' }}
+            gl={{ preserveDrawingBuffer: true }}
+            shadows
+            dpr={[1, 1.5]}
+            camera={{ position: [0, 0, 10], fov: 50 }}
+            style={{ width: '100%', height: '80vh', background: 'black' }}
           >
-            {/* <OrthographicCamera
-              makeDefault
-              left={0}
-              right={document.body.offsetWidth}
-              top={0}
-              bottom={document.body.offsetHeight}
-              // far={50000}
-              // near={-50000}
-              position={[0, 0, -20]}
-            >
-          </OrthographicCamera> */}
-            <PerspectiveCamera
-              ref={myCamera}
-              fov={75}
-              aspect={sizes.width / sizes.height}
-            ></PerspectiveCamera>
-            <OrbitControls camera={myCamera.current} />
-            <directionalLight
-              intensity={0.75}
-              decay={2}
-              position={[850000, 1300000, 1000000]}
-              rotation={[-0.92, 0.48, -0.34]}
-            />
+            <ambientLight intensity={0.35} />
+            <OrbitControls ref={ref} />
             <Suspense fallback={null}>
-              <LogoModel scale={[0.1, 0.1, 0.1]} />
+              <Stage
+                contactShadow // Optional: creates a contactshadow underneath the content (default=true)
+                shadows // Optional: lights cast shadow (default=true)
+                adjustCamera // Optional: zooms the content in (default=true)
+                intensity={1.5} // Optional: light intensity (default=1)
+                environment="night" // Optional: environment (default=city)
+                preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
+                controls={ref} // Optional: recalculates control target for correctness
+              >
+                <PouchModel />
+              </Stage>
             </Suspense>
           </Canvas>
           <h2>
