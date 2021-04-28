@@ -13,6 +13,8 @@ import {
 } from '@react-three/drei'
 import { useState } from 'react'
 import { useRef } from 'react'
+import { Button, Typography } from '../utils'
+import styled from 'styled-components'
 
 export async function getServerSideProps(context) {
   const { meals } = await fetcher(mealDbRandom)
@@ -47,40 +49,56 @@ const Index = (props) => {
 
   return (
     <Layout>
-      <div className="page">
-        <main>
-          <Canvas
-            gl={{ preserveDrawingBuffer: true }}
-            shadows
-            dpr={[1, 1.5]}
-            camera={{ position: [0, 0, 10], fov: 50 }}
-            style={{ width: '100%', height: '80vh', background: 'black' }}
-          >
-            <ambientLight intensity={0.35} />
-            <OrbitControls ref={ref} />
-            <Suspense fallback={null}>
-              <Stage
-                contactShadow // Optional: creates a contactshadow underneath the content (default=true)
-                shadows // Optional: lights cast shadow (default=true)
-                adjustCamera // Optional: zooms the content in (default=true)
-                intensity={1.5} // Optional: light intensity (default=1)
-                environment="night" // Optional: environment (default=city)
-                preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
-                controls={ref} // Optional: recalculates control target for correctness
-              >
-                <PouchModel />
-              </Stage>
-            </Suspense>
-          </Canvas>
-          <h2>
+      <main>
+        <Canvas
+          gl={{ preserveDrawingBuffer: true }}
+          shadows
+          dpr={[1, 1.5]}
+          camera={{ position: [0, 0, 10], fov: 45 }}
+          style={{ width: '100%', height: '60vh', background: 'black' }}
+        >
+          <ambientLight intensity={0.35} />
+          <OrbitControls ref={ref} autoRotate enableZoom />
+          <Suspense fallback={null}>
+            <Stage
+              contactShadow // Optional: creates a contactshadow underneath the content (default=true)
+              shadows // Optional: lights cast shadow (default=true)
+              adjustCamera // Optional: zooms the content in (default=true)
+              intensity={1.5} // Optional: light intensity (default=1)
+              environment="night" // Optional: environment (default=city)
+              preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
+              controls={ref} // Optional: recalculates control target for correctness
+            >
+              <PouchModel />
+            </Stage>
+          </Suspense>
+        </Canvas>
+        <Container>
+          <Typography variant="h2">
             A random astronaut food generatorfor your outer space missons. Or
             create your own meals.
-          </h2>
-          <button onClick={handleGenerate}>Generate Now</button>
-        </main>
-      </div>
+          </Typography>
+          <GenButton onClick={handleGenerate}>Generate Now</GenButton>
+        </Container>
+      </main>
     </Layout>
   )
 }
 
 export default Index
+
+const Container = styled.div`
+  max-width: 1024px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+  color: white;
+  h2 {
+    font-weight: 400;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+`
+
+const GenButton = styled(Button)`
+  width: 350px;
+`
