@@ -5,3 +5,8 @@ node_modules/
 
 app.json
 procfile
+
+*.blend
+*.blend1
+# pouch.blend
+# pouch.blend1
