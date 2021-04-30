@@ -1,11 +1,12 @@
 import React from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Typography, Logo } from '../utils'
 import styled from 'styled-components'
+import useMedia from 'use-media'
 
 const Header = () => {
-  const router = useRouter()
-  const isActive = (pathname) => router.pathname === pathname
+  const isLarge = useMedia({ minWidth: 768 })
 
   return (
     <Container>
@@ -13,14 +14,34 @@ const Header = () => {
         <NavLogo />
         <Typography variant="h6">Apollo Foods</Typography>
       </LogoWrapper>
-      <svg
-        className="navIcon"
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M12 20H36M21 29H36" stroke="white" stroke-width="2" />
-      </svg>
+      {isLarge ? (
+        <LinkList>
+          <li>
+            <Link href="/">
+              <a>Homepage</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/generate">
+              <a>Generate</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/showcase">
+              <a>Showcase</a>
+            </Link>
+          </li>
+        </LinkList>
+      ) : (
+        <svg
+          className="navIcon"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M12 20H36M21 29H36" stroke="white" strokeWidth="2" />
+        </svg>
+      )}
     </Container>
   )
 }
@@ -64,5 +85,17 @@ const NavLogo = styled(Logo)`
     height: 6rem;
     width: auto;
     margin-right: 0.5rem;
+  }
+`
+
+const LinkList = styled.ul`
+  display: flex;
+  font-size: 1.5rem;
+  gap: 1rem;
+  list-style: none;
+
+  a,
+  a:visited {
+    color: white;
   }
 `
