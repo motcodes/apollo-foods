@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components'
-
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 export const GlobalStyle = createGlobalStyle({
   ':root': {
@@ -46,21 +45,18 @@ export const GlobalStyle = createGlobalStyle({
     '--grey80': 'hsla(145,3%,80%,100%)',
     '--grey90': 'hsla(145,3%,90%,100%)',
   },
-  '@font-face': {
-    fontFamily: 'Blatant',
-    fontWeight: 400,
-    src: 'loacl("Blatant"), url(../../fonts/Blatant.otf) format("otf")',
-  },
 
   '*': {
     margin: 0,
     padding: 0,
+    boxSizing: 'border-box',
   },
   html: {
     fontFamily: 'Blatant',
     lineHeight: 1.15,
     '-webkit-text-size-adjust': '100%',
     height: '100%',
+    color: 'white',
   },
   body: {
     fontFamily: 'Blatant',
