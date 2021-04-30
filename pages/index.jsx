@@ -1,22 +1,14 @@
+import React, { useState, useRef, useEffect, Suspense } from 'react'
 import router from 'next/router'
-import React, { useEffect, Suspense } from 'react'
+import styled from 'styled-components'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Stage } from '@react-three/drei'
 import Layout from '../components/Layout'
 import { fetcher, mealDbRandom } from '../lib'
-import { Canvas } from '@react-three/fiber'
 import { PouchModel } from '../components/Pouch'
-import {
-  useGLTF,
-  OrthographicCamera,
-  PerspectiveCamera,
-  OrbitControls,
-  Stage,
-} from '@react-three/drei'
-import { useState } from 'react'
-import { useRef } from 'react'
 import { Button, Typography } from '../utils'
-import styled from 'styled-components'
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   const { meals } = await fetcher(mealDbRandom)
   const data = meals[0]
   return {
@@ -35,17 +27,7 @@ const Index = (props) => {
     router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
   }, [])
 
-  const [sizes, setSizes] = useState({ width: 0, height: 0 })
-  useEffect(() => {
-    if (window) {
-      setSizes({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
-  }, [])
-
-  const ref = useRef()
+  const controlsRef = useRef()
 
   return (
     <Layout>
@@ -58,7 +40,7 @@ const Index = (props) => {
           style={{ width: '100%', height: '60vh', background: 'black' }}
         >
           <ambientLight intensity={0.35} />
-          <OrbitControls ref={ref} autoRotate enableZoom />
+          <OrbitControls ref={controlsRef} autoRotate enableZoom={false} />
           <Suspense fallback={null}>
             <Stage
               contactShadow // Optional: creates a contactshadow underneath the content (default=true)
@@ -67,7 +49,7 @@ const Index = (props) => {
               intensity={1.5} // Optional: light intensity (default=1)
               environment="night" // Optional: environment (default=city)
               preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
-              controls={ref} // Optional: recalculates control target for correctness
+              controls={controlsRef} // Optional: recalculates control target for correctness
             >
               <PouchModel />
             </Stage>
@@ -100,5 +82,5 @@ const Container = styled.div`
 `
 
 const GenButton = styled(Button)`
-  width: 350px;
+  width: 320px;
 `
