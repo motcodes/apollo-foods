@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Typography, Link } from '../utils'
+import { Typography, Link, LinkExt } from '../utils'
 
 export default function Footer() {
   return (
@@ -8,31 +8,23 @@ export default function Footer() {
       <ListContainer>
         <List>
           <li>
-            <Link href="/generate">
-              <a>Generate</a>
-            </Link>
+            <Link href="/generate">Generate</Link>
           </li>
           <li>
-            <Link href="/about">
-              <a>About</a>
-            </Link>
+            <Link href="/showcase">Showcase</Link>
           </li>
           <li>
-            <Link href="/showcase">
-              <a>Showcase</a>
-            </Link>
+            <Link href="/about">About</Link>
           </li>
         </List>
         <List>
           <li>
-            <Link href="https://github.com/motcodes/apollo-foods">
-              <a>Github</a>
-            </Link>
+            <LinkExt href="https://github.com/motcodes/apollo-foods">
+              Github
+            </LinkExt>
           </li>
           <li>
-            <Link href="https://www.themealdb.com/">
-              <a>Meal DB</a>
-            </Link>
+            <Link href="/credits">Credits</Link>
           </li>
         </List>
       </ListContainer>
@@ -65,7 +57,10 @@ const List = styled.ul`
   flex-direction: column;
 
   li {
-    color: ${({ theme }) => theme.blue90};
     margin-bottom: 0.5rem;
+  }
+  a,
+  a:visited {
+    color: var(--blue-80);
   }
 `

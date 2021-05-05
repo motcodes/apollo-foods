@@ -57,8 +57,8 @@ const Index = (props) => {
         </Canvas>
         <Container>
           <Typography variant="h2">
-            A random astronaut food generatorfor your outer space missons. Or
-            create your own meals.
+            A random astronaut food recipe generator for your interstellar space
+            missions. Each Pouch will be uniquely created for you.
           </Typography>
           <GenButton onClick={handleGenerate}>Generate Now</GenButton>
         </Container>

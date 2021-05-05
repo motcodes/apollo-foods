@@ -12,55 +12,49 @@ export const Typography = ({
   switch (variant) {
     case 'h1':
       return (
-        <H1 as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <H1 as={as} font={font} color={color} {...rest}>
           {children}
         </H1>
       )
     case 'h2':
       return (
-        <H2 as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <H2 as={as} font={font} color={color} {...rest}>
           {children}
         </H2>
       )
     case 'h3':
       return (
-        <H3 as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <H3 as={as} font={font} color={color} {...rest}>
           {children}
         </H3>
       )
     case 'h4':
       return (
-        <H4 as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <H4 as={as} font={font} color={color} {...rest}>
           {children}
         </H4>
       )
     case 'h5':
       return (
-        <H5 as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <H5 as={as} font={font} color={color} {...rest}>
           {children}
         </H5>
       )
     case 'h6':
       return (
-        <H6 as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <H6 as={as} font={font} color={color} {...rest}>
           {children}
         </H6>
       )
     case 'label':
       return (
-        <Label
-          as={as}
-          font={font}
-          fontWeight={fontWeight}
-          color={color}
-          {...rest}
-        >
+        <Label as={as} font={font} color={color} {...rest}>
           {children}
         </Label>
       )
     case 'p':
       return (
-        <P as={as} font={font} fontWeight={fontWeight} color={color} {...rest}>
+        <P as={as} font={font} color={color} {...rest}>
           {children}
         </P>
       )
@@ -77,22 +71,8 @@ const headingOption = {
   display: 'flex',
   alignItems: 'center',
   lineHeight: '120%',
-  color: ({ color }) => (color ? color : 'inherit'),
+  color: ({ color }) => (color ? color : 'currentColor'),
   fontFamily: ({ font, theme }) => (font ? font : theme.font.primary),
-  fontWeight: ({ fontWeight }) => {
-    switch (fontWeight) {
-      case 'thin':
-        return 300
-      case 'normal':
-        return 400
-      case 'medium':
-        return 500
-      case 'bold':
-        return 600
-      default:
-        return 400
-    }
-  },
 }
 
 const H1 = styled('h1')({
@@ -119,20 +99,6 @@ const Label = styled('label')({
 const P = styled.p`
   display: flex;
   align-items: center;
-  color: ${({ color }) => (color ? color : 'inherit')};
+  color: ${({ color }) => (color ? color : 'currentColor')};
   font-family: ${({ font, theme }) => (font ? font : theme.font.body)};
-  font-weight: ${({ fontWeight }) => {
-    switch (fontWeight) {
-      case 'thin':
-        return 300
-      case 'normal':
-        return 400
-      case 'medium':
-        return 500
-      case 'bold':
-        return 600
-      default:
-        return 400
-    }
-  }};
 `

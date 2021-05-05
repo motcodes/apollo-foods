@@ -1,18 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 import { default as NextLink } from 'next/link'
+import { isExternalUrl } from '../lib'
 
-export const Link = ({
-  href = '/',
-  prefetch = false,
-  linkProps,
-  color,
-  ...rest
-}) => {
+export const Link = ({ href = '/', prefetch = false, linkProps, ...rest }) => {
   return (
     <NextLink href={href} prefetch={prefetch} {...linkProps}>
-      <LinkStyles {...rest} color={color} />
+      <LinkStyles {...rest} />
     </NextLink>
+  )
+}
+export const LinkExt = ({ href = '/', ...rest }) => {
+  return (
+    <LinkStyles
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      {...rest}
+    />
   )
 }
 
@@ -21,14 +26,15 @@ const LinkStyles = styled.a({
   alignItems: 'center',
   fontFamily: ({ theme }) => theme.font.primary,
   fontStyle: 'normal',
-  fontWeight: '500',
-  fontSize: '1rem',
+  fontWeight: '400',
+  fontSize: 'var(--body)',
   textDecoration: 'none',
-  color: ({ theme, color }) => (color ? color : theme.secondary),
+  color: 'white',
+  cursor: 'pointer',
   '&:visited': {
-    color: ({ theme, color }) => (color ? color : theme.secondary),
+    color: 'white',
   },
   '@media (min-width: 768px)': {
-    fontSize: 18,
+    fontSize: 'var(--body-large)',
   },
 })

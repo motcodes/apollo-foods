@@ -60,7 +60,7 @@ const ButtonProps = {
   fontFamily: ({ theme }) => theme.font.primary,
   fontStyle: 'normal',
   fontWeight: 400,
-  fontSize: '1rem',
+  fontSize: 'var(--body)',
   lineHeight: '100%',
   cursor: 'pointer',
   textDecoration: 'none',
@@ -96,6 +96,10 @@ const ButtonProps = {
   },
   transform: ({ scale }) => (scale ? `scale(${scale})` : 'scale(1)'),
   transfromOrigin: 'center',
+
+  '@media (min-width: 768px)': {
+    fontSize: 'var(--body-large)',
+  },
 
   // '&:hover': {
   //   transition: 'all 0.3 ease-out',
