@@ -85,6 +85,7 @@ export const GlobalStyle = createGlobalStyle({
     margin: 0,
     padding: 0,
     boxSizing: 'border-box',
+    fontWeight: 400,
   },
   html: {
     fontFamily: 'Blatant',
@@ -95,6 +96,7 @@ export const GlobalStyle = createGlobalStyle({
   },
   body: {
     fontFamily: 'Blatant',
+
     margin: 0,
     height: '100%',
     background: 'black',
@@ -106,27 +108,27 @@ export const GlobalStyle = createGlobalStyle({
     display: 'block',
   },
   h1: {
-    fontSize: 'var(--h1)',
+    // fontSize: 'var(--h1)',
     margin: 0,
   },
   h2: {
-    fontSize: 'var(--h2)',
+    // fontSize: 'var(--h2)',
     margin: 0,
   },
   h3: {
-    fontSize: 'var(--h3)',
+    // fontSize: 'var(--h3)',
     margin: 0,
   },
   h4: {
-    fontSize: 'var(--h4)',
+    // fontSize: 'var(--h4)',
     margin: 0,
   },
   h5: {
-    fontSize: 'var(--h5)',
+    // fontSize: 'var(--h5)',
     margin: 0,
   },
   h6: {
-    fontSize: 'var(--h6)',
+    // fontSize: 'var(--h6)',
     margin: 0,
   },
 

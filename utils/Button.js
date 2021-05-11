@@ -74,7 +74,7 @@ const ButtonProps = {
     if (variant === 'text') {
       return 'transparent'
     } else if (variant === 'outlined') {
-      return color ? color : theme.orange50
+      return color ? color : 'transparent'
     } else {
       return theme.orange50
     }

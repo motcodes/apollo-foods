@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect, Suspense } from 'react'
 import router from 'next/router'
 import styled from 'styled-components'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stage } from '@react-three/drei'
-import Layout from '../components/Layout'
+import Layout from '../components/layout'
 import { fetcher, mealDbRandom } from '../lib'
-import { PouchModel } from '../components/Pouch'
+import { Stage } from '../components/stage'
+import { PouchModel } from '../components/pouch'
 import { Button, Typography } from '../utils'
 
 export async function getServerSideProps() {
@@ -27,42 +26,30 @@ const Index = (props) => {
     router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
   }, [])
 
-  const controlsRef = useRef()
+  const canvasProps = {
+    style: {
+      width: '100%',
+      height: '55vh',
+    },
+    id: 'pouchCanvas',
+  }
 
   return (
     <Layout>
-      <main>
-        <Canvas
-          gl={{ preserveDrawingBuffer: true }}
-          shadows
-          dpr={[1, 1.5]}
-          camera={{ position: [0, 0, 10], fov: 45 }}
-          style={{ width: '100%', height: '60vh', background: 'black' }}
-        >
-          <ambientLight intensity={0.35} />
-          <OrbitControls ref={controlsRef} autoRotate enableZoom={false} />
-          <Suspense fallback={null}>
-            <Stage
-              contactShadow // Optional: creates a contactshadow underneath the content (default=true)
-              shadows // Optional: lights cast shadow (default=true)
-              adjustCamera // Optional: zooms the content in (default=true)
-              intensity={1.5} // Optional: light intensity (default=1)
-              environment="night" // Optional: environment (default=city)
-              preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
-              controls={controlsRef} // Optional: recalculates control target for correctness
-            >
-              <PouchModel />
-            </Stage>
-          </Suspense>
-        </Canvas>
-        <Container>
-          <Typography variant="h2">
-            A random astronaut food recipe generator for your interstellar space
-            missions. Each Pouch will be uniquely created for you.
-          </Typography>
-          <GenButton onClick={handleGenerate}>Generate Now</GenButton>
-        </Container>
-      </main>
+      <Stage canvasProps={canvasProps}>
+        <PouchModel />
+      </Stage>
+
+      <Container>
+        <Typography variant="h4" as="h1">
+          A random astronaut food recipe generator
+        </Typography>
+        <Typography variant="h5" as="h2">
+          for your interstellar space missions.
+          <br /> Each Pouch will be uniquely created for you.
+        </Typography>
+        <GenButton onClick={handleGenerate}>Generate Now</GenButton>
+      </Container>
     </Layout>
   )
 }
@@ -74,13 +61,13 @@ const Container = styled.div`
   margin: 0 auto;
   padding-bottom: 4rem;
   color: white;
-  h2 {
-    font-weight: 400;
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 const GenButton = styled(Button)`
+  margin-top: 1rem;
   width: 320px;
 `
