@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, Suspense } from 'react'
+import React, { useEffect } from 'react'
 import router from 'next/router'
 import styled from 'styled-components'
 import Layout from '../components/layout'
