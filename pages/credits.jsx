@@ -67,7 +67,7 @@ const creditsData = [
     link: `https://threejs-journey.com`,
   },
   {
-    name: 'GLTF to React',
+    name: 'GLTF to JSX',
     link: `https://gltf.pmnd.rs/`,
   },
 ]

@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import router from 'next/router'
 import styled from 'styled-components'
-import Layout from '../components/layout'
+import Layout from '../components/Layout'
+import dynamic from 'next/dynamic'
 import { fetcher, mealDbRandom } from '../lib'
-import { Stage } from '../components/stage'
-import { PouchModel, PouchDefaultModel } from '../components/pouch'
 import { Button, Typography } from '../utils'
+
+const Stage = dynamic(() => import('../components/Stage'))
+const PouchModel = dynamic(() => import('../components/Pouch'), { ssr: true })
 
 export async function getServerSideProps() {
   const { meals } = await fetcher(mealDbRandom)
@@ -37,7 +39,7 @@ const Index = (props) => {
   return (
     <Layout>
       <Stage canvasProps={canvasProps}>
-        <PouchDefaultModel />
+        <PouchModel textureUrl="./PreviewLabel.png" />
       </Stage>
 
       <Container>
