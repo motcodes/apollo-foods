@@ -7,7 +7,8 @@ import { fetcher, mealDbRandom } from '../lib'
 import { Button, Typography } from '../utils'
 
 const Stage = dynamic(() => import('../components/Stage'))
-const PouchModel = dynamic(() => import('../components/Pouch'), { ssr: true })
+// const PouchModel = dynamic(() => import('../components/Pouch'), { ssr: true })
+import PouchModel from '../components/Pouch'
 
 export async function getServerSideProps() {
   const { meals } = await fetcher(mealDbRandom)
@@ -32,13 +33,20 @@ const Index = (props) => {
     style: {
       width: '100%',
       height: '55vh',
+      background: 'white',
     },
     id: 'pouchCanvas',
   }
+  const controlsProps = { autoRotate: false }
+  const stageProps = { contactShadow: false }
 
   return (
     <Layout>
-      <Stage canvasProps={canvasProps}>
+      <Stage
+        canvasProps={canvasProps}
+        controlsProps={controlsProps}
+        stageProps={stageProps}
+      >
         <PouchModel textureUrl="./PreviewLabel.png" />
       </Stage>
 

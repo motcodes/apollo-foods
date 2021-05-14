@@ -1,9 +1,33 @@
 import { Suspense, useRef } from 'react'
 import styled from 'styled-components'
+import Image from 'next/image'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stage as DreiStage } from '@react-three/drei'
+import {
+  OrbitControls,
+  Stage as DreiStage,
+  useProgress,
+  Html,
+} from '@react-three/drei'
 import { useFullscreen } from '../lib'
 import { FullscreenButton } from './FullscreenButton'
+import { Typography } from '../utils'
+
+function Loader({ height }) {
+  const { progress } = useProgress()
+  return (
+    <LoaderContainer
+      center
+      style={{ width: 'calc(100vw - 48px)', height: height }}
+    >
+      <PreloadImage
+        src="/PouchPreload.png"
+        alt="Picture of the standard Apollo Foods Pouch"
+        layout="fill"
+        objectFit="contain"
+      />
+    </LoaderContainer>
+  )
+}
 
 export default function Stage({
   canvasProps = {},
@@ -25,11 +49,15 @@ export default function Stage({
   const controlsRef = useRef()
 
   return (
-    <Container>
+    <Container
+      width={canvasProps.style?.width}
+      height={canvasProps.style?.height}
+    >
       <Canvas //
         {...cProps}
         {...canvasProps}
       >
+        {/* <Loader height={canvasProps.style?.height} /> */}
         <ambientLight //
           {...lProps}
           {...lightProps}
@@ -37,16 +65,19 @@ export default function Stage({
         <OrbitControls //
           ref={controlsRef}
           {...ctrlProps}
+          {...controlsProps}
         />
-        <Suspense fallback={null}>
+        <Suspense fallback={<Loader height={canvasProps.style?.height} />}>
           <DreiStage //
             controls={controlsRef}
             {...sProps}
+            {...stageProps}
           >
             {children}
           </DreiStage>
         </Suspense>
       </Canvas>
+
       <ControlContainer>
         {isFullscreenEnabled && (
           <FullscreenButton toggleFullscreen={toggleFullscreen} />
@@ -60,6 +91,7 @@ const Container = styled.section`
   width: 100%;
   position: relative;
   margin-bottom: 1rem;
+  height: ${({ height }) => (height ? height : 'initial')};
 `
 
 const ControlContainer = styled.div`
@@ -67,6 +99,10 @@ const ControlContainer = styled.div`
   right: 1rem;
   bottom: 1rem;
 `
+
+const LoaderContainer = styled(Html)``
+
+const PreloadImage = styled(Image)``
 
 // default props
 function setStageProps(canProps, lProps, ctrlProps, sProps) {
