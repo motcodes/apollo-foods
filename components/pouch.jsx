@@ -24,4 +24,30 @@ export function PouchModel(props) {
   )
 }
 
+export function PouchDefaultModel(props) {
+  const group = useRef()
+  const { nodes, materials } = useGLTF('/gltf/pouchDefault.gltf')
+  return (
+    <group ref={group} {...props} dispose={null}>
+      <mesh
+        geometry={nodes.doypack_v02.geometry}
+        castShadow
+        receiveShadow
+        // material={nodes.doypack_v02.material}
+        // position={[0, 5, 0]}
+        // position={[0, 0, -7.37]}
+        rotation={[0.02, 0, 0]}
+        scale={[0.03, 0.03, 0.03]}
+      >
+        <meshStandardMaterial color={'hotpink'} />
+        <meshStandardMaterial
+          material={nodes.doypack_v02.material}
+          attatch="material"
+        />
+      </mesh>
+    </group>
+  )
+}
+
+useGLTF.preload('/gltf/pouchDefault.gltf')
 useGLTF.preload('/gltf/pouch2.gltf')

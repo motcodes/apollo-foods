@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Stage as DreiStage } from '@react-three/drei'
 import { useFullscreen } from '../lib'
-import { FullscreenButton } from './FullscreenButton'
+import { FullscreenButton as FullscreenBtn } from './fullscreenButton'
 
 export function Stage({
   canvasProps = {},
@@ -60,6 +60,12 @@ const Container = styled.section`
   width: 100%;
   position: relative;
   margin-bottom: 1rem;
+`
+
+const FullscreenButton = styled(FullscreenBtn)`
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
 `
 
 // default props

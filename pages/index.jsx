@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Layout from '../components/layout'
 import { fetcher, mealDbRandom } from '../lib'
 import { Stage } from '../components/stage'
-import { PouchModel } from '../components/pouch'
+import { PouchModel, PouchDefaultModel } from '../components/pouch'
 import { Button, Typography } from '../utils'
 
 export async function getServerSideProps() {
@@ -37,7 +37,7 @@ const Index = (props) => {
   return (
     <Layout>
       <Stage canvasProps={canvasProps}>
-        <PouchModel />
+        <PouchDefaultModel />
       </Stage>
 
       <Container>
