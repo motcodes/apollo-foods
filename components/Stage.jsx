@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Stage as DreiStage } from '@react-three/drei'
 import { useFullscreen } from '../lib'
-import { FullscreenButton } from './fullscreenButton'
+import { FullscreenButton } from './FullscreenButton'
 
 export default function Stage({
   canvasProps = {},

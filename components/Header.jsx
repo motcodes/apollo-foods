@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { Typography, Logo } from '../utils'
 import styled from 'styled-components'
 import useMedia from 'use-media'
