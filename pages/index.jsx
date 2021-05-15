@@ -1,14 +1,13 @@
 import { useEffect } from 'react'
 import router from 'next/router'
+import dynamic from 'next/dynamic'
 import styled from 'styled-components'
 import Layout from '../components/Layout'
-import dynamic from 'next/dynamic'
+import PouchModel from '../components/Pouch'
 import { fetcher, mealDbRandom } from '../lib'
 import { Button, Typography } from '../utils'
 
-const Stage = dynamic(() => import('../components/Stage'))
-// const PouchModel = dynamic(() => import('../components/Pouch'), { ssr: true })
-import PouchModel from '../components/Pouch'
+const Stage = dynamic(() => import('../components/Stage/Stage'))
 
 export async function getServerSideProps() {
   const { meals } = await fetcher(mealDbRandom)
@@ -33,7 +32,7 @@ const Index = (props) => {
     style: {
       width: '100%',
       height: '55vh',
-      background: 'white',
+      background: 'black',
     },
     id: 'pouchCanvas',
   }

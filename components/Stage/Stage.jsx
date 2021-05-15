@@ -1,33 +1,9 @@
 import { Suspense, useRef } from 'react'
 import styled from 'styled-components'
-import Image from 'next/image'
 import { Canvas } from '@react-three/fiber'
-import {
-  OrbitControls,
-  Stage as DreiStage,
-  useProgress,
-  Html,
-} from '@react-three/drei'
-import { useFullscreen } from '../lib'
-import { FullscreenButton } from './FullscreenButton'
-import { Typography } from '../utils'
-
-function Loader({ height }) {
-  const { progress } = useProgress()
-  return (
-    <LoaderContainer
-      center
-      style={{ width: 'calc(100vw - 48px)', height: height }}
-    >
-      <PreloadImage
-        src="/PouchPreload.png"
-        alt="Picture of the standard Apollo Foods Pouch"
-        layout="fill"
-        objectFit="contain"
-      />
-    </LoaderContainer>
-  )
-}
+import { OrbitControls, Stage as DreiStage } from '@react-three/drei'
+import { StageLoader } from './StageLoader'
+import { StageControls } from './StageControls'
 
 export default function Stage({
   canvasProps = {},
@@ -35,7 +11,6 @@ export default function Stage({
   controlsProps = {},
   stageProps = {},
   children,
-  ...rest
 }) {
   const {
     canvasProps: cProps,
@@ -43,9 +18,6 @@ export default function Stage({
     controlProps: ctrlProps,
     stageProps: sProps,
   } = setStageProps(canvasProps, lightProps, controlsProps, stageProps)
-
-  const { isFullscreenEnabled, toggleFullscreen } = useFullscreen(cProps.id)
-
   const controlsRef = useRef()
 
   return (
@@ -57,7 +29,6 @@ export default function Stage({
         {...cProps}
         {...canvasProps}
       >
-        {/* <Loader height={canvasProps.style?.height} /> */}
         <ambientLight //
           {...lProps}
           {...lightProps}
@@ -67,7 +38,7 @@ export default function Stage({
           {...ctrlProps}
           {...controlsProps}
         />
-        <Suspense fallback={<Loader height={canvasProps.style?.height} />}>
+        <Suspense fallback={<StageLoader height={canvasProps.style?.height} />}>
           <DreiStage //
             controls={controlsRef}
             {...sProps}
@@ -77,12 +48,7 @@ export default function Stage({
           </DreiStage>
         </Suspense>
       </Canvas>
-
-      <ControlContainer>
-        {isFullscreenEnabled && (
-          <FullscreenButton toggleFullscreen={toggleFullscreen} />
-        )}
-      </ControlContainer>
+      <StageControls elementId={cProps.id} />
     </Container>
   )
 }
@@ -93,16 +59,6 @@ const Container = styled.section`
   margin-bottom: 1rem;
   height: ${({ height }) => (height ? height : 'initial')};
 `
-
-const ControlContainer = styled.div`
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-`
-
-const LoaderContainer = styled(Html)``
-
-const PreloadImage = styled(Image)``
 
 // default props
 function setStageProps(canProps, lProps, ctrlProps, sProps) {
