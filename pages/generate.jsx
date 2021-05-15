@@ -15,7 +15,7 @@ export async function getServerSideProps(context) {
 
 export default function Generate(props) {
   useEffect(() => {
-    router.replace(`/cook/[id]`, `/cook/${props.data.idMeal}`)
+    router.replace(`/cook/[id]`, `/cook/${props.data.mealId}`)
   }, [])
   console.log(props.data)
   return <LabelLoader />
