@@ -51,6 +51,8 @@ const Container = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 1280px;
+  margin: 0 auto;
   height: 3rem;
   padding: 0.5rem 1rem;
 

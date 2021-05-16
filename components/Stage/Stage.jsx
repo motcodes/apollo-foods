@@ -98,7 +98,7 @@ const defaultCanvasProps = {
   shadows: true,
   dpr: [1, 1.5],
   camera: {
-    position: [0, 0, 10],
+    position: [0, -10, 10],
     fov: 45,
   },
 }

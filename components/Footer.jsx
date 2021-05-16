@@ -36,7 +36,7 @@ const Container = styled.footer`
   width: 100%;
   margin: 0 auto;
   padding: 1.5rem 1rem 2rem;
-  max-width: 1056px;
+  max-width: 1312px;
   display: flex;
   flex-direction: column;
   gap: 1rem;

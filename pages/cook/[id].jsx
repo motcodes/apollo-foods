@@ -56,7 +56,7 @@ export default function Meal(props) {
     style: {
       width: '100%',
       height: '70vh',
-      background: 'black',
+      background: 'transparent',
     },
     id: 'pouchCanvas',
   }

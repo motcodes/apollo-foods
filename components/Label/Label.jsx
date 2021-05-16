@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import LabelHero from './LabelHero'
 import FormatedList from './FormatedList'
 import FormatedText from './FormatedText'
 import LabelLoader from './LabelLoader'
-import { resizeText, useHtmlToImage } from '../../lib'
-import { Logo, Typography } from '../../utils'
 
 export const Label = (props) => {
   const {
@@ -16,21 +13,8 @@ export const Label = (props) => {
     mealInstructions = 'cook :]',
     mealIngredients = ['Spaghettig', 'Olive Oil'],
     mealMeasure = ['300g', '1 tbls'],
-    mealRecipeSource,
-    mealImageLink,
   } = props.meal
 
-  // if (!isLoading) {
-  //   return (
-  //     <Redirect
-  //       push
-  //       to={{
-  //         pathname: '/boxlarge',
-  //         state: { imageUrl: imageUrl },
-  //       }}
-  //     />
-  //   )
-  // } else {
   return (
     <>
       <Container ref={props.labelRef} style={props.style}>
@@ -71,7 +55,6 @@ export const Label = (props) => {
       <LabelLoader />
     </>
   )
-  // }
 }
 
 const Container = styled.div`

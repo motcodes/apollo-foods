@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
 export const GlobalStyle = createGlobalStyle({
   ':root': {
     '--white': 'hsla(0,0%,0%,100%)',
@@ -55,6 +56,7 @@ export const GlobalStyle = createGlobalStyle({
     '--body': '16px',
     '--body-small': '14.4px',
 
+    // tablet
     '@media (min-width: 768px)': {
       '--h1': '4.209rem',
       '--h2': '3.157rem',
@@ -79,8 +81,6 @@ export const GlobalStyle = createGlobalStyle({
     },
   },
 
-  // tablet
-
   '*': {
     margin: 0,
     padding: 0,
@@ -96,9 +96,7 @@ export const GlobalStyle = createGlobalStyle({
   },
   body: {
     fontFamily: 'Blatant',
-
     margin: 0,
-    height: '100%',
     background: 'black',
   },
   '#__next': {
