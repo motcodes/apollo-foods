@@ -1,9 +1,13 @@
 node_modules/
 .next/
 .DS_STORE
+.DS_Store
 .env
 
 app.json
 procfile
-*.blend*
-.DS_Store
+
+*.blend
+*.blend1
+# pouch.blend
+# pouch.blend1

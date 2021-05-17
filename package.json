@@ -4,13 +4,16 @@
   "description": " A random astronaut food generatorfor your outer space missons. Or create your own meals.",
   "scripts": {
     "dev": "next",
+    "devDB": "next && npx prisma studio",
     "build": "next build",
     "start": "next start -p 5000"
   },
   "keywords": [
     "apollo-foods",
     "react",
-    "nextjs"
+    "nextjs",
+    "threeJs",
+    "prisma"
   ],
   "author": "@motcodes",
   "license": "MIT",
@@ -19,6 +22,7 @@
     "npm": "^6.14.8"
   },
   "dependencies": {
+    "@prisma/client": "^2.21.2",
     "@react-three/drei": "^4.3.3",
     "@react-three/fiber": "^6.0.19",
     "babel-plugin-styled-components": "^1.12.0",
@@ -32,5 +36,8 @@
     "three": "^0.127.0",
     "url-loader": "^4.1.1",
     "use-media": "^1.4.0"
+  },
+  "devDependencies": {
+    "prisma": "^2.21.2"
   }
 }

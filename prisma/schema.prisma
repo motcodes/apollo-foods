@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project-node-postgres
+// https://vercel.com/guides/nextjs-prisma-postgres
+
+
+// env("DATABASE_URL") uses the DB-url in the env file
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// This Prisma schema defines 3 model
+// There are two one-to-many relation between User and Creation,
+// via the author field on Creation and the creations field on User
+// and between User and SocialLinks,
+// via the author field on SocialLinks and the sociallinks field on User
+
+// to create the tables run: 
+// npx prisma db push --preview-feature
+
+// to open db studio
+// npx prisma studio
+
+// Usermodel
+model User {
+  id          Int         @default(autoincrement())
+  email       String?     @unique
+  username    String      @unique @id
+  name        String?
+  bio         String
+  createdAt   DateTime    @default(now()) @map(name: "created_at")
+  updatedAt   DateTime    @updatedAt @map(name: "updated_at")
+  creations   Creation[]
+  socialLinks SocialLinks[]
+  @@map(name:"users")
+}
+
+model Creation {
+  id            Int         @id //comes from mealDB
+  name          String?     //comes from mealDB
+  image         String?     // ettiket picture
+  packageImage  String?     // load for showcase instead of 3d Object
+  mealType      String?
+  createdAt     DateTime    @default(now()) @map(name: "created_at")
+  author        User?       @relation(fields: [authorId], references:[username])
+  authorId      String?
+}
+
+model SocialLinks {
+  link    String    @id
+  name    String 
+  author        User?       @relation(fields: [authorId], references:[username])
+  authorId      String?
+}
