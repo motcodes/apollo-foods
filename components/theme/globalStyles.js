@@ -1,52 +1,152 @@
-import { global } from '../../stitches.config'
-
+import { createGlobalStyle } from 'styled-components'
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
-export const globalStyles = global({
-  '@font-face': {
-    fontFamily: 'Blatant',
-    fontWeight: 400,
-    src: 'loacl("Blatant"), url(../../fonts/Blatant.otf) format("otf")',
+
+export const GlobalStyle = createGlobalStyle({
+  ':root': {
+    '--white': 'hsla(0,0%,0%,100%)',
+    '--black': 'hsla(0,0%,100%,100%)',
+
+    '--orange-10': 'hsla(11,96%,10%,100%)',
+    '--orange-20': 'hsla(12,96%,20%,100%)',
+    '--orange-30': 'hsla(11,96%,30%,100%)',
+    '--orange-40': 'hsla(11,95%,40%,100%)',
+    '--orange-50': 'hsla(11,95%,50%,100%)',
+    '--orange-60': 'hsla(11,95%,60%,100%)',
+    '--orange-70': 'hsla(11,96%,70%,100%)',
+    '--orange-80': 'hsla(12,96%,80%,100%)',
+    '--orange-90': 'hsla(11,96%,90%,100%)',
+
+    '--blue-10': 'hsla(194,100%,10%,100%)',
+    '--blue-20': 'hsla(194,100%,20%,100%)',
+    '--blue-30': 'hsla(194,100%,30%,100%)',
+    '--blue-40': 'hsla(193,100%,40%,100%)',
+    '--blue-50': 'hsla(193,100%,50%,100%)',
+    '--blue-60': 'hsla(193,100%,60%,100%)',
+    '--blue-70': 'hsla(193,100%,70%,100%)',
+    '--blue-80': 'hsla(193,100%,80%,100%)',
+    '--blue-90': 'hsla(193,100%,90%,100%)',
+
+    '--purple-10': 'hsla(248,43,10%,100%)',
+    '--purple-20': 'hsla(248,43,20%,100%)',
+    '--purple-30': 'hsla(248,43,30%,100%)',
+    '--purple-40': 'hsla(248,43,40%,100%)',
+    '--purple-50': 'hsla(248,43,50%,100%)',
+    '--purple-60': 'hsla(248,43,60%,100%)',
+    '--purple-70': 'hsla(248,43,70%,100%)',
+    '--purple-80': 'hsla(248,43,80%,100%)',
+    '--purple-90': 'hsla(248,43,90%,100%)',
+
+    '--grey-10': 'hsla(145,3%,10%,100%)',
+    '--grey-20': 'hsla(145,3%,20%,100%)',
+    '--grey-30': 'hsla(145,3%,30%,100%)',
+    '--grey-40': 'hsla(145,3%,40%,100%)',
+    '--grey-50': 'hsla(145,3%,50%,100%)',
+    '--grey-60': 'hsla(145,3%,60%,100%)',
+    '--grey-70': 'hsla(145,3%,70%,100%)',
+    '--grey-80': 'hsla(145,3%,80%,100%)',
+    '--grey-90': 'hsla(145,3%,90%,100%)',
+
+    // mobile
+    '--h1': '3.052rem',
+    '--h2': '2.441rem',
+    '--h3': '1.953rem',
+    '--h4': '1.563rem',
+    '--h5': '1.25rem',
+    '--body-large': '1.25rem',
+    '--body': '16px',
+    '--body-small': '14.4px',
+
+    // tablet
+    '@media (min-width: 768px)': {
+      '--h1': '4.209rem',
+      '--h2': '3.157rem',
+      '--h3': '2.369rem',
+      '--h4': '1.777rem',
+      '--h5': '1.33rem',
+      '--body-large': '1.25rem',
+      '--body': '16px',
+      '--body-small': '14.4px',
+    },
+
+    // desktop
+    '@media (min-width: 1280px)': {
+      '--h1': '5.653rem',
+      '--h2': '4rem',
+      '--h3': '2.827rem',
+      '--h4': '2rem',
+      '--h5': '1.414rem',
+      '--body-large': '1.25rem',
+      '--body': '16px',
+      '--body-small': '14.4px',
+    },
   },
 
   '*': {
-    m: 0,
-    p: 0,
+    margin: 0,
+    padding: 0,
+    boxSizing: 'border-box',
+    fontWeight: 400,
   },
   html: {
     fontFamily: 'Blatant',
     lineHeight: 1.15,
     '-webkit-text-size-adjust': '100%',
+    height: '100%',
+    color: 'white',
   },
   body: {
     fontFamily: 'Blatant',
-    m: 0,
+    margin: 0,
+    background: 'black',
+  },
+  '#__next': {
+    height: '100%',
   },
   main: {
     display: 'block',
   },
   h1: {
-    fontSize: '$h1',
-    m: 0,
+    // fontSize: 'var(--h1)',
+    margin: 0,
   },
   h2: {
-    fontSize: '$h2',
-    m: 0,
+    // fontSize: 'var(--h2)',
+    margin: 0,
   },
   h3: {
-    fontSize: '$h3',
-    m: 0,
+    // fontSize: 'var(--h3)',
+    margin: 0,
   },
   h4: {
-    fontSize: '$h4',
-    m: 0,
+    // fontSize: 'var(--h4)',
+    margin: 0,
   },
   h5: {
-    fontSize: '$h5',
-    m: 0,
+    // fontSize: 'var(--h5)',
+    margin: 0,
   },
   h6: {
-    fontSize: '$h6',
-    m: 0,
+    // fontSize: 'var(--h6)',
+    margin: 0,
+  },
+
+  p: {
+    fontSize: 'var(--body)',
+    margin: 0,
+  },
+  a: {
+    fontSize: 'var(--body)',
+    margin: 0,
+  },
+  li: {
+    fontSize: 'var(--body)',
+    margin: 0,
+  },
+
+  '@media (min-width: 768px)': {
+    p: { fontSize: 'var(--body-large)' },
+    a: { fontSize: 'var(--body-large)' },
+    li: { fontSize: 'var(--body-large)' },
   },
 
   hr: {
@@ -90,31 +190,31 @@ export const globalStyles = global({
     fontFamily: 'inherit',
     fontSize: '100%',
     lineHeight: 1.15,
-    m: 0,
+    margin: 0,
   },
   input: {
     fontFamily: 'inherit',
     fontSize: '100%',
     lineHeight: 1.15,
-    m: 0,
+    margin: 0,
   },
   optgroup: {
     fontFamily: 'inherit',
     fontSize: '100%',
     lineHeight: 1.15,
-    m: 0,
+    margin: 0,
   },
   select: {
     fontFamily: 'inherit',
     fontSize: '100%',
     lineHeight: 1.15,
-    m: 0,
+    margin: 0,
   },
   textarea: {
     fontFamily: 'inherit',
     fontSize: '100%',
     lineHeight: 1.15,
-    m: 0,
+    margin: 0,
   },
 
   button: {
@@ -144,19 +244,19 @@ export const globalStyles = global({
 
   'button::-moz-focus-inner': {
     borderStyle: 'none',
-    p: 0,
+    padding: 0,
   },
   '[type="button"]::-moz-focus-inner': {
     borderStyle: 'none',
-    p: 0,
+    padding: 0,
   },
   '[type="reset"]::-moz-focus-inner': {
     borderStyle: 'none',
-    p: 0,
+    padding: 0,
   },
   '[type="submit"]::-moz-focus-inner': {
     borderStyle: 'none',
-    p: 0,
+    padding: 0,
   },
 
   'button:-moz-focusring': {
@@ -173,7 +273,7 @@ export const globalStyles = global({
   },
 
   fieldset: {
-    p: '0.35em 0.75em 0.625em',
+    padding: '0.35em 0.75em 0.625em',
   },
 
   legend: {
@@ -181,7 +281,7 @@ export const globalStyles = global({
     color: 'inherit',
     display: 'table',
     maxWidth: '100%',
-    p: 0,
+    padding: 0,
     whiteSpace: 'normal',
   },
 
@@ -195,11 +295,11 @@ export const globalStyles = global({
 
   '[type="checkbox"]': {
     boxSizing: 'border-box',
-    p: 0,
+    padding: 0,
   },
   '[type="radio"]': {
     boxSizing: 'border-box',
-    p: 0,
+    padding: 0,
   },
 
   '[type="number"]::-webkit-inner-spin-button': {

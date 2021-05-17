@@ -1,20 +1,16 @@
+import { useEffect, useState } from 'react'
 import router from 'next/router'
-import React, { useEffect, Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import styled from 'styled-components'
 import Layout from '../components/Layout'
+import PouchModel from '../components/Pouch'
 import { fetcher, mealDbRandom } from '../lib'
-import { Canvas } from '@react-three/fiber'
-import { PouchModel } from '../components/Pouch'
-import {
-  useGLTF,
-  OrthographicCamera,
-  PerspectiveCamera,
-  OrbitControls,
-  Stage,
-} from '@react-three/drei'
-import { useState } from 'react'
-import { useRef } from 'react'
+import { Button, Typography } from '../utils'
+import useMedia from 'use-media'
 
-export async function getServerSideProps(context) {
+const Stage = dynamic(() => import('../components/Stage/Stage'))
+
+export async function getServerSideProps() {
   const { meals } = await fetcher(mealDbRandom)
   const data = meals[0]
   return {
@@ -25,62 +21,100 @@ export async function getServerSideProps(context) {
 }
 
 const Index = (props) => {
+  useEffect(() => {
+    router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
+  }, [])
   function handleGenerate() {
     router.push(`/cook/[id]`, `/cook/${props.data.idMeal}`)
   }
 
-  useEffect(() => {
-    router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
-  }, [])
+  const isDesktop = useMedia({ minWidth: 1024 })
 
-  const [sizes, setSizes] = useState({ width: 0, height: 0 })
-  useEffect(() => {
-    if (window) {
-      setSizes({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
-  }, [])
-
-  const ref = useRef()
+  const canvasProps = {
+    style: {
+      width: '100%',
+      height: isDesktop ? '80vh' : '50vh',
+      background: 'transparent',
+    },
+    id: 'pouchCanvas',
+  }
+  const controlsProps = { autoRotate: true }
 
   return (
     <Layout>
-      <div className="page">
-        <main>
-          <Canvas
-            gl={{ preserveDrawingBuffer: true }}
-            shadows
-            dpr={[1, 1.5]}
-            camera={{ position: [0, 0, 10], fov: 50 }}
-            style={{ width: '100%', height: '80vh', background: 'black' }}
-          >
-            <ambientLight intensity={0.35} />
-            <OrbitControls ref={ref} />
-            <Suspense fallback={null}>
-              <Stage
-                contactShadow // Optional: creates a contactshadow underneath the content (default=true)
-                shadows // Optional: lights cast shadow (default=true)
-                adjustCamera // Optional: zooms the content in (default=true)
-                intensity={1.5} // Optional: light intensity (default=1)
-                environment="night" // Optional: environment (default=city)
-                preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
-                controls={ref} // Optional: recalculates control target for correctness
-              >
-                <PouchModel />
-              </Stage>
-            </Suspense>
-          </Canvas>
-          <h2>
-            A random astronaut food generatorfor your outer space missons. Or
-            create your own meals.
-          </h2>
-          <button onClick={handleGenerate}>Generate Now</button>
-        </main>
-      </div>
+      <Grid>
+        <Stage
+          canvasProps={canvasProps}
+          controlsProps={controlsProps}
+          className="stage"
+        >
+          <PouchModel textureUrl="./PreviewLabel.png" />
+        </Stage>
+
+        <Container>
+          <Typography variant="h4" as="h1">
+            A random astronaut food recipe generator
+          </Typography>
+          <Typography variant="h5" as="h2">
+            for your interstellar space missions.
+            <br /> Each Pouch will be uniquely created for you.
+          </Typography>
+          <GenButton onClick={handleGenerate}>Generate Now</GenButton>
+        </Container>
+      </Grid>
     </Layout>
   )
 }
 
 export default Index
+
+const Grid = styled.div`
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 4rem;
+    align-items: center;
+    max-width: 1280px;
+    height: 70vh;
+    height: 100%;
+    margin: 0 auto;
+    section {
+      grid-column: 2;
+      margin: 0;
+    }
+  }
+`
+
+const Container = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h2 {
+    color: var(--orange-90);
+  }
+  @media (min-width: 1024px) {
+    grid-column: 1;
+    grid-row: 1;
+    align-items: flex-start;
+    text-align: left;
+    margin-left: 2rem;
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+`
+
+const GenButton = styled(Button)`
+  margin-top: 1rem;
+  width: 320px;
+
+  @media (min-width: 1024px) {
+    margin-top: 2rem;
+  }
+`
