@@ -26,6 +26,9 @@ export default function Footer() {
           <li>
             <Link href="/credits">Credits</Link>
           </li>
+          <li>
+            <Link href="/privacyPolicy">Privacy Policy</Link>
+          </li>
         </List>
       </ListContainer>
     </Container>
