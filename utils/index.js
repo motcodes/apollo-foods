@@ -1,4 +1,5 @@
 export * from './Button'
+export * from './DocumentTextStyles'
 export * from './Typography'
 export * from './Logo'
 export * from './Link'
