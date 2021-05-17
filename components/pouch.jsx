@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { useGLTF, useTexture, Center } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
+import { useRef } from 'react'
+import { useGLTF, useTexture } from '@react-three/drei'
 
 export default function PouchModel({
   textureUrl,
@@ -14,7 +13,6 @@ export default function PouchModel({
   ...rest
 }) {
   const group = useRef()
-  const { camera } = useThree()
   const { nodes } = useGLTF('/gltf/pouchDefault.gltf')
   const texture = useTexture(textureUrl)
   texture.flipY = false
