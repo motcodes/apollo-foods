@@ -1,3 +1,5 @@
-# Fullstack Authentication Example with Next.js and NextAuth.js
+![Apollo Foods Logo Banner](images/LogoBanner.jpg)
 
-This is the starter project for the fullstack tutorial with Next.js and Prisma. You can find the final version of this project in the [`final`](https://github.com/prisma/blogr-nextjs-prisma/tree/final) branch of this repo.
+Apollo Foods is a random astronaut food recipe generator for your interstellar space missions. Each Pouch will be uniquely created for you. And uploaded to a 3D-Pouch Model.
+
+Website: [apollo-foods.vercel.app](https://apollo-foods.vercel.app)

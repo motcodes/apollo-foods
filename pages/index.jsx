@@ -1,19 +1,16 @@
+import { useEffect, useState } from 'react'
 import router from 'next/router'
-import React, { useEffect, Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import styled from 'styled-components'
 import Layout from '../components/Layout'
+import PouchModel from '../components/Pouch'
 import { fetcher, mealDbRandom } from '../lib'
-import { Canvas } from '@react-three/fiber'
-import { LogoModel } from '../components/Logo'
-import {
-  useGLTF,
-  OrthographicCamera,
-  PerspectiveCamera,
-  OrbitControls,
-} from '@react-three/drei'
-import { useState } from 'react'
-import { useRef } from 'react'
+import { Button, Typography } from '../utils'
+import useMedia from 'use-media'
 
-export async function getServerSideProps(context) {
+const Stage = dynamic(() => import('../components/Stage/Stage'))
+
+export async function getServerSideProps() {
   const { meals } = await fetcher(mealDbRandom)
   const data = meals[0]
   return {
@@ -24,69 +21,100 @@ export async function getServerSideProps(context) {
 }
 
 const Index = (props) => {
+  useEffect(() => {
+    router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
+  }, [])
   function handleGenerate() {
     router.push(`/cook/[id]`, `/cook/${props.data.idMeal}`)
   }
 
-  useEffect(() => {
-    router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
-  }, [])
+  const isDesktop = useMedia({ minWidth: 1024 })
 
-  const [sizes, setSizes] = useState({ width: 0, height: 0 })
-  useEffect(() => {
-    if (window) {
-      setSizes({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
-  }, [])
-
-  const myCamera = useRef()
+  const canvasProps = {
+    style: {
+      width: '100%',
+      height: isDesktop ? '80vh' : '50vh',
+      background: 'transparent',
+    },
+    id: 'pouchCanvas',
+  }
+  const controlsProps = { autoRotate: true }
 
   return (
     <Layout>
-      <div className="page">
-        <main>
-          <Canvas
-            style={{ width: '100vw', height: '100vh', background: 'black' }}
-          >
-            {/* <OrthographicCamera
-              makeDefault
-              left={0}
-              right={document.body.offsetWidth}
-              top={0}
-              bottom={document.body.offsetHeight}
-              // far={50000}
-              // near={-50000}
-              position={[0, 0, -20]}
-            >
-          </OrthographicCamera> */}
-            <PerspectiveCamera
-              ref={myCamera}
-              fov={75}
-              aspect={sizes.width / sizes.height}
-            ></PerspectiveCamera>
-            <OrbitControls camera={myCamera.current} />
-            <directionalLight
-              intensity={0.75}
-              decay={2}
-              position={[850000, 1300000, 1000000]}
-              rotation={[-0.92, 0.48, -0.34]}
-            />
-            <Suspense fallback={null}>
-              <LogoModel scale={[0.1, 0.1, 0.1]} />
-            </Suspense>
-          </Canvas>
-          <h2>
-            A random astronaut food generatorfor your outer space missons. Or
-            create your own meals.
-          </h2>
-          <button onClick={handleGenerate}>Generate Now</button>
-        </main>
-      </div>
+      <Grid>
+        <Stage
+          canvasProps={canvasProps}
+          controlsProps={controlsProps}
+          className="stage"
+        >
+          <PouchModel textureUrl="./PreviewLabel.png" />
+        </Stage>
+
+        <Container>
+          <Typography variant="h4" as="h1">
+            A random astronaut food recipe generator
+          </Typography>
+          <Typography variant="h5" as="h2">
+            for your interstellar space missions.
+            <br /> Each Pouch will be uniquely created for you.
+          </Typography>
+          <GenButton onClick={handleGenerate}>Generate Now</GenButton>
+        </Container>
+      </Grid>
     </Layout>
   )
 }
 
 export default Index
+
+const Grid = styled.div`
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 4rem;
+    align-items: center;
+    max-width: 1280px;
+    height: 70vh;
+    height: 100%;
+    margin: 0 auto;
+    section {
+      grid-column: 2;
+      margin: 0;
+    }
+  }
+`
+
+const Container = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h2 {
+    color: var(--orange-90);
+  }
+  @media (min-width: 1024px) {
+    grid-column: 1;
+    grid-row: 1;
+    align-items: flex-start;
+    text-align: left;
+    margin-left: 2rem;
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+`
+
+const GenButton = styled(Button)`
+  margin-top: 1rem;
+  width: 320px;
+
+  @media (min-width: 1024px) {
+    margin-top: 2rem;
+  }
+`
