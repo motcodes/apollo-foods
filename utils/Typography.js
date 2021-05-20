@@ -79,14 +79,17 @@ const headingOption = {
 const H1 = styled('h1')({
   ...headingOption,
   fontSize: 'var(--h1)',
+  lineHeight: '100%',
 })
 const H2 = styled('h2')({
   ...headingOption,
   fontSize: 'var(--h2)',
+  lineHeight: '100%',
 })
 const H3 = styled('h3')({
   ...headingOption,
   fontSize: 'var(--h3)',
+  lineHeight: '110%',
 })
 const H4 = styled('h4')({
   ...headingOption,

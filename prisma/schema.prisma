@@ -29,33 +29,121 @@ generator client {
 // npx prisma studio
 
 // Usermodel
+// model User {
+//   id            Int         @default(autoincrement()) @id
+//   name          String?
+//   username      String      @unique
+//   bio           String
+//   email         String?     @unique
+//   emailVerified DateTime?   @map(name: "email_verified")
+//   image         String?
+//   createdAt     DateTime    @default(now()) @map(name: "created_at")
+//   updatedAt     DateTime    @updatedAt @map(name: "updated_at")
+//   creations     Creation[]
+//   socialLinks   SocialLinks[]
+//   @@map(name:"users")
+// }
+
+// model Creation {
+//   id            Int         @id //comes from mealDB
+//   name          String?     //comes from mealDB
+//   image         String?     // ettiket picture
+//   packageImage  String?     // load for showcase instead of 3d Object
+//   mealType      String?
+//   createdAt     DateTime    @default(now()) @map(name: "created_at")
+//   author        User?       @relation(fields: [authorId], references:[username])
+//   authorId      String?
+// }
+
+// model SocialLinks {
+//   link    String    @id
+//   name    String 
+//   author        User?       @relation(fields: [authorId], references:[username])
+//   authorId      String?
+// }
+
+
+// NextAuth
+model Account {
+  id                 Int       @default(autoincrement()) @id
+  compoundId         String    @unique @map(name: "compound_id")
+  userId             Int       @map(name: "user_id")
+  providerType       String    @map(name: "provider_type")
+  providerId         String    @map(name: "provider_id")
+  providerAccountId  String    @map(name: "provider_account_id")
+  refreshToken       String?   @map(name: "refresh_token")
+  accessToken        String?   @map(name: "access_token")
+  accessTokenExpires DateTime? @map(name: "access_token_expires")
+  createdAt          DateTime  @default(now()) @map(name: "created_at")
+  updatedAt          DateTime  @default(now()) @map(name: "updated_at")
+
+  @@index([providerAccountId], name: "providerAccountId")
+  @@index([providerId], name: "providerId")
+  @@index([userId], name: "userId")
+
+  @@map(name: "accounts")
+}
+
+model Session {
+  id           Int      @default(autoincrement()) @id
+  userId       Int      @map(name: "user_id")
+  expires      DateTime
+  sessionToken String   @unique @map(name: "session_token")
+  accessToken  String   @unique @map(name: "access_token")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "sessions")
+}
+
 model User {
-  id          Int         @default(autoincrement())
-  email       String?     @unique
-  username    String      @unique @id
-  name        String?
-  bio         String
-  createdAt   DateTime    @default(now()) @map(name: "created_at")
-  updatedAt   DateTime    @updatedAt @map(name: "updated_at")
-  creations   Creation[]
-  socialLinks SocialLinks[]
-  @@map(name:"users")
+  id            Int           @default(autoincrement()) @id
+  name          String?   
+  email         String?       @unique
+  emailVerified DateTime?     @map(name: "email_verified")
+  image         String?   
+  createdAt     DateTime      @default(now()) @map(name: "created_at")
+  updatedAt     DateTime      @default(now()) @map(name: "updated_at")
+
+  // Custom Fields    
+  bio           String?   
+  username      String?       @unique
+  website       String?
+  twitter       String?
+  instagram     String?
+  reddit        String?
+  dribbble      String?
+  github        String?
+  meals         Meal[]
+
+  @@map(name: "users")
 }
 
-model Creation {
-  id            Int         @id //comes from mealDB
-  name          String?     //comes from mealDB
-  image         String?     // ettiket picture
-  packageImage  String?     // load for showcase instead of 3d Object
-  mealType      String?
-  createdAt     DateTime    @default(now()) @map(name: "created_at")
-  author        User?       @relation(fields: [authorId], references:[username])
-  authorId      String?
+model VerificationRequest {
+  id         Int       @default(autoincrement()) @id
+  identifier String
+  token      String    @unique
+  expires    DateTime
+  createdAt  DateTime  @default(now()) @map(name: "created_at")
+  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+
+  @@map(name: "verification_requests")
 }
 
-model SocialLinks {
-  link    String    @id
-  name    String 
-  author        User?       @relation(fields: [authorId], references:[username])
-  authorId      String?
+// Custom Models
+model Meal {
+  id                  Int         @id
+  name                String      
+  placeholderImage    String?     
+  texture             String?     
+  createdAt           DateTime    @default(now()) @map(name: "created_at")
+  user                User?       @relation(fields: [userId], references:[id])
+  userId              Int?
 }
+
+// model SocialLink {
+//   link       String    @id
+//   name       String 
+//   user       User?     @relation(fields: [userId], references:[id])
+//   userId     Int?
+// }

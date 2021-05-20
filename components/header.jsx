@@ -1,11 +1,12 @@
 import Link from 'next/link'
-import { Typography, Logo } from '../utils'
+import { Typography, Logo, Button } from '../utils'
 import styled from 'styled-components'
 import useMedia from 'use-media'
+import { signIn, signOut, useSession } from 'next-auth/client'
 
 const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
-
+  const [session, setSession] = useSession()
   return (
     <Container>
       <LogoWrapper>
@@ -28,6 +29,26 @@ const Header = () => {
             <Link href="/showcase">
               <a>Showcase</a>
             </Link>
+          </li>
+          <li>
+            <Link href="/demo">
+              <a>Demo</a>
+            </Link>
+          </li>
+          {session && (
+            <li>
+              <Link href="/secret">
+                <a>Secret</a>
+              </Link>
+            </li>
+          )}
+          <li>
+            {!session && <Button onClick={signIn}>Sign In</Button>}
+            {session && (
+              <>
+                <Button onClick={signOut}>Sign Out</Button>
+              </>
+            )}
           </li>
         </LinkList>
       ) : (
@@ -90,6 +111,7 @@ const NavLogo = styled(Logo)`
 
 const LinkList = styled.ul`
   display: flex;
+  align-items: center;
   font-size: 1.5rem;
   gap: 1rem;
   list-style: none;

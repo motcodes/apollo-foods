@@ -29,10 +29,13 @@ const LinkStyles = styled.a({
   fontWeight: '400',
   fontSize: 'var(--body)',
   textDecoration: 'none',
-  color: 'white',
+  color: 'var(--blue-80)',
   cursor: 'pointer',
   '&:visited': {
-    color: 'white',
+    color: 'var(--blue-80)',
+  },
+  '&:hover': {
+    textDecoration: 'underline',
   },
   '@media (min-width: 768px)': {
     fontSize: 'var(--body-large)',

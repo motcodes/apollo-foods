@@ -17,6 +17,5 @@ export default function Generate(props) {
   useEffect(() => {
     router.replace(`/cook/[id]`, `/cook/${props.data.mealId}`)
   }, [])
-  console.log(props.data)
   return <LabelLoader />
 }

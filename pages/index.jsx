@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import router from 'next/router'
 import dynamic from 'next/dynamic'
 import styled from 'styled-components'
+import useMedia from 'use-media'
+
 import Layout from '../components/Layout'
 import PouchModel from '../components/Pouch'
 import { fetcher, mealDbRandom } from '../lib'
 import { Button, Typography } from '../utils'
-import useMedia from 'use-media'
 
 const Stage = dynamic(() => import('../components/Stage/Stage'))
 

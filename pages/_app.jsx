@@ -1,23 +1,27 @@
 import Head from 'next/head'
 import styled, { ThemeProvider, css, keyframes } from 'styled-components'
+import { Provider } from 'next-auth/client'
 import { GlobalStyle } from '../components/theme/globalStyles'
 import { themeStyles } from '../components/theme/theme'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+
 export default function App({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={themeStyles}>
-        <Head>
-          <title>Apollo Foods 🚀</title>
-          <link href="./font.css" rel="stylesheet" />
-        </Head>
-        <Background>
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </Background>
+        <Provider session={pageProps.session}>
+          <Head>
+            <title>Apollo Foods 🚀</title>
+            <link href="./font.css" rel="stylesheet" />
+          </Head>
+          <Background>
+            <Header />
+            <Component {...pageProps} />
+            <Footer />
+          </Background>
+        </Provider>
       </ThemeProvider>
     </>
   )

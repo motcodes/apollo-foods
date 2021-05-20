@@ -3,10 +3,10 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export async function getServerSideProps({ params }) {
-  console.log(params.id)
+  console.log(params.username)
   const user = await prisma.user.findUnique({
     where: {
-      username: params.id,
+      username: params.username,
     },
   })
   const userData = JSON.parse(JSON.stringify(user))

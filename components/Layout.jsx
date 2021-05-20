@@ -14,7 +14,8 @@ const Main = styled.main`
     --header-height: 7rem;
   }
 
-  margin-top: var(--margin-top);
+  margin: var(--margin-top) auto 0;
   padding: 0 1rem;
   min-height: calc(100vh - var(--header-height));
+  max-width: 1280px;
 `
