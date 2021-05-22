@@ -59,6 +59,10 @@ const creditsData = [
     link: `https://heroicons.com/`,
   },
   {
+    name: 'Icons by CoolIcons',
+    link: `https://coolicons.cool/`,
+  },
+  {
     name: '3D Pouch Model',
     link: `https://www.cgtrader.com/3d-models/food/miscellaneous/doypack-v02`,
   },

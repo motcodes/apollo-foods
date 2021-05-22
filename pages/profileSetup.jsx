@@ -4,7 +4,7 @@ import Image from 'next/image'
 import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
-import { Button, Link, Typography, Input, Textarea } from '../utils'
+import { Button, Typography, Input, Textarea } from '../utils'
 import { fetcher, server, useUser, useUserState } from '../lib'
 
 function ProfileSetup() {
@@ -177,27 +177,6 @@ const UserContainer = styled.form`
   max-width: 720px;
   margin: 2rem auto 4rem;
   padding: 0 0.5rem;
-`
-
-const ImageWrapper = styled.div`
-  --imageSize: 96px;
-  --mBottom: 8px;
-  max-width: var(--imageSize);
-  max-height: var(--imageSize);
-  margin-bottom: var(--mBottom);
-  border: 2px solid var(--grey-80);
-  border-radius: calc(var(--imageSize) / 2);
-  img {
-    border-radius: calc(var(--imageSize) / 2);
-  }
-  @media (min-width: 768px) {
-    --imageSize: 128px;
-    --mBottom: 16px;
-  }
-  @media (min-width: 1024px) {
-    --imageSize: 204px;
-    --mBottom: 24px;
-  }
 `
 
 const SaveButton = styled(Button)`

@@ -58,6 +58,12 @@ export const Typography = ({
           {children}
         </P>
       )
+    case 'small':
+      return (
+        <Small as={as} font={font} color={color} {...rest}>
+          {children}
+        </Small>
+      )
     default:
       return (
         <P as={as} font={font} color={color} {...rest}>
@@ -112,4 +118,8 @@ const P = styled.p`
   font-weight: 400;
   color: ${({ color }) => (color ? color : 'currentColor')};
   font-family: ${({ font, theme }) => (font ? font : theme.font.body)};
+`
+
+const Small = styled(P)`
+  font-size: 0.9rem;
 `
