@@ -8,8 +8,10 @@ export function StageLoader({
   style,
   height,
   center = true,
+  setIsLoaded,
 }) {
   const { progress } = useProgress()
+
   return (
     <LoaderContainer
       style={{ width: 'calc(100vw - 48px)', height: height, ...style }}

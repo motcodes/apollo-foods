@@ -37,6 +37,11 @@ const options = {
     }),
   ],
   adapter: Adapters.Prisma.Adapter({ prisma }),
+  pages: {
+    // signIn: '/auth/signin',
+    // signOut: '/auth/signout',
+    newUser: '/profileSetup', // If set, new users will be directed here on first sign in
+  },
   // redirect: async (url, _) => {
   //   if (url === '/api/auth/signin') {
   //     return Promise.resolve('/demo')

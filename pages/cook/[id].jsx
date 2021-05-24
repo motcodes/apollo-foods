@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Label } from '../../components/Label/Label'
 import Layout from '../../components/Layout'
 import Stage from '../../components/Stage/Stage'
@@ -14,9 +14,10 @@ import { Typography } from '../../utils'
 
 export async function getServerSideProps(context) {
   const { query } = context
+
   const fetchById = await fetcher(`${mealDbById}${query.id}`, {
     headers: {
-      Accept: 'application/json',
+      'Content-Type': 'application/json',
       'User-Agent': '*',
     },
   })
@@ -46,6 +47,12 @@ export default function Meal(props) {
     initialData: props.data,
   })
 
+  const mealData = {
+    id: props.data.mealId,
+    name: props.data.mealName,
+    createdAt: new Date(),
+  }
+
   const [generateImage, appRef, imageUrl, isLoading] = useHtmlToImage(2048)
 
   useEffect((e) => {
@@ -60,14 +67,21 @@ export default function Meal(props) {
     },
     id: 'pouchCanvas',
   }
-  const controlsProps = { autoRotate: true }
+
+  const controlsProps = { autoRotate: false }
 
   if (isLoading && !imageUrl) {
     return <div>{data && <Label meal={data} labelRef={appRef} />}</div>
   } else {
     return (
       <Layout>
-        <Stage canvasProps={canvasProps} controlsProps={controlsProps}>
+        <Stage
+          canvasProps={canvasProps}
+          controlsProps={controlsProps}
+          mealData={mealData}
+          bookmark
+          isPlaceholderImage
+        >
           <PouchModel textureUrl={imageUrl} rotation={[0, Math.PI, 0]} />
         </Stage>
         <Typography variant="h1" color="white">

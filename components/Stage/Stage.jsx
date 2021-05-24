@@ -1,7 +1,11 @@
-import { Suspense, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stage as DreiStage } from '@react-three/drei'
+import {
+  OrbitControls,
+  Stage as DreiStage,
+  useProgress,
+} from '@react-three/drei'
 import { StageLoader } from './StageLoader'
 import { StageControls } from './StageControls'
 
@@ -10,6 +14,9 @@ export default function Stage({
   lightProps = {},
   controlsProps = {},
   stageProps = {},
+  mealData = {},
+  bookmark = false,
+  isPlaceholderImage = false,
   children,
 }) {
   const {
@@ -18,38 +25,67 @@ export default function Stage({
     controlProps: ctrlProps,
     stageProps: sProps,
   } = setStageProps(canvasProps, lightProps, controlsProps, stageProps)
+
+  const { loaded, progress } = useProgress()
+  const [placeholderImage, setPlaceholderImage] = useState('')
+  const [isAutoRotating, setAutoRotate] = useState(false)
+
   const controlsRef = useRef()
 
+  useEffect(() => {
+    const canvasContainer = document.getElementById(cProps.id)
+    const canvasRef = canvasContainer.firstChild
+
+    if (isPlaceholderImage && loaded && canvasRef && progress === 100) {
+      setTimeout(() => {
+        const modelImage = canvasRef.toDataURL('image/jpeg', 0.7)
+        setPlaceholderImage(modelImage)
+        mealData.placeholderImage = modelImage
+        setAutoRotate(true)
+      }, 1000)
+    }
+  }, [progress])
+
   return (
-    <Container
-      width={canvasProps.style?.width}
-      height={canvasProps.style?.height}
-    >
-      <Canvas //
-        {...cProps}
-        {...canvasProps}
+    <>
+      <Container
+        width={canvasProps.style?.width}
+        height={canvasProps.style?.height}
       >
-        <ambientLight //
-          {...lProps}
-          {...lightProps}
-        />
-        <OrbitControls //
-          ref={controlsRef}
-          {...ctrlProps}
-          {...controlsProps}
-        />
-        <Suspense fallback={<StageLoader height={canvasProps.style?.height} />}>
-          <DreiStage //
-            controls={controlsRef}
-            {...sProps}
-            {...stageProps}
+        <Canvas //
+          {...cProps}
+          {...canvasProps}
+        >
+          <ambientLight //
+            {...lProps}
+            {...lightProps}
+          />
+          <OrbitControls //
+            ref={controlsRef}
+            {...ctrlProps}
+            {...controlsProps}
+            autoRotateSpeed={0.8}
+            autoRotate={isAutoRotating}
+          />
+          <Suspense
+            fallback={<StageLoader height={canvasProps.style?.height} />}
           >
-            {children}
-          </DreiStage>
-        </Suspense>
-      </Canvas>
-      <StageControls elementId={cProps.id} />
-    </Container>
+            <DreiStage //
+              controls={controlsRef}
+              {...sProps}
+              {...stageProps}
+            >
+              {children}
+            </DreiStage>
+          </Suspense>
+        </Canvas>
+        <StageControls
+          elementId={cProps.id}
+          mealData={mealData}
+          bookmark={bookmark}
+        />
+      </Container>
+    </>
   )
 }
 

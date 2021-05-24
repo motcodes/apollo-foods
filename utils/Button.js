@@ -101,14 +101,23 @@ const ButtonProps = {
     fontSize: 'var(--body-large)',
   },
 
-  // '&:hover': {
-  //   transition: 'all 0.3 ease-out',
-  //   backgroundColor: ({ theme, variant, transparent }) => {
-  //     if (transparent || variant === 'text') {
-  //       return 'rgba(255,255,255,0.15)'
-  //     }
-  //   },
-  // },
+  '&:hover': {
+    transition: 'all 0.3 ease-out',
+    backgroundColor: ({ theme, variant, transparent }) => {
+      if (transparent || variant === 'text') {
+        return 'rgba(255,255,255,0.15)'
+      } else {
+        return theme.orange60
+      }
+    },
+    borderColor: ({ theme, variant, transparent }) => {
+      if (transparent || variant === 'text') {
+        return 'rgba(255,255,255,0.15)'
+      } else {
+        return theme.orange60
+      }
+    },
+  },
 }
 
 const Btn = styled('button')({

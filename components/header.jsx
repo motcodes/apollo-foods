@@ -6,7 +6,8 @@ import { signIn, signOut, useSession } from 'next-auth/client'
 
 const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
-  const [session, setSession] = useSession()
+  const [session] = useSession()
+
   return (
     <Container>
       <LogoWrapper>

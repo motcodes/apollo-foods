@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
 import { Button, Typography, Input, Textarea } from '../utils'
 import { fetcher, server, useUser, useUserState } from '../lib'
+import { ProfileImage } from '../components/ProfileImage'
 
 function ProfileSetup() {
   const [session, setSession] = useSession()
@@ -35,7 +36,14 @@ function ProfileSetup() {
       body: JSON.stringify(userData),
     })
     if (infoData.message === 'success') {
-      router.push(`/u/[username]`, `/u/${userData.username}`)
+      if (router.query.callbackUrl) {
+        const callbackUrl = new URL(router.query.callbackUrl)
+        if (callbackUrl.pathname.includes('/cook/')) {
+          router.replace(callbackUrl.pathname)
+        }
+      } else {
+        router.push(`/u/[username]`, `/u/${userData.username}`)
+      }
     }
   }
 
@@ -43,15 +51,7 @@ function ProfileSetup() {
     <Layout>
       {session && user && (
         <UserContainer onSubmit={saveUser} aria-label="form">
-          <ImageWrapper>
-            <Image
-              src={user.image}
-              alt={userState.name}
-              width="256"
-              height="256"
-              layout="responsive"
-            />
-          </ImageWrapper>
+          <ProfileImage src={user.image} alt={useState.name} />
           <Typography variant="h1">Your Info</Typography>
           <Input
             id="fullname"

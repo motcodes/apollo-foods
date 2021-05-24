@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import styled, { ThemeProvider, css, keyframes } from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import { Provider } from 'next-auth/client'
 import { GlobalStyle } from '../components/theme/globalStyles'
 import { themeStyles } from '../components/theme/theme'
@@ -10,12 +10,12 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
+      <Head>
+        <title>Apollo Foods 🚀</title>
+        <link href="./font.css" rel="stylesheet" type="text/css" />
+      </Head>
       <ThemeProvider theme={themeStyles}>
         <Provider session={pageProps.session}>
-          <Head>
-            <title>Apollo Foods 🚀</title>
-            <link href="./font.css" rel="stylesheet" />
-          </Head>
           <Background>
             <Header />
             <Component {...pageProps} />
@@ -26,12 +26,6 @@ export default function App({ Component, pageProps }) {
     </>
   )
 }
-
-const animateBackgroundGradient = keyframes`
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-`
 
 const Background = styled.div`
   height: 100%;
@@ -68,5 +62,4 @@ const Background = styled.div`
       rgba(75, 16, 1, 0) 100%
     ),
     linear-gradient(140.96deg, #001c24 0%, rgba(49, 53, 51, 0) 39.88%);
-  animation: ${animateBackgroundGradient} 10s ease infinite;
 `

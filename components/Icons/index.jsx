@@ -131,7 +131,12 @@ export const GithubIcon = ({
     </svg>
   )
 }
-export const GlobeIcon = ({ size = 16, style, ...rest }) => {
+export const GlobeIcon = ({
+  size = 16,
+  color = 'currentColor',
+  style,
+  ...rest
+}) => {
   return (
     <svg
       {...rest}
@@ -140,7 +145,7 @@ export const GlobeIcon = ({ size = 16, style, ...rest }) => {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -148,6 +153,60 @@ export const GlobeIcon = ({ size = 16, style, ...rest }) => {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+      />
+    </svg>
+  )
+}
+
+export const BookmarkIcon = ({
+  size = 16,
+  color = 'currentColor',
+  fill = 'none',
+  style,
+  ...rest
+}) => {
+  return (
+    <svg
+      {...rest}
+      xmlns="http://www.w3.org/2000/svg"
+      style={style}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={fill}
+      stroke={color}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+      />
+    </svg>
+  )
+}
+export const FullscreenIcon = ({
+  size = 24,
+  color = 'currentColor',
+  style,
+  ...rest
+}) => {
+  return (
+    <svg
+      {...rest}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke={color}
+      width={size}
+      height={size}
+      style={style}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
       />
     </svg>
   )

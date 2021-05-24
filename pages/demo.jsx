@@ -4,8 +4,8 @@ import Image from 'next/image'
 import router from 'next/router'
 import { signIn, signOut, useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
-import { Button, Link, Typography, Input, Textarea } from '../utils'
-import { fetcher, server, useUser, useUserState } from '../lib'
+import { Button, Link } from '../utils'
+import { useUser } from '../lib'
 
 function Demo() {
   const [session] = useSession()
@@ -14,8 +14,6 @@ function Demo() {
   useEffect(() => {
     if (session && user && user.username) {
       router.replace(`/u/[username]`, `/u/${user.username}`)
-    } else if (session && user) {
-      router.replace(`/profileSetup`)
     }
   }, [session, user])
 
