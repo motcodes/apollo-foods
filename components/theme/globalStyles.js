@@ -63,9 +63,9 @@ export const GlobalStyle = createGlobalStyle({
       '--h3': '2.369rem',
       '--h4': '1.777rem',
       '--h5': '1.33rem',
-      '--body-large': '1.25rem',
-      '--body': '16px',
-      '--body-small': '14.4px',
+      '--body-large': '1.33rem',
+      '--body': '18px',
+      '--body-small': '16px',
     },
 
     // desktop
@@ -75,9 +75,9 @@ export const GlobalStyle = createGlobalStyle({
       '--h3': '2.827rem',
       '--h4': '2rem',
       '--h5': '1.414rem',
-      '--body-large': '1.25rem',
-      '--body': '16px',
-      '--body-small': '14.4px',
+      '--body-large': '1.414rem',
+      '--body': '18px',
+      '--body-small': '16px',
     },
   },
 

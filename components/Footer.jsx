@@ -11,7 +11,7 @@ export default function Footer() {
             <Link href="/generate">Generate</Link>
           </li>
           <li>
-            <Link href="/showcase">Showcase</Link>
+            <Link href="/expedition">Expedition</Link>
           </li>
           <li>
             <Link href="/about">About</Link>

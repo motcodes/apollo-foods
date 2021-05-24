@@ -37,12 +37,25 @@ export default function Stage({
     const canvasRef = canvasContainer.firstChild
 
     if (isPlaceholderImage && loaded && canvasRef && progress === 100) {
+      setAutoRotate(true)
       setTimeout(() => {
+        // const destinationCanvas = document.createElement('canvas')
+        // destinationCanvas.width = canvasRef.width
+        // destinationCanvas.height = canvasRef.height
+
+        // const destCtx = destinationCanvas.getContext('2d')
+
+        // //create a rectangle with the desired color
+        // destCtx.fillStyle = '#FFFFFF'
+        // destCtx.fillRect(0, 0, canvasRef.width, canvasRef.height)
+
+        // //draw the original canvas onto the destination canvas
+        // destCtx.drawImage(canvasRef, 0, 0)
+        // const modelImage = destinationCanvas.toDataURL('image/jpeg', 0.7)
         const modelImage = canvasRef.toDataURL('image/jpeg', 0.7)
         setPlaceholderImage(modelImage)
         mealData.placeholderImage = modelImage
-        setAutoRotate(true)
-      }, 1000)
+      }, Math.floor(Math.random() * 3000) + 1000)
     }
   }, [progress])
 

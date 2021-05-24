@@ -1,4 +1,5 @@
 export * from './Button'
+export * from './CardGrid'
 export * from './DocumentTextStyles'
 export * from './Input'
 export * from './Typography'

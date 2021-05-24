@@ -42,6 +42,13 @@ const options = {
     // signOut: '/auth/signout',
     newUser: '/profileSetup', // If set, new users will be directed here on first sign in
   },
+  callbacks: {
+    async session(session, user) {
+      session.user.username = user.username
+      session.user.image = user.image
+      return session
+    },
+  },
   // redirect: async (url, _) => {
   //   if (url === '/api/auth/signin') {
   //     return Promise.resolve('/demo')

@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import { Typography, Logo, Button } from '../utils'
+import Image from 'next/image'
 import styled from 'styled-components'
 import useMedia from 'use-media'
 import { signIn, signOut, useSession } from 'next-auth/client'
+import { Typography, Logo, Button } from '../utils'
 
 const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
@@ -27,27 +28,24 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link href="/showcase">
-              <a>Showcase</a>
+            <Link href="/expedition">
+              <a>Expedition</a>
             </Link>
           </li>
-          <li>
-            <Link href="/demo">
-              <a>Demo</a>
-            </Link>
-          </li>
-          {session && (
-            <li>
-              <Link href="/secret">
-                <a>Secret</a>
-              </Link>
-            </li>
-          )}
           <li>
             {!session && <Button onClick={signIn}>Sign In</Button>}
             {session && (
               <>
-                <Button onClick={signOut}>Sign Out</Button>
+                <Link href={`/u/${session.user.username}`}>
+                  <UserImageWrapper>
+                    <Image
+                      src={session.user.image}
+                      alt={session.user.username}
+                      width="48"
+                      height="48"
+                    />
+                  </UserImageWrapper>
+                </Link>
               </>
             )}
           </li>
@@ -120,5 +118,13 @@ const LinkList = styled.ul`
   a,
   a:visited {
     color: white;
+  }
+`
+
+const UserImageWrapper = styled.a`
+  cursor: pointer;
+  div {
+    border: 2px solid white;
+    border-radius: 50%;
   }
 `

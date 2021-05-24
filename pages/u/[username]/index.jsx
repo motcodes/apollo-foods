@@ -1,9 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 import styled from 'styled-components'
-import Layout from '../../components/Layout'
-import { ProfileImage } from '../../components/ProfileImage'
-import { GenerateCard } from '../../components/GenerateCard'
-import { Typography, LinkExt } from '../../utils'
+import { useSession } from 'next-auth/client'
+import Layout from '../../../components/Layout'
+import { ProfileImage } from '../../../components/ProfileImage'
+import { GenerateCard } from '../../../components/GenerateCard'
+import { MealCard } from '../../../components/MealCard'
+import { Typography, LinkExt, Link, CardGrid } from '../../../utils'
 import {
   TwitterIcon,
   InstagramIcon,
@@ -11,8 +13,9 @@ import {
   GithubIcon,
   GlobeIcon,
   RedditIcon,
-} from '../../components/Icons'
-import { useSession } from 'next-auth/client'
+  SettingIcon,
+} from '../../../components/Icons'
+import useMedia from 'use-media'
 
 const prisma = new PrismaClient()
 
@@ -36,10 +39,9 @@ export async function getServerSideProps({ params }) {
 }
 
 export default function User(props) {
+  const isLarge = useMedia({ minWidth: 768 })
   const [session] = useSession()
-  console.log('props :', props)
   const { user, meals } = props
-  console.log(meals.length)
 
   const checkLinks =
     user.twitter ||
@@ -52,31 +54,34 @@ export default function User(props) {
   return (
     <Layout>
       <ProfileContainer>
+        <Settings href={`/u/${user.username}/settings`}>
+          <SettingIcon />
+        </Settings>
         <ProfileImage src={user.image} alt={user.name} />
         <Name as="h1">{user.name}</Name>
 
-        <Typography font="Blatant">{user.bio}</Typography>
+        <Bio font="Blatant">{user.bio}</Bio>
 
         {checkLinks && (
           <LinkContainer>
             {user.twitter && (
               <li>
                 <LinkExt href={`https://twitter.com/${user.twitter}`}>
-                  <TwitterIcon />@{user.twitter}
+                  <TwitterIcon size={isLarge ? 24 : 18} />@{user.twitter}
                 </LinkExt>
               </li>
             )}
             {user.instagram && (
               <li>
                 <LinkExt href={`https://instagram.com/${user.instagram}`}>
-                  <InstagramIcon />@{user.instagram}
+                  <InstagramIcon size={isLarge ? 24 : 18} />@{user.instagram}
                 </LinkExt>
               </li>
             )}
             {user.reddit && (
               <li>
                 <LinkExt href={`https://reddit.com/u/${user.reddit}`}>
-                  <RedditIcon />
+                  <RedditIcon size={isLarge ? 24 : 18} />
                   u/{user.reddit}
                 </LinkExt>
               </li>
@@ -84,21 +89,21 @@ export default function User(props) {
             {user.dribbble && (
               <li>
                 <LinkExt href={`https://dribbble.com/${user.dribbble}`}>
-                  <DribbbleIcon />@{user.dribbble}
+                  <DribbbleIcon size={isLarge ? 24 : 18} />@{user.dribbble}
                 </LinkExt>
               </li>
             )}
             {user.github && (
               <li>
                 <LinkExt href={`https://github.com/${user.github}`}>
-                  <DribbbleIcon />@{user.github}
+                  <GithubIcon size={isLarge ? 24 : 18} />@{user.github}
                 </LinkExt>
               </li>
             )}
             {user.website && (
               <li>
                 <LinkExt href={`${user.website}`}>
-                  <GlobeIcon />
+                  <GlobeIcon size={isLarge ? 24 : 18} />
                   {user.website.replace('https://', '').replace('http://', '')}
                 </LinkExt>
               </li>
@@ -109,15 +114,16 @@ export default function User(props) {
           Creations
         </Typography>
         {meals.length !== 0 && (
-          <MealContainer>
-            {meals.map((meal, index) => (
-              <MealCard>
-                <Typography variant="h4" as="h3">
-                  {meal.name}
-                </Typography>
-              </MealCard>
+          <CardGrid>
+            {meals.map((meal) => (
+              <MealCard
+                key={meal.id}
+                id={meal.id}
+                name={meal.name}
+                placeholderImage={meal.placeholderImage}
+              />
             ))}
-          </MealContainer>
+          </CardGrid>
         )}
         {meals.length === 0 && session && <GenerateCard />}
       </ProfileContainer>
@@ -129,9 +135,20 @@ const ProfileContainer = styled.article`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  margin-bottom: 4rem;
+  position: relative;
 `
 const Name = styled(Typography)`
-  font-size: var(--h4);
+  font-size: var(--h3);
+`
+const Bio = styled(Typography)`
+  font-size: var(--body-large);
+`
+
+const Settings = styled(Link)`
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
 `
 
 const LinkContainer = styled.ul`
@@ -145,9 +162,14 @@ const LinkContainer = styled.ul`
       margin-right: 12px;
     }
     a {
-      font-size: 0.9rem;
+      font-size: var(--body);
+    }
+  }
+  @media (min-width: 1024px) {
+    li {
+      a {
+        font-size: 1.25rem;
+      }
     }
   }
 `
-const MealContainer = styled.section``
-const MealCard = styled.article``
