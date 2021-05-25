@@ -35,14 +35,15 @@ function ProfileSetup() {
       method: 'POST',
       body: JSON.stringify(userData),
     })
+    console.log('infoData :', infoData)
     if (infoData.message === 'success') {
       if (router.query.callbackUrl) {
         const callbackUrl = new URL(router.query.callbackUrl)
         if (callbackUrl.pathname.includes('/cook/')) {
           router.replace(callbackUrl.pathname)
+        } else {
+          router.push(`/u/[username]`, `/u/${userData.username}`)
         }
-      } else {
-        router.push(`/u/[username]`, `/u/${userData.username}`)
       }
     }
   }

@@ -12,9 +12,9 @@ export default async (req, res) => {
     },
   })
 
-  if (checkMeal[0]?.id === id) {
-    res.send(true)
+  if (checkMeal[0]?.id === parseInt(id)) {
+    res.json({ textureColor: checkMeal[0].textureColor, isSaved: true })
   } else {
-    res.send(false)
+    res.json({ isSaved: false })
   }
 }

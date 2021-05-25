@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const CardGrid = styled.section`
-  margin: 2rem auto 4rem;
+  margin: 2rem 0 4rem;
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import styled from 'styled-components'
@@ -8,48 +9,77 @@ import { Typography, Logo, Button } from '../utils'
 const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
   const [session] = useSession()
+  const [isHover, toggleHover] = useState(false)
+
+  function handleHover(e) {
+    if (isHover === false) {
+      toggleHover(true)
+    } else {
+      setTimeout(() => {
+        toggleHover(false)
+      }, 2000)
+    }
+  }
 
   return (
     <Container>
-      <LogoWrapper>
-        <NavLogo />
-        <Typography variant="h6">Apollo Foods</Typography>
-      </LogoWrapper>
+      <Link href="/">
+        <LogoWrapper>
+          <NavLogo />
+          <Typography variant="h6">Apollo Foods</Typography>
+        </LogoWrapper>
+      </Link>
       {isLarge ? (
-        <LinkList>
-          <li>
-            <Link href="/">
-              <a>Homepage</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/generate">
-              <a>Generate</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/expedition">
-              <a>Expedition</a>
-            </Link>
-          </li>
-          <li>
-            {!session && <Button onClick={signIn}>Sign In</Button>}
-            {session && (
-              <>
-                <Link href={`/u/${session.user.username}`}>
-                  <UserImageWrapper>
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.username}
-                      width="48"
-                      height="48"
-                    />
-                  </UserImageWrapper>
-                </Link>
-              </>
-            )}
-          </li>
-        </LinkList>
+        <>
+          <LinkList>
+            <li>
+              <Link href="/">
+                <a>Homepage</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/generate">
+                <a>Generate</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/expedition">
+                <a>Expedition</a>
+              </Link>
+            </li>
+            <li>
+              {!session && <Button onClick={signIn}>Sign In</Button>}
+              {session && (
+                <>
+                  <Link href={`/u/${session.user.username}`}>
+                    <UserImageWrapper
+                      onMouseEnter={() => toggleHover(true)}
+                      // onMouseLeave={() =>
+                      //   setTimeout(() => {
+                      //     toggleHover(false)
+                      //   }, 2000)
+                      // }
+                    >
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.username}
+                        width="48"
+                        height="48"
+                      />
+                    </UserImageWrapper>
+                  </Link>
+                </>
+              )}
+            </li>
+          </LinkList>
+          {isHover && session && (
+            <AccountModal
+              onMouseEnter={() => toggleHover(true)}
+              onMouseLeave={() => toggleHover(false)}
+              session={session}
+            />
+          )}
+        </>
       ) : (
         <svg
           className="navIcon"
@@ -61,6 +91,21 @@ const Header = () => {
         </svg>
       )}
     </Container>
+  )
+}
+
+const AccountModal = ({ session, onMouseEnter, onMouseLeave }) => {
+  return (
+    <Modal onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      {session && (
+        <nav>
+          <Link href={`/u/${session.user.username}`}>
+            <a>Your Profile</a>
+          </Link>
+          <Button onClick={signOut}>Sign Out</Button>
+        </nav>
+      )}
+    </Modal>
   )
 }
 
@@ -92,11 +137,16 @@ const Container = styled.nav`
     }
   }
 `
-const LogoWrapper = styled.div`
+const LogoWrapper = styled.a`
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   color: white;
+  text-decoration: none;
+  cursor: pointer;
+  &:visited {
+    color: white;
+  }
 `
 
 const NavLogo = styled(Logo)`
@@ -126,5 +176,24 @@ const UserImageWrapper = styled.a`
   div {
     border: 2px solid white;
     border-radius: 50%;
+  }
+`
+
+const Modal = styled.div`
+  position: absolute;
+  top: 5rem;
+  right: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  z-index: 10;
+  nav {
+    a,
+    a:visited {
+      color: black;
+    }
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 `

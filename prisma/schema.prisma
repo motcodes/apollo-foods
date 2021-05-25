@@ -28,41 +28,6 @@ generator client {
 // to open db studio
 // npx prisma studio
 
-// Usermodel
-// model User {
-//   id            Int         @default(autoincrement()) @id
-//   name          String?
-//   username      String      @unique
-//   bio           String
-//   email         String?     @unique
-//   emailVerified DateTime?   @map(name: "email_verified")
-//   image         String?
-//   createdAt     DateTime    @default(now()) @map(name: "created_at")
-//   updatedAt     DateTime    @updatedAt @map(name: "updated_at")
-//   creations     Creation[]
-//   socialLinks   SocialLinks[]
-//   @@map(name:"users")
-// }
-
-// model Creation {
-//   id            Int         @id //comes from mealDB
-//   name          String?     //comes from mealDB
-//   image         String?     // ettiket picture
-//   packageImage  String?     // load for showcase instead of 3d Object
-//   mealType      String?
-//   createdAt     DateTime    @default(now()) @map(name: "created_at")
-//   author        User?       @relation(fields: [authorId], references:[username])
-//   authorId      String?
-// }
-
-// model SocialLinks {
-//   link    String    @id
-//   name    String 
-//   author        User?       @relation(fields: [authorId], references:[username])
-//   authorId      String?
-// }
-
-
 // NextAuth
 model Account {
   id                 Int       @default(autoincrement()) @id
@@ -135,15 +100,8 @@ model Meal {
   id                  Int         @id
   name                String      
   placeholderImage    String?     
-  texture             String?     
+  textureColor        String?     
   createdAt           DateTime    @default(now()) @map(name: "created_at")
   user                User?       @relation(fields: [userId], references:[id])
   userId              Int?
 }
-
-// model SocialLink {
-//   link       String    @id
-//   name       String 
-//   user       User?     @relation(fields: [userId], references:[id])
-//   userId     Int?
-// }

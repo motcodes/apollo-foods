@@ -6,7 +6,6 @@ const prisma = new PrismaClient()
 export default async (req, res) => {
   const session = await getSession({ req })
   const body = JSON.parse(req.body)
-  // console.log('req.body :', body)
 
   const { id: userId } = await prisma.user.findUnique({
     where: {
@@ -20,13 +19,13 @@ export default async (req, res) => {
       name: body.name,
       createdAt: body.createdAt,
       userId: userId,
-      texture: '',
+      textureColor: body.textureColor,
       placeholderImage: body.placeholderImage,
     },
   })
   // console.log(saveMeal)
 
-  if (session) {
+  if (session && saveMeal) {
     res.send({ message: 'success' })
   } else {
     res.send({ message: 'error' })

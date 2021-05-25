@@ -14,15 +14,20 @@ export const Label = (props) => {
     mealIngredients = ['Spaghettig', 'Olive Oil'],
     mealMeasure = ['300g', '1 tbls'],
   } = props.meal
+  const { randomColor } = props
 
   return (
     <>
-      <Container ref={props.labelRef} style={props.style}>
+      <Container
+        ref={props.labelRef}
+        style={props.style}
+        randColor={randomColor}
+      >
         <Front>
           <LabelHero />
           <Description>
             <FoodName>{mealName}</FoodName>
-            <DescriptionContainer>
+            <DescriptionContainer randColor={randomColor}>
               <HeadingGrid>
                 <h2>#{mealId}</h2>
                 <h3>
@@ -45,7 +50,7 @@ export const Label = (props) => {
         <Back>
           <LabelHero />
           <Description>
-            <DescriptionContainer>
+            <DescriptionContainer randColor={randomColor}>
               <h2>#{mealId}</h2>
               <FormatedText text={mealInstructions} />
             </DescriptionContainer>
@@ -67,7 +72,7 @@ const Container = styled.div`
   left: 0;
   width: 2048px;
   height: 2048px;
-  background-color: var(--orange-50);
+  background-color: ${({ randColor }) => randColor};
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 120px;
@@ -94,15 +99,7 @@ const HeadingGrid = styled.div`
     grid-column: 2;
     grid-row: 1 / 3;
     place-self: center;
-    font-size: 64px;
-    background: linear-gradient(
-      91.47deg,
-      #f93406 0%,
-      #594ab6 51.56%,
-      #00c6ff 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 72px;
   }
   h3 {
     grid-column: 1;
@@ -125,7 +122,7 @@ const DescriptionContainer = styled.div`
   width: 90%;
   max-height: 530px;
   background: white;
-  border: 9px solid var(--orange-50);
+  border: 9px solid ${({ randColor }) => randColor};
   box-sizing: border-box;
   padding: 16px 8px;
   overflow: hidden;

@@ -23,7 +23,7 @@ export const MealCard = ({ id, placeholderImage, name, user = {} }) => {
             </MealTitle>
             {user !== {} && user.image && (
               <UserLink href={`/u/${user.username}`}>
-                <UserImage
+                <Image
                   src={user.image}
                   alt={user.username}
                   width="32"
@@ -100,4 +100,3 @@ const UserLink = styled(Link)`
     border-radius: 50%;
   }
 `
-const UserImage = styled(Image)``

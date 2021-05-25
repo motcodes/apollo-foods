@@ -17,6 +17,7 @@ export default function Stage({
   mealData = {},
   bookmark = false,
   isPlaceholderImage = false,
+  isMealSaved = false,
   children,
 }) {
   const {
@@ -27,7 +28,6 @@ export default function Stage({
   } = setStageProps(canvasProps, lightProps, controlsProps, stageProps)
 
   const { loaded, progress } = useProgress()
-  const [placeholderImage, setPlaceholderImage] = useState('')
   const [isAutoRotating, setAutoRotate] = useState(false)
 
   const controlsRef = useRef()
@@ -53,9 +53,8 @@ export default function Stage({
         // destCtx.drawImage(canvasRef, 0, 0)
         // const modelImage = destinationCanvas.toDataURL('image/jpeg', 0.7)
         const modelImage = canvasRef.toDataURL('image/jpeg', 0.7)
-        setPlaceholderImage(modelImage)
         mealData.placeholderImage = modelImage
-      }, Math.floor(Math.random() * 3000) + 1000)
+      }, Math.floor(Math.random() * 1000) + 1000)
     }
   }, [progress])
 
@@ -77,7 +76,6 @@ export default function Stage({
             ref={controlsRef}
             {...ctrlProps}
             {...controlsProps}
-            autoRotateSpeed={0.8}
             autoRotate={isAutoRotating}
           />
           <Suspense
@@ -96,6 +94,7 @@ export default function Stage({
           elementId={cProps.id}
           mealData={mealData}
           bookmark={bookmark}
+          isMealSaved={isMealSaved}
         />
       </Container>
     </>

@@ -5,25 +5,15 @@ import { fetcher, useFullscreen } from '../../lib'
 import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
 
-export function StageControls({ elementId, mealData = {}, bookmark = false }) {
+export function StageControls({
+  elementId,
+  mealData = {},
+  isMealSaved,
+  bookmark = false,
+}) {
   const [session] = useSession()
   const { isFullscreenEnabled, toggleFullscreen } = useFullscreen(elementId)
-  const [isSaved, setIsSaved] = useState(false)
-
-  useEffect(() => {
-    async function check() {
-      const json = await fetcher('/api/meal/check', {
-        method: 'POST',
-        body: JSON.stringify(mealData.id),
-      })
-      if (json) {
-        setIsSaved(true)
-      }
-    }
-    if (mealData.id) {
-      check()
-    }
-  }, [isSaved])
+  const [isSaved, setIsSaved] = useState(isMealSaved)
 
   async function handleSaveMeal() {
     if (session) {

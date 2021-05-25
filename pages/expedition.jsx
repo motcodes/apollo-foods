@@ -25,6 +25,7 @@ export async function getServerSideProps({}) {
 
 export default function Expedition(props) {
   const { mealData } = props
+  console.log('mealData :', mealData)
   return (
     <Layout>
       <Typography variant="h1">Expedition</Typography>
