@@ -41,6 +41,7 @@ export async function getServerSideProps({ params }) {
 export default function User(props) {
   const isLarge = useMedia({ minWidth: 768 })
   const [session] = useSession()
+  // console.log('session :', session)
   const { user, meals } = props
 
   const checkLinks =
@@ -54,9 +55,11 @@ export default function User(props) {
   return (
     <Layout>
       <ProfileContainer>
-        <Settings href={`/u/${user.username}/settings`}>
-          <SettingIcon />
-        </Settings>
+        {session && session.user.username === user.username && (
+          <Settings href={`/u/${user.username}/settings`}>
+            <SettingIcon />
+          </Settings>
+        )}
         <ProfileImage src={user.image} alt={user.name} />
         <Name as="h1">{user.name}</Name>
 
