@@ -1,9 +1,10 @@
 import styled from 'styled-components'
+import { Logo } from '../../utils'
 
 const LabelLoader = () => (
   <Loader>
+    <Logo size={160} />
     <h1>Rendering in the background</h1>
-    {/* <button onClick={(e) => generateImage(e)}>Capture</button> */}
   </Loader>
 )
 
@@ -15,8 +16,12 @@ const Loader = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
+  padding: 1rem;
   background-color: var(--blue-10);
   display: grid;
+  place-content: center;
   place-items: center;
+  gap: 1rem;
+  text-align: center;
   z-index: 10;
 `
