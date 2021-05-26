@@ -6,13 +6,15 @@ import { themeStyles } from '../components/theme/theme'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
+import '../styles/font.css'
+
 export default function App({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
       <Head>
         <title>Apollo Foods 🚀</title>
-        <link href="./font.css" rel="stylesheet" type="text/css" />
+        {/* <link rel="preload" href="/Blatant.woff2" as="font" crossOrigin="" /> */}
       </Head>
       <ThemeProvider theme={themeStyles}>
         <Provider session={pageProps.session}>

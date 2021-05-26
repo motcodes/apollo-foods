@@ -81,6 +81,14 @@ export const GlobalStyle = createGlobalStyle({
     },
   },
 
+  // '@font-face': {
+  //   fontFamily: 'Blatant',
+  //   src: `url('fonts/Blatant.woff2') format('woff2'), url('fonts/Blatant.ttf') format('ttf')`,
+  //   fontWeight: 400,
+  //   fontStyle: 'normal',
+  //   fontDisplay: 'swap',
+  // },
+
   '*': {
     margin: 0,
     padding: 0,
