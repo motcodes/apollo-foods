@@ -9,50 +9,67 @@ import { ProfileImage } from '../components/ProfileImage'
 
 function ProfileSetup() {
   const [session] = useSession()
-  const [userState, dispatchUser] = useUserState()
   const user = useUser()
+  const [userData, dispatchUser] = useUserState(user)
+  const [usernameIsTaken, setUsernameIsTaken] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
-
-  useEffect(() => {
-    if (user) {
-      dispatchUser({ type: 'name', value: user.name })
-    }
-  }, [user])
+  const [buttonText, setButtonText] = useState('Save my data')
 
   async function saveUser(e) {
     e.preventDefault()
-    const userData = { ...user, ...userState }
 
     if (
       userData.username === '' ||
       userData.username === ' ' ||
-      userData.username === null
+      userData.username === null ||
+      userData.username.length < 3
     ) {
       setUsernameError(true)
+      setButtonText('Try again')
+      return
     } else {
-      userData.username = userData.username?.replace('@', '')
-      userData.twitter = userData.twitter?.replace('@', '')
-      userData.instagram = userData.instagram?.replace('@', '')
-      userData.dribbble = userData.dribbble?.replace('@', '')
-      userData.github = userData.github?.replace('@', '')
-      userData.reddit = userData.reddit?.replace('@', '').replace('u/', '')
+      setUsernameError(false)
+    }
 
-      delete userData.meals
+    const checkUsername = await fetcher(`${server}/api/user/check`, {
+      method: 'POST',
+      body: JSON.stringify(userData.username),
+    })
 
-      const infoData = await fetcher(`${server}/api/user/update`, {
-        method: 'POST',
-        body: JSON.stringify(userData),
-      })
-      // console.log('infoData :', infoData)
-      if (infoData.message === 'success') {
-        if (router.query.callbackUrl) {
-          const callbackUrl = new URL(router.query.callbackUrl)
-          if (callbackUrl.pathname.includes('/cook/')) {
-            router.replace(callbackUrl.pathname)
-          } else {
-            router.push(`/u/[username]`, `/u/${userData.username}`)
-          }
+    console.log('checkUsername :', checkUsername)
+    if (checkUsername.isTaken) {
+      setUsernameIsTaken(true)
+      setButtonText('Try again')
+      return
+    } else {
+      setUsernameIsTaken(false)
+    }
+    setButtonText('Save my data')
+
+    userData.username = userData.username?.replace('@', '')
+    userData.twitter = userData.twitter?.replace('@', '')
+    userData.instagram = userData.instagram?.replace('@', '')
+    userData.dribbble = userData.dribbble?.replace('@', '')
+    userData.github = userData.github?.replace('@', '')
+    userData.reddit = userData.reddit?.replace('@', '').replace('u/', '')
+
+    delete userData.meals
+
+    const infoData = await fetcher(`${server}/api/user/update`, {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    })
+    // console.log('infoData :', infoData)
+    if (infoData.message === 'success') {
+      if (router.query.callbackUrl) {
+        const callbackUrl = new URL(router.query.callbackUrl)
+        if (callbackUrl.pathname.includes('/cook/')) {
+          router.replace(callbackUrl.pathname)
+        } else {
+          router.push(`/u/[username]`, `/u/${userData.username}`)
         }
+      } else {
+        router.push(`/u/[username]`, `/u/${userData.username}`)
       }
     }
   }
@@ -61,13 +78,13 @@ function ProfileSetup() {
     <Layout>
       {session && user && (
         <UserContainer onSubmit={saveUser} aria-label="form">
-          <ProfileImage src={user.image} alt={useState.name} />
+          <ProfileImage src={user.image} alt={userData.name} />
           <Typography variant="h1">Your Info</Typography>
           <Input
             id="fullname"
             label="Name*"
             name="name"
-            value={userState.name}
+            value={userData.name}
             onChange={(e) =>
               dispatchUser({ type: 'name', value: e.target.value })
             }
@@ -76,25 +93,26 @@ function ProfileSetup() {
             id="username"
             label="Username*"
             name="username"
-            value={userState.username}
+            value={userData.username}
             onChange={(e) =>
               dispatchUser({ type: 'username', value: e.target.value })
             }
-            error={false}
+            isTaken={usernameIsTaken}
+            error={usernameError}
           />
           <Input
             id="email"
             label="Email"
             type="email"
             name="email"
-            value={userState.email}
+            value={userData.email}
             disabled
           />
           <Textarea
             id="bio"
             label="Bio"
             name="bio"
-            value={userState.bio}
+            value={userData.bio}
             onChange={(e) =>
               dispatchUser({ type: 'bio', value: e.target.value })
             }
@@ -109,7 +127,7 @@ function ProfileSetup() {
             type="url"
             name="website"
             placeholder="https://mywebsite.com"
-            value={userState.website}
+            value={userData.website}
             onChange={(e) =>
               dispatchUser({ type: 'website', value: e.target.value })
             }
@@ -120,7 +138,7 @@ function ProfileSetup() {
             type="text"
             name="twitter"
             placeholder="@twitter"
-            value={userState.twitter}
+            value={userData.twitter}
             onChange={(e) =>
               dispatchUser({ type: 'twitter', value: e.target.value })
             }
@@ -131,7 +149,7 @@ function ProfileSetup() {
             type="text"
             name="instagram"
             placeholder="@instagram"
-            value={userState.instagram}
+            value={userData.instagram}
             onChange={(e) =>
               dispatchUser({ type: 'instagram', value: e.target.value })
             }
@@ -142,7 +160,7 @@ function ProfileSetup() {
             type="text"
             name="reddit"
             placeholder="u/reddit"
-            value={userState.reddit}
+            value={userData.reddit}
             onChange={(e) =>
               dispatchUser({ type: 'reddit', value: e.target.value })
             }
@@ -153,7 +171,7 @@ function ProfileSetup() {
             type="text"
             name="dribbble"
             placeholder="@dribbble"
-            value={userState.dribbble}
+            value={userData.dribbble}
             onChange={(e) =>
               dispatchUser({ type: 'dribbble', value: e.target.value })
             }
@@ -164,14 +182,14 @@ function ProfileSetup() {
             type="text"
             name="github"
             placeholder="@github"
-            value={userState.github}
+            value={userData.github}
             onChange={(e) =>
               dispatchUser({ type: 'github', value: e.target.value })
             }
           />
 
           <SaveButton type="submit" fullWidth>
-            Save my data
+            {buttonText}
           </SaveButton>
         </UserContainer>
       )}

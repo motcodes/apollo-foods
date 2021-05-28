@@ -14,7 +14,7 @@ export default function Stage({
   lightProps = {},
   controlsProps = {},
   stageProps = {},
-  mealData = {},
+  mealProps = {},
   bookmark = false,
   isPlaceholderImage = false,
   isMealSaved = false,
@@ -27,11 +27,11 @@ export default function Stage({
     controlProps: ctrlProps,
     stageProps: sProps,
   } = setStageProps(canvasProps, lightProps, controlsProps, stageProps)
+  const controlsRef = useRef()
 
   const { loaded, progress } = useProgress()
   const [isAutoRotating, setAutoRotate] = useState(false)
-
-  const controlsRef = useRef()
+  const [mealData, setMealData] = useState(mealProps)
 
   useEffect(() => {
     const canvasContainer = document.getElementById(cProps.id)
@@ -40,21 +40,9 @@ export default function Stage({
     if (isPlaceholderImage && loaded && canvasRef && progress === 100) {
       setAutoRotate(true)
       setTimeout(() => {
-        // const destinationCanvas = document.createElement('canvas')
-        // destinationCanvas.width = canvasRef.width
-        // destinationCanvas.height = canvasRef.height
-
-        // const destCtx = destinationCanvas.getContext('2d')
-
-        // //create a rectangle with the desired color
-        // destCtx.fillStyle = '#FFFFFF'
-        // destCtx.fillRect(0, 0, canvasRef.width, canvasRef.height)
-
-        // //draw the original canvas onto the destination canvas
-        // destCtx.drawImage(canvasRef, 0, 0)
-        // const modelImage = destinationCanvas.toDataURL('image/jpeg', 0.7)
-        const modelImage = canvasRef.toDataURL('image/jpeg', 0.7)
-        mealData.placeholderImage = modelImage
+        const modelImage = canvasRef.toDataURL('image/jpeg', 0.65)
+        // mealProps.placeholderImage = modelImage
+        setMealData((prev) => ({ ...prev, placeholderImage: modelImage }))
       }, Math.floor(Math.random() * 1000) + 1000)
     }
   }, [progress])
@@ -91,13 +79,15 @@ export default function Stage({
             </DreiStage>
           </Suspense>
         </Canvas>
-        <StageControls
-          elementId={cProps.id}
-          mealData={mealData}
-          bookmark={bookmark}
-          isMealSaved={isMealSaved}
-          enableFullscreen={enableFullscreen}
-        />
+        {mealData.placeholderImage && (
+          <StageControls
+            elementId={cProps.id}
+            mealProps={mealData}
+            bookmark={bookmark}
+            isMealSaved={isMealSaved}
+            enableFullscreen={enableFullscreen}
+          />
+        )}
       </Container>
     </>
   )

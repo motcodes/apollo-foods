@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import styled from 'styled-components'
@@ -12,16 +12,6 @@ const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
   const [session] = useSession()
   const [isHover, toggleHover] = useState(false)
-
-  function handleHover(e) {
-    if (isHover === false) {
-      toggleHover(true)
-    } else {
-      setTimeout(() => {
-        toggleHover(false)
-      }, 2000)
-    }
-  }
 
   return (
     <>
@@ -54,46 +44,26 @@ const Header = () => {
                 {!session && <Button onClick={signIn}>Sign In</Button>}
                 {session && (
                   <>
-                    <Link href={`/u/${session.user.username}`}>
-                      <UserImageWrapper
-                        onMouseEnter={() => toggleHover(true)}
-                        // onMouseLeave={() =>
-                        //   setTimeout(() => {
-                        //     toggleHover(false)
-                        //   }, 2000)
-                        // }
-                      >
-                        <Image
-                          src={session.user.image}
-                          alt={session.user.username}
-                          width="48"
-                          height="48"
-                        />
-                      </UserImageWrapper>
-                    </Link>
+                    <UserImageWrapper onClick={() => toggleHover(!isHover)}>
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.username}
+                        width="48"
+                        height="48"
+                      />
+                    </UserImageWrapper>
+                    {isHover && session && (
+                      <AccountModal
+                        onMouseLeave={() => toggleHover(false)}
+                        session={session}
+                      />
+                    )}
                   </>
                 )}
               </li>
             </LinkList>
-            {isHover && session && (
-              <AccountModal
-                onMouseEnter={() => toggleHover(true)}
-                onMouseLeave={() => toggleHover(false)}
-                session={session}
-              />
-            )}
           </>
         )}
-        {/* : (
-         <svg
-           className="navIcon"
-           viewBox="0 0 48 48"
-           fill="none"
-           xmlns="http://www.w3.org/2000/svg"
-         >
-           <path d="M12 20H36M21 29H36" stroke="white" strokeWidth="2" />
-         </svg>
-       )} */}
       </Container>
       {!isLarge && (
         <MobileNavigation>
@@ -128,7 +98,7 @@ const NavItem = ({ href, children }) => {
   return (
     <NavLink
       href={href}
-      color={router.pathname === href ? 'var(--orange-50)' : 'white'}
+      color={router.pathname === href ? 'var(--orange-30)' : 'white'}
     >
       {children}
     </NavLink>
@@ -141,9 +111,14 @@ const AccountModal = ({ session, onMouseEnter, onMouseLeave }) => {
       {session && (
         <nav>
           <Link href={`/u/${session.user.username}`}>
-            <a>Your Profile</a>
+            <a>View profile</a>
           </Link>
-          <Button onClick={signOut}>Sign Out</Button>
+          <Link href={`/u/${session.user.username}/settings`}>
+            <a>Account settings</a>
+          </Link>
+          <Button scale={0.9} onClick={signOut}>
+            Sign Out
+          </Button>
         </nav>
       )}
     </Modal>
@@ -213,7 +188,7 @@ const LinkList = styled.ul`
   }
 `
 
-const UserImageWrapper = styled.a`
+const UserImageWrapper = styled.figure`
   cursor: pointer;
   div {
     border: 2px solid white;
@@ -237,6 +212,9 @@ const Modal = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    button {
+      transform-origin: left;
+    }
   }
 `
 

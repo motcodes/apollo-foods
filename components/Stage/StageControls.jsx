@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import { signIn, useSession } from 'next-auth/client'
 import { fetcher, useFullscreen } from '../../lib'
 import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
 import { Dots } from '../../utils'
+import { useRouter } from 'next/router'
 
 export function StageControls({
   elementId,
-  mealData = {},
+  mealProps = {},
   isMealSaved,
   bookmark = false,
   enableFullscreen = true,
@@ -17,6 +18,7 @@ export function StageControls({
   const { isFullscreenEnabled, toggleFullscreen } = useFullscreen(elementId)
   const [isSaved, setIsSaved] = useState(isMealSaved)
   const [isLoading, toggleLoading] = useState(false)
+  const { query } = useRouter()
 
   async function handleSaveMeal() {
     toggleLoading(true)
@@ -24,7 +26,7 @@ export function StageControls({
       if (isSaved) {
         const json = await fetcher('/api/meal/delete', {
           method: 'POST',
-          body: JSON.stringify(mealData.id),
+          body: JSON.stringify(query.id),
         })
         if (json.success === true) {
           setIsSaved(false)
@@ -37,7 +39,7 @@ export function StageControls({
       } else {
         const json = await fetcher('/api/meal/save', {
           method: 'POST',
-          body: JSON.stringify(mealData),
+          body: JSON.stringify(mealProps),
         })
         if (json.success === true) {
           setIsSaved(true)
@@ -89,7 +91,7 @@ export function StageControls({
 
 const ControlContainer = styled.div`
   position: absolute;
-  right: 1rem;
+  right: 0;
   bottom: 1rem;
   display: flex;
   flex-direction: column-reverse;

@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { Label as Ettiket } from '../../components/Label/Label'
 import Layout from '../../components/Layout'
 import Stage from '../../components/Stage/Stage'
+import { GenerateCard } from '../../components/GenerateCard'
 import PouchModel from '../../components/Pouch'
 import {
   fetcher,
@@ -18,6 +19,7 @@ import { Typography } from '../../utils'
 
 import prisma from '../../prisma/prisma'
 import useSWR from 'swr'
+import { useRouter } from 'next/router'
 
 export async function getServerSideProps(context) {
   const { query } = context
@@ -71,14 +73,15 @@ export default function Meal(props) {
   props.data.mealIngredients = props.mealIngredients
   props.data.mealMeasure = props.mealMeasure
   const initialData = props.data
+  const { query } = useRouter()
 
-  const { data: newMealData } = useSWR(
-    `${server}/api/meal/${initialData.mealId}`,
-    fetcher,
-    { initialData: initialData }
-  )
+  // const { data: newMealData } = useSWR(
+  //   `${server}/api/meal/${query.id}`,
+  //   fetcher,
+  //   { initialData: initialData }
+  // )
 
-  const [mealData, setMealData] = useState(newMealData)
+  const [mealData, setMealData] = useState(initialData)
 
   const [randomColor] = useState(props.isMealSaved?.textureColor)
   const [isMealSaved] = useState(props.isMealSaved?.isSaved)
@@ -88,11 +91,10 @@ export default function Meal(props) {
   useEffect((e) => {
     generateImage(e)
   }, [])
+
   useEffect(() => {
     async function refetchMeal() {
-      const refetchedMeal = await fetcher(
-        `${server}/api/meal/${initialData.mealId}`
-      )
+      const refetchedMeal = await fetcher(`${server}/api/meal/${query.id}`)
       const newMeal = formatMeal(refetchedMeal)
       setMealData(newMeal)
     }
@@ -106,6 +108,7 @@ export default function Meal(props) {
     name: mealData?.mealName,
     textureColor: randomColor,
     createdAt: new Date(),
+    placeholderImage: '',
   }
 
   const canvasProps = {
@@ -119,7 +122,7 @@ export default function Meal(props) {
 
   const controlsProps = { autoRotate: false }
 
-  if (isLoading && !imageUrl) {
+  if (isLoading && !imageUrl && mealData.mealIngredients) {
     return (
       <div>
         {mealData && (
@@ -137,7 +140,7 @@ export default function Meal(props) {
         <Stage
           canvasProps={canvasProps}
           controlsProps={controlsProps}
-          mealData={mealProps}
+          mealProps={mealProps}
           isMealSaved={isMealSaved}
           bookmark
           isPlaceholderImage
@@ -204,6 +207,12 @@ export default function Meal(props) {
             )}
           </RecipeContainer>
         )}
+        <GenerateCard
+          heading="Do you want to discover more recipes?"
+          text="Just click the button below."
+          buttonText="Generate now!"
+          bgColor={randomColor}
+        />
       </Layout>
     )
   }
@@ -255,8 +264,8 @@ const Item = styled.div`
   ${({ isList }) => {
     if (isList) {
       return css`
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 0rem;
         margin-left: 1rem;
         li {

@@ -10,7 +10,7 @@ export const MealCard = ({ id, placeholderImage, name, user = {} }) => {
         <Card>
           <MealImageWrapper>
             <MealImage
-              src={placeholderImage}
+              src={placeholderImage || '/PouchPreload.png'}
               alt={name}
               layout="fill"
               objectFit="contain"
@@ -81,13 +81,6 @@ const Card = styled.article`
   background-color: var(--orange-10);
   border: 2px solid var(--orange-90);
   border-radius: 12px;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0px 100px 108px rgba(75, 75, 75, 0.2),
-    0px 41.7776px 45.1198px rgba(75, 75, 75, 0.143771),
-    0px 22.3363px 24.1232px rgba(75, 75, 75, 0.119221),
-    0px 12.5216px 13.5233px rgba(75, 75, 75, 0.1),
-    0px 6.6501px 7.18211px rgba(75, 75, 75, 0.0807786),
-    0px 2.76726px 2.98864px rgba(75, 75, 75, 0.0562291);
 
   &:hover {
     transform: translateY(-5px);

@@ -23,25 +23,30 @@ export async function getServerSideProps({ params }) {
     where: {
       username: params.username,
     },
-  })
-  const meals = await prisma.meal.findMany({
-    where: {
-      userId: user.id,
+    include: {
+      meals: true,
     },
   })
-  // parses date fields correctly
+
+  if (!user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    }
+  }
   const userData = JSON.parse(JSON.stringify(user))
-  const mealData = JSON.parse(JSON.stringify(meals))
   return {
-    props: { user: userData, meals: mealData },
+    props: { user: userData },
   }
 }
 
 export default function User(props) {
-  const isLarge = useMedia({ minWidth: 768 })
+  const { user } = props
+  const { meals } = user
   const [session] = useSession()
-
-  const { user, meals } = props
+  const isLarge = useMedia({ minWidth: 768 })
 
   const checkLinks =
     user.twitter ||
@@ -62,7 +67,7 @@ export default function User(props) {
         <ProfileImage src={user.image} alt={user.name} />
         <Name as="h1">{user.name}</Name>
 
-        <Bio font="Blatant">{user.bio}</Bio>
+        {user.bio && <Bio font="Blatant">{user.bio}</Bio>}
 
         {checkLinks && (
           <LinkContainer>

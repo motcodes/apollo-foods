@@ -23,7 +23,7 @@ export default async (req, res) => {
         email: session.user.email,
       },
     })
-    console.log('session && saveMeal :', userId)
+    // console.log('session && saveMeal :', userId)
 
     const saveMeal = await prisma.meal.create({
       data: {
