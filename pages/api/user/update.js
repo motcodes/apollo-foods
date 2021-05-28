@@ -1,8 +1,18 @@
-import { PrismaClient } from '@prisma/client'
 import { getSession } from 'next-auth/client'
+// const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient()
-
+// let prisma
+// if (process.env.NODE_ENV !== 'production') {
+//   if (!global.prisma) {
+//     global.prisma = new PrismaClient({
+//       debug: true,
+//     })
+//   }
+//   prisma = global.prisma
+// } else {
+//   prisma = new PrismaClient()
+// }
+import prisma from '../../../prisma/prisma'
 export default async (req, res) => {
   const session = await getSession({ req })
   const body = JSON.parse(req.body)

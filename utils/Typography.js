@@ -78,7 +78,7 @@ const headingOption = {
   alignItems: 'center',
   lineHeight: '120%',
   fontWeight: 400,
-  color: ({ color }) => (color ? color : 'currentColor'),
+  color: ({ color }) => (color ? color : 'inherit'),
   fontFamily: ({ font, theme }) => (font ? font : theme.font.primary),
 }
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Image from 'next/image'
 import { default as NextLink } from 'next/link'
 import { Link, Typography } from '../utils'
@@ -39,6 +39,29 @@ export const MealCard = ({ id, placeholderImage, name, user = {} }) => {
   )
 }
 
+export const MealCardSkeleton = () => {
+  return (
+    <Card>
+      <MealImageWrapper>
+        <MealImage
+          src="/PouchPreload.png"
+          alt="placeholder pouch image"
+          layout="fill"
+          objectFit="contain"
+          objectPosition="50% 50%"
+        />
+      </MealImageWrapper>
+      <TextContainerSkeleton>
+        <TitleSkeleton />
+        <Flex>
+          <ProfileSkeleton />
+          <NameSkeleton />
+        </Flex>
+      </TextContainerSkeleton>
+    </Card>
+  )
+}
+
 const MealLink = styled.a`
   text-decoration: none;
   cursor: pointer;
@@ -53,6 +76,8 @@ const Card = styled.article`
   grid-template-rows: 3fr 1fr;
   width: 100%;
   height: 100%;
+  min-height: 304px;
+  max-height: 352px;
   background-color: var(--orange-10);
   border: 2px solid var(--orange-90);
   border-radius: 12px;
@@ -99,4 +124,42 @@ const UserLink = styled(Link)`
   img {
     border-radius: 50%;
   }
+`
+
+const LoadingAnimation = keyframes({
+  '0%': { opacity: 1 },
+  '50%': { opacity: 0.6 },
+  '100%': { opacity: 1 },
+})
+
+const TitleSkeleton = styled.span`
+  width: 100%;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--orange-30);
+  animation: ${LoadingAnimation} 2s ease-in-out infinite;
+`
+const TextContainerSkeleton = styled(TextContainer)`
+  gap: 8px;
+`
+
+const Flex = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`
+const ProfileSkeleton = styled.span`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--orange-30);
+  animation: ${LoadingAnimation} 2s 0.2s ease-in-out infinite;
+`
+const NameSkeleton = styled.span`
+  width: 50%;
+  height: 24px;
+  border-radius: 6px;
+  background-color: var(--orange-30);
+  animation: ${LoadingAnimation} 2s 0.3s ease-in-out infinite;
 `

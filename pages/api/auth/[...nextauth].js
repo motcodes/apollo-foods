@@ -1,18 +1,20 @@
-import { PrismaClient } from '@prisma/client'
+// const { PrismaClient } = require('@prisma/client')
 import NextAuth from 'next-auth'
 import Adapters from 'next-auth/adapters'
 import Providers from 'next-auth/providers'
 
-let prisma
+import prisma from '../../../prisma/prisma'
 
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient()
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient()
-  }
-  prisma = global.prisma
-}
+// let prisma
+
+// if (process.env.NODE_ENV === 'production') {
+//   prisma = new PrismaClient()
+// } else {
+//   if (!global.prisma) {
+//     global.prisma = new PrismaClient()
+//   }
+//   prisma = global.prisma
+// }
 
 const options = {
   providers: [

@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client'
 import { useSession } from 'next-auth/client'
 import styled from 'styled-components'
 import Layout from '../../../components/Layout'
@@ -6,8 +5,19 @@ import { useUserState } from '../../../lib'
 import { Button, Typography, Input, Textarea } from '../../../utils'
 import { ProfileImage } from '../../../components/ProfileImage'
 
-const prisma = new PrismaClient()
-
+// const { PrismaClient } = require('@prisma/client')
+// let prisma
+// if (process.env.NODE_ENV !== 'production') {
+//   if (!global.prisma) {
+//     global.prisma = new PrismaClient({
+//       debug: true,
+//     })
+//   }
+//   prisma = global.prisma
+// } else {
+//   prisma = new PrismaClient()
+// }
+import prisma from '../../../prisma/prisma'
 export async function getServerSideProps(context) {
   const { username } = context.query
   const user = await prisma.user.findUnique({

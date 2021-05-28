@@ -1,6 +1,7 @@
 export * from './Button'
 export * from './CardGrid'
 export * from './DocumentTextStyles'
+export * from './Dots'
 export * from './Input'
 export * from './Typography'
 export * from './Logo'

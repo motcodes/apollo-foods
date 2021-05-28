@@ -3,8 +3,8 @@ import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle({
   ':root': {
-    '--white': 'hsla(0,0%,0%,100%)',
-    '--black': 'hsla(0,0%,100%,100%)',
+    '--white': 'hsla(0,0%,100%,100%)',
+    '--black': 'hsla(0,0%,0%,100%)',
 
     '--orange-10': 'hsla(11,96%,10%,100%)',
     '--orange-20': 'hsla(12,96%,20%,100%)',

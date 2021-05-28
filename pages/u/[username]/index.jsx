@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import styled from 'styled-components'
 import { useSession } from 'next-auth/client'
+import useMedia from 'use-media'
 import Layout from '../../../components/Layout'
 import { ProfileImage } from '../../../components/ProfileImage'
 import { GenerateCard } from '../../../components/GenerateCard'
@@ -15,9 +15,8 @@ import {
   RedditIcon,
   SettingIcon,
 } from '../../../components/Icons'
-import useMedia from 'use-media'
 
-const prisma = new PrismaClient()
+import prisma from '../../../prisma/prisma'
 
 export async function getServerSideProps({ params }) {
   const user = await prisma.user.findUnique({
@@ -41,7 +40,7 @@ export async function getServerSideProps({ params }) {
 export default function User(props) {
   const isLarge = useMedia({ minWidth: 768 })
   const [session] = useSession()
-  // console.log('session :', session)
+
   const { user, meals } = props
 
   const checkLinks =
@@ -118,14 +117,16 @@ export default function User(props) {
         </Typography>
         {meals.length !== 0 && (
           <CardGrid>
-            {meals.map((meal) => (
-              <MealCard
-                key={meal.id}
-                id={meal.id}
-                name={meal.name}
-                placeholderImage={meal.placeholderImage}
-              />
-            ))}
+            {meals &&
+              meals.map((meal, index) => (
+                <MealCard
+                  key={meal.id * index}
+                  id={meal.id}
+                  name={meal.name}
+                  placeholderImage={meal.placeholderImage}
+                  user={meal.user}
+                />
+              ))}
           </CardGrid>
         )}
         {meals.length === 0 && session && <GenerateCard />}

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import Image from 'next/image'
 import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
@@ -9,9 +8,10 @@ import { fetcher, server, useUser, useUserState } from '../lib'
 import { ProfileImage } from '../components/ProfileImage'
 
 function ProfileSetup() {
-  const [session, setSession] = useSession()
+  const [session] = useSession()
   const [userState, dispatchUser] = useUserState()
   const user = useUser()
+  const [usernameError, setUsernameError] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -22,27 +22,36 @@ function ProfileSetup() {
   async function saveUser(e) {
     e.preventDefault()
     const userData = { ...user, ...userState }
-    userData.username = userData.username?.replace('@', '')
-    userData.twitter = userData.twitter?.replace('@', '')
-    userData.instagram = userData.instagram?.replace('@', '')
-    userData.dribbble = userData.dribbble?.replace('@', '')
-    userData.github = userData.github?.replace('@', '')
-    userData.reddit = userData.reddit?.replace('@', '').replace('u/', '')
 
-    delete userData.meals
+    if (
+      userData.username === '' ||
+      userData.username === ' ' ||
+      userData.username === null
+    ) {
+      setUsernameError(true)
+    } else {
+      userData.username = userData.username?.replace('@', '')
+      userData.twitter = userData.twitter?.replace('@', '')
+      userData.instagram = userData.instagram?.replace('@', '')
+      userData.dribbble = userData.dribbble?.replace('@', '')
+      userData.github = userData.github?.replace('@', '')
+      userData.reddit = userData.reddit?.replace('@', '').replace('u/', '')
 
-    const infoData = await fetcher(`${server}/api/user/update`, {
-      method: 'POST',
-      body: JSON.stringify(userData),
-    })
-    console.log('infoData :', infoData)
-    if (infoData.message === 'success') {
-      if (router.query.callbackUrl) {
-        const callbackUrl = new URL(router.query.callbackUrl)
-        if (callbackUrl.pathname.includes('/cook/')) {
-          router.replace(callbackUrl.pathname)
-        } else {
-          router.push(`/u/[username]`, `/u/${userData.username}`)
+      delete userData.meals
+
+      const infoData = await fetcher(`${server}/api/user/update`, {
+        method: 'POST',
+        body: JSON.stringify(userData),
+      })
+      // console.log('infoData :', infoData)
+      if (infoData.message === 'success') {
+        if (router.query.callbackUrl) {
+          const callbackUrl = new URL(router.query.callbackUrl)
+          if (callbackUrl.pathname.includes('/cook/')) {
+            router.replace(callbackUrl.pathname)
+          } else {
+            router.push(`/u/[username]`, `/u/${userData.username}`)
+          }
         }
       }
     }

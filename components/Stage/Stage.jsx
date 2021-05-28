@@ -18,6 +18,7 @@ export default function Stage({
   bookmark = false,
   isPlaceholderImage = false,
   isMealSaved = false,
+  enableFullscreen = true,
   children,
 }) {
   const {
@@ -76,7 +77,7 @@ export default function Stage({
             ref={controlsRef}
             {...ctrlProps}
             {...controlsProps}
-            autoRotate={isAutoRotating}
+            autoRotate={false}
           />
           <Suspense
             fallback={<StageLoader height={canvasProps.style?.height} />}
@@ -95,6 +96,7 @@ export default function Stage({
           mealData={mealData}
           bookmark={bookmark}
           isMealSaved={isMealSaved}
+          enableFullscreen={enableFullscreen}
         />
       </Container>
     </>
