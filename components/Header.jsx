@@ -26,11 +26,6 @@ const Header = () => {
           <>
             <LinkList>
               <li>
-                <Link href="/">
-                  <a>Homepage</a>
-                </Link>
-              </li>
-              <li>
                 <Link href="/generate">
                   <a>Generate</a>
                 </Link>

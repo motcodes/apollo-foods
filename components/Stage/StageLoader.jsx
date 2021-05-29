@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Image from 'next/image'
-import { useProgress, Html } from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import { Typography } from '../../utils'
 
 export function StageLoader({
@@ -8,10 +8,8 @@ export function StageLoader({
   style,
   height,
   center = true,
-  setIsLoaded,
+  progress,
 }) {
-  const { progress } = useProgress()
-
   return (
     <LoaderContainer
       style={{ width: 'calc(100vw - 48px)', height: height, ...style }}

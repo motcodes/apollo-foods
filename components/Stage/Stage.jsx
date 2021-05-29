@@ -8,6 +8,7 @@ import {
 } from '@react-three/drei'
 import { StageLoader } from './StageLoader'
 import { StageControls } from './StageControls'
+import { useRouter } from 'next/router'
 
 export default function Stage({
   canvasProps = {},
@@ -32,6 +33,13 @@ export default function Stage({
   const { loaded, progress } = useProgress()
   const [isAutoRotating, setAutoRotate] = useState(false)
   const [mealData, setMealData] = useState(mealProps)
+  const { pathname } = useRouter()
+
+  useEffect(() => {
+    if (pathname === '/') {
+      setAutoRotate(true)
+    }
+  }, [pathname])
 
   useEffect(() => {
     const canvasContainer = document.getElementById(cProps.id)
@@ -65,10 +73,15 @@ export default function Stage({
             ref={controlsRef}
             {...ctrlProps}
             {...controlsProps}
-            autoRotate={false}
+            autoRotate={isAutoRotating}
           />
           <Suspense
-            fallback={<StageLoader height={canvasProps.style?.height} />}
+            fallback={
+              <StageLoader
+                height={canvasProps.style?.height}
+                progress={progress}
+              />
+            }
           >
             <DreiStage //
               controls={controlsRef}
