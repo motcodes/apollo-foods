@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from 'next-auth/client'
 import { AccountModal } from './AccountModal'
 import { Typography, Logo, Button, Link as LinkInt } from '../utils'
 import { AccountIcon, BeakonIcon, SparklesIcon } from './Icons'
+import { FallbackProfileImageIcon } from './ProfileImage'
 
 const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
@@ -41,17 +42,23 @@ const Header = () => {
                 {session && (
                   <>
                     <UserImageWrapper onClick={() => toggleHover(!isHover)}>
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.username}
-                        width="48"
-                        height="48"
-                      />
+                      {session.user.image ? (
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.username}
+                          width="48"
+                          height="48"
+                        />
+                      ) : (
+                        <FallbackProfileImageIcon
+                          letter={session.user.email[0]}
+                          size={48}
+                        />
+                      )}
                     </UserImageWrapper>
                     {isHover && session && (
                       <AccountModal
                         onMouseLeave={() => toggleHover(false)}
-                        session={session}
                         signOut={signOut}
                       />
                     )}

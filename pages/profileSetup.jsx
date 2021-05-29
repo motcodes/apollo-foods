@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
 import { Button, Typography, Input, Textarea } from '../utils'
 import { fetcher, server, useUser, useUserState } from '../lib'
-import { ProfileImage } from '../components/ProfileImage'
+import { FallbackProfileImage, ProfileImage } from '../components/ProfileImage'
 
 function ProfileSetup() {
   const [session] = useSession()
@@ -13,10 +13,23 @@ function ProfileSetup() {
   const [userData, dispatchUser] = useUserState(user)
   const [usernameIsTaken, setUsernameIsTaken] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
+  const [nameError, setNameError] = useState(false)
   const [buttonText, setButtonText] = useState('Save my data')
 
   async function saveUser(e) {
     e.preventDefault()
+
+    if (
+      userData.name === '' ||
+      userData.name === ' ' ||
+      userData.name === null
+    ) {
+      setNameError(true)
+      setButtonText('Try again')
+      return
+    } else {
+      setNameError(true)
+    }
 
     if (
       userData.username === '' ||
@@ -78,7 +91,11 @@ function ProfileSetup() {
     <Layout>
       {session && user && (
         <UserContainer onSubmit={saveUser} aria-label="form">
-          <ProfileImage src={user.image} alt={userData.name} />
+          {user.image ? (
+            <ProfileImage src={user.image} alt={userData.name} />
+          ) : (
+            <FallbackProfileImage letter={user.email[0]} />
+          )}
           <Typography variant="h1">Your Info</Typography>
           <Input
             id="fullname"
@@ -88,6 +105,8 @@ function ProfileSetup() {
             onChange={(e) =>
               dispatchUser({ type: 'name', value: e.target.value })
             }
+            error={nameError}
+            minLength={1}
           />
           <Input
             id="username"

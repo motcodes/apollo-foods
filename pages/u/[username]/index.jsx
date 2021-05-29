@@ -7,6 +7,7 @@ import { ProfileImage } from '../../../components/ProfileImage'
 import { GenerateCard } from '../../../components/GenerateCard'
 import { MealCard } from '../../../components/MealCard'
 import { AccountModal } from '../../../components/AccountModal'
+import { FallbackProfileImage } from '../../../components/ProfileImage'
 import { Typography, LinkExt, Link, CardGrid } from '../../../utils'
 import {
   TwitterIcon,
@@ -20,6 +21,7 @@ import {
 
 import prisma from '../../../prisma/prisma'
 import { useState } from 'react'
+import { useUser } from '../../../lib'
 
 export async function getServerSideProps({ params }) {
   const user = await prisma.user.findUnique({
@@ -49,6 +51,8 @@ export default function User(props) {
   const { user } = props
   const { meals } = user
   const [session] = useSession()
+  const sessionUser = useUser()
+
   const isLarge = useMedia({ minWidth: 768 })
   const [isModalOpen, toggleModalOpen] = useState(false)
 
@@ -68,8 +72,8 @@ export default function User(props) {
         )}
       </Head>
       <ProfileContainer>
-        {session &&
-          session.user.username === user.username &&
+        {sessionUser &&
+          sessionUser.username === user.username &&
           (isLarge ? (
             <Settings href={`/u/${user.username}/settings`}>
               <SettingIcon />
@@ -87,7 +91,11 @@ export default function User(props) {
           <AccountModal session={session} signOut={signOut} top="2.6rem" />
         )}
 
-        <ProfileImage src={user.image} alt={user.name} />
+        {user.image ? (
+          <ProfileImage src={user.image} alt={user.name} />
+        ) : (
+          <FallbackProfileImage letter={user.email[0]} />
+        )}
         <Name as="h1">{user.name}</Name>
 
         {user.bio && <Bio font="Blatant">{user.bio}</Bio>}

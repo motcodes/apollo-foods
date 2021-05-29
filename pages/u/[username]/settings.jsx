@@ -51,7 +51,7 @@ function Settings(props) {
       body: JSON.stringify(userData.username),
     })
 
-    console.log('checkUsername :', checkUsername)
+    // console.log('checkUsername :', checkUsername)
     if (checkUsername.isTaken) {
       setUsernameIsTaken(true)
       setButtonText('Try again')
@@ -93,6 +93,7 @@ function Settings(props) {
     e.stopPropagation()
 
     const deleteUser = await fetcher(`${server}/api/user/delete`)
+    // console.log('deleteUser :', deleteUser)
     if (deleteUser.message === 'success') {
       router.push('/')
     }
@@ -300,6 +301,7 @@ const DeletePanel = styled.div`
 const DeleteModal = styled.div`
   position: relative;
   width: 100%;
+  max-width: 420px;
   padding: 1rem;
   border-radius: 12px;
   background-color: white;
@@ -319,4 +321,7 @@ const ConfirmButton = styled(Button)`
   flex: 1;
   color: var(--orange-50);
   background-color: white;
+  &:hover {
+    background-color: var(--orange-90);
+  }
 `

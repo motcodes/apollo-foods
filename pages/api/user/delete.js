@@ -9,18 +9,26 @@ export default async (req, res) => {
       username: session.user.username,
     },
   })
-  const removeUser = await prisma.user.delete({
+  // const meals = await prisma.meal.findMany({
+  //   where: {
+  //     userId: user.id,
+  //   },
+  // })
+  // console.log('meals :', meals)
+  const removeMeals = prisma.meal.deleteMany({
+    where: {
+      userId: parseInt(user.id),
+    },
+  })
+  const removeUser = prisma.user.delete({
     where: {
       id: user.id,
     },
   })
-  const removeUser = await prisma.meal.delete({
-    where: {
-      userId: user.id,
-    },
-  })
 
-  if (removeUser.id === parseInt(user.id)) {
+  const transaction = await prisma.$transaction([removeMeals, removeUser])
+  console.log('transaction :', transaction)
+  if (transaction) {
     res.json({ message: 'success', success: true })
   } else {
     res.json({ message: 'error', success: false })
