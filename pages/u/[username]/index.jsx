@@ -1,10 +1,13 @@
-import { PrismaClient } from '@prisma/client'
 import styled from 'styled-components'
-import { useSession } from 'next-auth/client'
+import Head from 'next/head'
+import { signOut, useSession } from 'next-auth/client'
+import useMedia from 'use-media'
 import Layout from '../../../components/Layout'
 import { ProfileImage } from '../../../components/ProfileImage'
 import { GenerateCard } from '../../../components/GenerateCard'
 import { MealCard } from '../../../components/MealCard'
+import { AccountModal } from '../../../components/AccountModal'
+import { FallbackProfileImage } from '../../../components/ProfileImage'
 import { Typography, LinkExt, Link, CardGrid } from '../../../utils'
 import {
   TwitterIcon,
@@ -15,34 +18,43 @@ import {
   RedditIcon,
   SettingIcon,
 } from '../../../components/Icons'
-import useMedia from 'use-media'
 
-const prisma = new PrismaClient()
+import prisma from '../../../prisma/prisma'
+import { useState } from 'react'
+import { useUser } from '../../../lib'
 
 export async function getServerSideProps({ params }) {
   const user = await prisma.user.findUnique({
     where: {
       username: params.username,
     },
-  })
-  const meals = await prisma.meal.findMany({
-    where: {
-      userId: user.id,
+    include: {
+      meals: true,
     },
   })
-  // parses date fields correctly
+
+  if (!user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    }
+  }
   const userData = JSON.parse(JSON.stringify(user))
-  const mealData = JSON.parse(JSON.stringify(meals))
   return {
-    props: { user: userData, meals: mealData },
+    props: { user: userData },
   }
 }
 
 export default function User(props) {
-  const isLarge = useMedia({ minWidth: 768 })
+  const { user } = props
+  const { meals } = user
   const [session] = useSession()
-  // console.log('session :', session)
-  const { user, meals } = props
+  const sessionUser = useUser()
+
+  const isLarge = useMedia({ minWidth: 768 })
+  const [isModalOpen, toggleModalOpen] = useState(false)
 
   const checkLinks =
     user.twitter ||
@@ -54,16 +66,39 @@ export default function User(props) {
 
   return (
     <Layout>
-      <ProfileContainer>
-        {session && session.user.username === user.username && (
-          <Settings href={`/u/${user.username}/settings`}>
-            <SettingIcon />
-          </Settings>
+      <Head>
+        {session && (
+          <title>Profile of @{session.user.username} on Apollo Foods 🚀</title>
         )}
-        <ProfileImage src={user.image} alt={user.name} />
+      </Head>
+      <ProfileContainer>
+        {sessionUser &&
+          sessionUser.username === user.username &&
+          (isLarge ? (
+            <Settings href={`/u/${user.username}/settings`}>
+              <SettingIcon />
+            </Settings>
+          ) : (
+            <Settings
+              as="div"
+              type="button"
+              onClick={() => toggleModalOpen(!isModalOpen)}
+            >
+              <SettingIcon />
+            </Settings>
+          ))}
+        {isModalOpen && (
+          <AccountModal session={session} signOut={signOut} top="2.6rem" />
+        )}
+
+        {user.image ? (
+          <ProfileImage src={user.image} alt={user.name} />
+        ) : (
+          <FallbackProfileImage letter={user.email[0]} />
+        )}
         <Name as="h1">{user.name}</Name>
 
-        <Bio font="Blatant">{user.bio}</Bio>
+        {user.bio && <Bio font="Blatant">{user.bio}</Bio>}
 
         {checkLinks && (
           <LinkContainer>
@@ -118,14 +153,16 @@ export default function User(props) {
         </Typography>
         {meals.length !== 0 && (
           <CardGrid>
-            {meals.map((meal) => (
-              <MealCard
-                key={meal.id}
-                id={meal.id}
-                name={meal.name}
-                placeholderImage={meal.placeholderImage}
-              />
-            ))}
+            {meals &&
+              meals.map((meal, index) => (
+                <MealCard
+                  key={meal.id * index}
+                  id={meal.id}
+                  name={meal.name}
+                  placeholderImage={meal.placeholderImage}
+                  user={meal.user}
+                />
+              ))}
           </CardGrid>
         )}
         {meals.length === 0 && session && <GenerateCard />}

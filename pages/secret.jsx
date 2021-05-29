@@ -11,7 +11,7 @@ export default function Secret() {
     const fetchData = async () => {
       const res = await fetch('/api/secret')
       const json = await res.json()
-      console.log('json :', json)
+      // console.log('json :', json)
 
       if (json.content) {
         setContent(json.content)

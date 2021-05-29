@@ -1,12 +1,12 @@
-import { PrismaClient } from '@prisma/client'
+import { useEffect, useState } from 'react'
+import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import styled from 'styled-components'
 import Layout from '../../../components/Layout'
-import { useUserState } from '../../../lib'
+import { fetcher, server, useUserState } from '../../../lib'
 import { Button, Typography, Input, Textarea } from '../../../utils'
-import { ProfileImage } from '../../../components/ProfileImage'
 
-const prisma = new PrismaClient()
+import prisma from '../../../prisma/prisma'
 
 export async function getServerSideProps(context) {
   const { username } = context.query
@@ -24,47 +24,120 @@ export async function getServerSideProps(context) {
 function Settings(props) {
   const { user } = props
   const [session] = useSession()
-  const [userState, dispatchUser] = useUserState()
+  const [userData, dispatchUser] = useUserState(user)
+  const [usernameIsTaken, setUsernameIsTaken] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
+  const [buttonText, setButtonText] = useState('Save my data')
+  const [isDeleteModal, setDeleteModal] = useState(false)
 
-  function updateUser() {}
+  async function updateUser(e) {
+    e.preventDefault()
+
+    if (
+      userData.username === '' ||
+      userData.username === ' ' ||
+      userData.username === null ||
+      userData.username.length < 3
+    ) {
+      setUsernameError(true)
+      setButtonText('Try again')
+      return
+    } else {
+      setUsernameError(false)
+    }
+
+    const checkUsername = await fetcher(`${server}/api/user/check`, {
+      method: 'POST',
+      body: JSON.stringify(userData.username),
+    })
+
+    // console.log('checkUsername :', checkUsername)
+    if (checkUsername.isTaken) {
+      setUsernameIsTaken(true)
+      setButtonText('Try again')
+      return
+    } else {
+      setUsernameIsTaken(false)
+    }
+    setButtonText('Save my data')
+
+    userData.username = userData.username?.replace('@', '')
+    userData.twitter = userData.twitter?.replace('@', '')
+    userData.instagram = userData.instagram?.replace('@', '')
+    userData.dribbble = userData.dribbble?.replace('@', '')
+    userData.github = userData.github?.replace('@', '')
+    userData.reddit = userData.reddit?.replace('@', '').replace('u/', '')
+
+    delete userData.meals
+
+    const infoData = await fetcher(`${server}/api/user/update`, {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    })
+    // console.log('infoData :', infoData)
+    if (infoData.message === 'success') {
+      if (router.query.callbackUrl) {
+        const callbackUrl = new URL(router.query.callbackUrl)
+        if (callbackUrl.pathname.includes('/cook/')) {
+          router.replace(callbackUrl.pathname)
+        } else {
+          router.push(`/u/[username]`, `/u/${userData.username}`)
+        }
+      } else {
+        router.push(`/u/[username]`, `/u/${userData.username}`)
+      }
+    }
+  }
+
+  async function deleteUser(e) {
+    e.stopPropagation()
+
+    const deleteUser = await fetcher(`${server}/api/user/delete`)
+    // console.log('deleteUser :', deleteUser)
+    if (deleteUser.message === 'success') {
+      router.push('/')
+    }
+  }
+
   return (
     <Layout>
-      {session && user && (
+      {session && userData && (
         <UserContainer onSubmit={updateUser} aria-label="form">
-          <ProfileImage src={user.image} alt={user.name} />
           <Typography variant="h1">Your Info</Typography>
           <Input
             id="fullname"
             label="Name*"
             name="name"
-            value={user.name}
+            value={userData.name}
             onChange={(e) =>
               dispatchUser({ type: 'name', value: e.target.value })
             }
           />
           <Input
             id="username"
-            label="Username*"
+            label="Username"
             name="username"
-            value={user.username}
+            value={userData.username}
             onChange={(e) =>
               dispatchUser({ type: 'username', value: e.target.value })
             }
-            error={false}
+            isTaken={usernameIsTaken}
+            error={usernameError}
+            // disabled
           />
           <Input
             id="email"
             label="Email"
             type="email"
             name="email"
-            value={user.email}
+            value={userData.email}
             disabled
           />
           <Textarea
             id="bio"
             label="Bio"
             name="bio"
-            value={user.bio}
+            value={userData.bio}
             onChange={(e) =>
               dispatchUser({ type: 'bio', value: e.target.value })
             }
@@ -79,7 +152,7 @@ function Settings(props) {
             type="url"
             name="website"
             placeholder="https://mywebsite.com"
-            value={user.website}
+            value={userData.website}
             onChange={(e) =>
               dispatchUser({ type: 'website', value: e.target.value })
             }
@@ -90,7 +163,7 @@ function Settings(props) {
             type="text"
             name="twitter"
             placeholder="@twitter"
-            value={user.twitter}
+            value={userData.twitter}
             onChange={(e) =>
               dispatchUser({ type: 'twitter', value: e.target.value })
             }
@@ -101,7 +174,7 @@ function Settings(props) {
             type="text"
             name="instagram"
             placeholder="@instagram"
-            value={user.instagram}
+            value={userData.instagram}
             onChange={(e) =>
               dispatchUser({ type: 'instagram', value: e.target.value })
             }
@@ -112,7 +185,7 @@ function Settings(props) {
             type="text"
             name="reddit"
             placeholder="u/reddit"
-            value={user.reddit}
+            value={userData.reddit}
             onChange={(e) =>
               dispatchUser({ type: 'reddit', value: e.target.value })
             }
@@ -123,7 +196,7 @@ function Settings(props) {
             type="text"
             name="dribbble"
             placeholder="@dribbble"
-            value={user.dribbble}
+            value={userData.dribbble}
             onChange={(e) =>
               dispatchUser({ type: 'dribbble', value: e.target.value })
             }
@@ -134,14 +207,14 @@ function Settings(props) {
             type="text"
             name="github"
             placeholder="@github"
-            value={user.github}
+            value={userData.github}
             onChange={(e) =>
               dispatchUser({ type: 'github', value: e.target.value })
             }
           />
 
           <SaveButton type="submit" fullWidth>
-            Save my data
+            {buttonText}
           </SaveButton>
 
           <DangerContainer>
@@ -150,10 +223,31 @@ function Settings(props) {
               <Typography font="Blatant">
                 You can delete your Account here.
               </Typography>
-              <Button scale={0.8}>Delete my Account</Button>
+              <Button
+                scale={0.8}
+                type="button"
+                onClick={() => setDeleteModal(true)}
+              >
+                Delete my Account
+              </Button>
             </DangerWrapper>
           </DangerContainer>
         </UserContainer>
+      )}
+      {isDeleteModal && (
+        <DeletePanel onClick={() => setDeleteModal(false)}>
+          <DeleteModal>
+            <Typography variant="h4">
+              Are you sure you want to delete your Account?
+            </Typography>
+            <section>
+              <CancelButton onClick={() => setDeleteModal(false)}>
+                Cancel
+              </CancelButton>
+              <ConfirmButton onClick={deleteUser}>Delete</ConfirmButton>
+            </section>
+          </DeleteModal>
+        </DeletePanel>
       )}
     </Layout>
   )
@@ -189,5 +283,45 @@ const DangerWrapper = styled.div`
   button {
     margin: 1rem 0 0;
     transform-origin: left;
+  }
+`
+
+const DeletePanel = styled.div`
+  z-index: 20;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+  display: grid;
+  place-content: center;
+`
+const DeleteModal = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: white;
+  color: black;
+  section {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+`
+const CancelButton = styled(Button)`
+  flex: 1;
+`
+const ConfirmButton = styled(Button)`
+  flex: 1;
+  color: var(--orange-50);
+  background-color: white;
+  &:hover {
+    background-color: var(--orange-90);
   }
 `

@@ -76,9 +76,9 @@ export const Typography = ({
 const headingOption = {
   display: 'flex',
   alignItems: 'center',
-  lineHeight: '120%',
+  lineHeight: '130%',
   fontWeight: 400,
-  color: ({ color }) => (color ? color : 'currentColor'),
+  color: ({ color }) => (color ? color : 'inherit'),
   fontFamily: ({ font, theme }) => (font ? font : theme.font.primary),
 }
 
@@ -118,6 +118,7 @@ const P = styled.p`
   font-weight: 400;
   color: ${({ color }) => (color ? color : 'currentColor')};
   font-family: ${({ font, theme }) => (font ? font : theme.font.body)};
+  line-height: 120%;
 `
 
 const Small = styled(P)`

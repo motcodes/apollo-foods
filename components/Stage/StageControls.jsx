@@ -1,42 +1,52 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import { signIn, useSession } from 'next-auth/client'
 import { fetcher, useFullscreen } from '../../lib'
 import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
+import { Dots } from '../../utils'
+import { useRouter } from 'next/router'
 
 export function StageControls({
   elementId,
-  mealData = {},
+  mealProps = {},
   isMealSaved,
   bookmark = false,
+  enableFullscreen = true,
 }) {
   const [session] = useSession()
   const { isFullscreenEnabled, toggleFullscreen } = useFullscreen(elementId)
   const [isSaved, setIsSaved] = useState(isMealSaved)
+  const [isLoading, toggleLoading] = useState(false)
+  const { query } = useRouter()
 
   async function handleSaveMeal() {
+    toggleLoading(true)
     if (session) {
       if (isSaved) {
         const json = await fetcher('/api/meal/delete', {
           method: 'POST',
-          body: JSON.stringify(mealData.id),
+          body: JSON.stringify(query.id),
         })
-        if (json.message === 'success') {
+        if (json.success === true) {
           setIsSaved(false)
+          toggleLoading(false)
           console.log('removed')
         } else {
+          toggleLoading(false)
           console.log('error')
         }
       } else {
         const json = await fetcher('/api/meal/save', {
           method: 'POST',
-          body: JSON.stringify(mealData),
+          body: JSON.stringify(mealProps),
         })
-        if (json.message === 'success') {
+        if (json.success === true) {
           setIsSaved(true)
+          toggleLoading(false)
           console.log('saved')
         } else {
+          toggleLoading(false)
           console.log('error')
         }
       }
@@ -47,7 +57,7 @@ export function StageControls({
 
   return (
     <ControlContainer>
-      {isFullscreenEnabled && (
+      {enableFullscreen && isFullscreenEnabled && (
         <StageControlsButton
           text="Enter Fullscreen"
           onClick={toggleFullscreen}
@@ -58,11 +68,21 @@ export function StageControls({
       )}
       {bookmark && (
         <StageControlsButton
-          text={isSaved ? 'Remove from Account' : 'Save to Account'}
+          text={
+            session
+              ? isSaved
+                ? 'Remove from Account'
+                : 'Save to Account'
+              : 'Sign In to Save'
+          }
           onClick={handleSaveMeal}
           enableHover
         >
-          <BookmarkIcon size={24} fill={isSaved ? 'white' : 'none'} />
+          {isLoading ? (
+            <Dots />
+          ) : (
+            <BookmarkIcon size={24} fill={isSaved ? 'white' : 'none'} />
+          )}
         </StageControlsButton>
       )}
     </ControlContainer>
@@ -71,7 +91,7 @@ export function StageControls({
 
 const ControlContainer = styled.div`
   position: absolute;
-  right: 1rem;
+  right: 0;
   bottom: 1rem;
   display: flex;
   flex-direction: column-reverse;

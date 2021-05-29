@@ -12,6 +12,7 @@ export function Input({
   disabled = false,
   error = false,
   isTaken = false,
+  minLength = 3,
   ...rest
 }) {
   if (isTaken) {
@@ -33,17 +34,17 @@ export function Input({
       />
       {error && (
         <ErrorContainer>
-          {value === '' && <Typography>A username is required</Typography>}
-          {value <= 3 && (
+          {value === '' && <Typography>A {name} is required</Typography>}
+          {value <= minLength && (
             <Typography>
-              The username must inclued at least 3 characters
+              The {name} must inclued at least 3 characters
             </Typography>
           )}
         </ErrorContainer>
       )}
       {isTaken && (
         <ErrorContainer>
-          <Typography>The username is not available</Typography>
+          <Typography>The {name} is not available</Typography>
         </ErrorContainer>
       )}
     </Container>

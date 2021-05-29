@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Image from 'next/image'
 import { default as NextLink } from 'next/link'
 import { Link, Typography } from '../utils'
@@ -10,7 +10,7 @@ export const MealCard = ({ id, placeholderImage, name, user = {} }) => {
         <Card>
           <MealImageWrapper>
             <MealImage
-              src={placeholderImage}
+              src={placeholderImage || '/PouchPreload.png'}
               alt={name}
               layout="fill"
               objectFit="contain"
@@ -39,6 +39,29 @@ export const MealCard = ({ id, placeholderImage, name, user = {} }) => {
   )
 }
 
+export const MealCardSkeleton = () => {
+  return (
+    <Card>
+      <MealImageWrapper>
+        <MealImage
+          src="/PouchPreload.png"
+          alt="placeholder pouch image"
+          layout="fill"
+          objectFit="contain"
+          objectPosition="50% 50%"
+        />
+      </MealImageWrapper>
+      <TextContainerSkeleton>
+        <TitleSkeleton />
+        <Flex>
+          <ProfileSkeleton />
+          <NameSkeleton />
+        </Flex>
+      </TextContainerSkeleton>
+    </Card>
+  )
+}
+
 const MealLink = styled.a`
   text-decoration: none;
   cursor: pointer;
@@ -53,16 +76,11 @@ const Card = styled.article`
   grid-template-rows: 3fr 1fr;
   width: 100%;
   height: 100%;
+  min-height: 304px;
+  max-height: 352px;
   background-color: var(--orange-10);
   border: 2px solid var(--orange-90);
   border-radius: 12px;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0px 100px 108px rgba(75, 75, 75, 0.2),
-    0px 41.7776px 45.1198px rgba(75, 75, 75, 0.143771),
-    0px 22.3363px 24.1232px rgba(75, 75, 75, 0.119221),
-    0px 12.5216px 13.5233px rgba(75, 75, 75, 0.1),
-    0px 6.6501px 7.18211px rgba(75, 75, 75, 0.0807786),
-    0px 2.76726px 2.98864px rgba(75, 75, 75, 0.0562291);
 
   &:hover {
     transform: translateY(-5px);
@@ -99,4 +117,42 @@ const UserLink = styled(Link)`
   img {
     border-radius: 50%;
   }
+`
+
+const LoadingAnimation = keyframes({
+  '0%': { opacity: 1 },
+  '50%': { opacity: 0.6 },
+  '100%': { opacity: 1 },
+})
+
+const TitleSkeleton = styled.span`
+  width: 100%;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--orange-30);
+  animation: ${LoadingAnimation} 2s ease-in-out infinite;
+`
+const TextContainerSkeleton = styled(TextContainer)`
+  gap: 8px;
+`
+
+const Flex = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`
+const ProfileSkeleton = styled.span`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--orange-30);
+  animation: ${LoadingAnimation} 2s 0.2s ease-in-out infinite;
+`
+const NameSkeleton = styled.span`
+  width: 50%;
+  height: 24px;
+  border-radius: 6px;
+  background-color: var(--orange-30);
+  animation: ${LoadingAnimation} 2s 0.3s ease-in-out infinite;
 `

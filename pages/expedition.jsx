@@ -1,10 +1,8 @@
-import styled from 'styled-components'
-import { PrismaClient } from '@prisma/client'
 import Layout from '../components/Layout'
+import { MealCard, MealCardSkeleton } from '../components/MealCard'
 import { CardGrid, Typography } from '../utils'
-import { MealCard } from '../components/MealCard'
 
-const prisma = new PrismaClient()
+import prisma from '../prisma/prisma'
 
 export async function getServerSideProps({}) {
   const meals = await prisma.meal.findMany({
@@ -16,6 +14,7 @@ export async function getServerSideProps({}) {
         },
       },
     },
+    take: 20,
   })
   const mealData = JSON.parse(JSON.stringify(meals))
   return {
@@ -25,7 +24,6 @@ export async function getServerSideProps({}) {
 
 export default function Expedition(props) {
   const { mealData } = props
-  console.log('mealData :', mealData)
   return (
     <Layout>
       <Typography variant="h1">Expedition</Typography>
@@ -33,16 +31,17 @@ export default function Expedition(props) {
         Discover and see which recipes your astronaut colleagues want to cook.
       </Typography>
       <CardGrid>
-        {mealData &&
-          mealData.map((meal, index) => (
-            <MealCard
-              key={meal.id * index}
-              id={meal.id}
-              name={meal.name}
-              placeholderImage={meal.placeholderImage}
-              user={meal.user}
-            />
-          ))}
+        {!mealData
+          ? [0, 1, 2, 3, 4, 5].map((meal) => <MealCardSkeleton key={meal} />)
+          : mealData.map((meal, index) => (
+              <MealCard
+                key={meal.id * index}
+                id={meal.id}
+                name={meal.name}
+                placeholderImage={meal.placeholderImage}
+                user={meal.user}
+              />
+            ))}
       </CardGrid>
     </Layout>
   )

@@ -244,3 +244,81 @@ export const SettingIcon = ({
     </svg>
   )
 }
+export const SparklesIcon = ({
+  size = 24,
+  color = 'currentColor',
+  style,
+  ...rest
+}) => {
+  return (
+    <svg
+      {...rest}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke={color}
+      width={size}
+      height={size}
+      style={style}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+      />
+    </svg>
+  )
+}
+export const BeakonIcon = ({
+  size = 24,
+  color = 'currentColor',
+  style,
+  ...rest
+}) => {
+  return (
+    <svg
+      {...rest}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke={color}
+      width={size}
+      height={size}
+      style={style}
+    >
+      <path
+        d="M19.9279 15.428C19.6487 15.1488 19.2931 14.9584 18.9059 14.881L16.5189 14.404C15.2105 14.1424 13.8523 14.3243 12.6589 14.921L12.3409 15.079C11.1475 15.6757 9.78926 15.8576 8.48089 15.596L6.54989 15.21C6.2271 15.1455 5.89337 15.1617 5.57833 15.2571C5.26328 15.3525 4.97666 15.5242 4.74389 15.757L19.9279 15.428ZM8.49989 4H16.4999L15.4999 5V10.172C15.5 10.7024 15.7108 11.211 16.0859 11.586L21.0859 16.586C22.3459 17.846 21.4529 20 19.6709 20H5.32789C3.54589 20 2.65389 17.846 3.91389 16.586L8.91389 11.586C9.28899 11.211 9.49978 10.7024 9.49989 10.172V5L8.49989 4Z"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+export const AccountIcon = ({
+  size = 24,
+  color = 'currentColor',
+  style,
+  ...rest
+}) => {
+  return (
+    <svg
+      {...rest}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke={color}
+      width={size}
+      height={size}
+      style={style}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  )
+}

@@ -34,7 +34,7 @@ const Index = (props) => {
   const canvasProps = {
     style: {
       width: '100%',
-      height: isDesktop ? '80vh' : '50vh',
+      height: isDesktop ? '80vh' : '40vh',
       background: 'transparent',
     },
     id: 'pouchCanvas',
@@ -48,6 +48,7 @@ const Index = (props) => {
           canvasProps={canvasProps}
           controlsProps={controlsProps}
           className="stage"
+          enableFullscreen={false}
         >
           <PouchModel textureUrl="./PreviewLabel.png" />
         </Stage>
