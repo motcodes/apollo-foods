@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import Head from 'next/head'
 import { Label as Ettiket } from '../../components/Label/Label'
 import Layout from '../../components/Layout'
 import Stage from '../../components/Stage/Stage'
@@ -149,63 +150,72 @@ export default function Meal(props) {
         </Stage>
 
         {mealData && (
-          <RecipeContainer>
-            <Section randomColor={randomColor}>
-              <Typography variant="h1">#{mealData.mealId}</Typography>
-              <Item>
-                <Label font="Blatant" as="label">
-                  Recipe Name:
-                </Label>
-                <Typography variant="h2">{mealData.mealName}</Typography>
-              </Item>
-              <Item inline>
+          <>
+            <Head>
+              <title>
+                {mealData.mealName} #{mealData.mealId} by Apollo Foods 🚀
+              </title>
+            </Head>
+            <RecipeContainer>
+              <Section randomColor={randomColor}>
+                <Typography variant="h1">#{mealData.mealId}</Typography>
                 <Item>
                   <Label font="Blatant" as="label">
-                    Category:
+                    Recipe Name:
                   </Label>
-                  <Typography variant="h3">{mealData.mealCategory}</Typography>
+                  <Typography variant="h2">{mealData.mealName}</Typography>
                 </Item>
-                <Item>
-                  <Label font="Blatant" as="label">
-                    Area:
-                  </Label>
-                  <Typography variant="h3">{mealData.mealArea}</Typography>
-                </Item>
-              </Item>
-            </Section>
-            {mealData.mealIngredients?.length !== 0 &&
-              mealData.mealMeasure?.length !== 0 && (
-                <Section randomColor={randomColor}>
-                  <Typography variant="h2">Ingredients</Typography>
-                  <Item inline isList>
-                    <Item as="ul">
-                      {mealData.mealIngredients?.map((ingredient, index) => (
-                        <ListItem key={ingredient + index}>
-                          {ingredient}
-                        </ListItem>
-                      ))}
-                    </Item>
-                    <Item as="ul" style={{ listStyle: 'none' }}>
-                      {mealData.mealMeasure?.map((measure, index) => (
-                        <ListItem key={measure + index} paddingLeft>
-                          {measure}
-                        </ListItem>
-                      ))}
-                    </Item>
+                <Item inline>
+                  <Item>
+                    <Label font="Blatant" as="label">
+                      Category:
+                    </Label>
+                    <Typography variant="h3">
+                      {mealData.mealCategory}
+                    </Typography>
                   </Item>
+                  <Item>
+                    <Label font="Blatant" as="label">
+                      Area:
+                    </Label>
+                    <Typography variant="h3">{mealData.mealArea}</Typography>
+                  </Item>
+                </Item>
+              </Section>
+              {mealData.mealIngredients?.length !== 0 &&
+                mealData.mealMeasure?.length !== 0 && (
+                  <Section randomColor={randomColor}>
+                    <Typography variant="h2">Ingredients</Typography>
+                    <Item inline isList>
+                      <Item as="ul">
+                        {mealData.mealIngredients?.map((ingredient, index) => (
+                          <ListItem key={ingredient + index}>
+                            {ingredient}
+                          </ListItem>
+                        ))}
+                      </Item>
+                      <Item as="ul" style={{ listStyle: 'none' }}>
+                        {mealData.mealMeasure?.map((measure, index) => (
+                          <ListItem key={measure + index} paddingLeft>
+                            {measure}
+                          </ListItem>
+                        ))}
+                      </Item>
+                    </Item>
+                  </Section>
+                )}
+              {mealData.mealInstructions && (
+                <Section randomColor={randomColor}>
+                  <Typography variant="h2">Instructions</Typography>
+                  <Typography
+                    style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}
+                  >
+                    {mealData.mealInstructions}
+                  </Typography>
                 </Section>
               )}
-            {mealData.mealInstructions && (
-              <Section randomColor={randomColor}>
-                <Typography variant="h2">Instructions</Typography>
-                <Typography
-                  style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}
-                >
-                  {mealData.mealInstructions}
-                </Typography>
-              </Section>
-            )}
-          </RecipeContainer>
+            </RecipeContainer>
+          </>
         )}
         <GenerateCard
           heading="Do you want to discover more recipes?"

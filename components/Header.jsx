@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import useMedia from 'use-media'
 import { signIn, signOut, useSession } from 'next-auth/client'
+import { AccountModal } from './AccountModal'
 import { Typography, Logo, Button, Link as LinkInt } from '../utils'
 import { AccountIcon, BeakonIcon, SparklesIcon } from './Icons'
-import { useRouter } from 'next/router'
 
 const Header = () => {
   const isLarge = useMedia({ minWidth: 768 })
@@ -51,6 +52,7 @@ const Header = () => {
                       <AccountModal
                         onMouseLeave={() => toggleHover(false)}
                         session={session}
+                        signOut={signOut}
                       />
                     )}
                   </>
@@ -97,26 +99,6 @@ const NavItem = ({ href, children }) => {
     >
       {children}
     </NavLink>
-  )
-}
-
-const AccountModal = ({ session, onMouseEnter, onMouseLeave }) => {
-  return (
-    <Modal onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-      {session && (
-        <nav>
-          <Link href={`/u/${session.user.username}`}>
-            <a>View profile</a>
-          </Link>
-          <Link href={`/u/${session.user.username}/settings`}>
-            <a>Account settings</a>
-          </Link>
-          <Button scale={0.9} onClick={signOut}>
-            Sign Out
-          </Button>
-        </nav>
-      )}
-    </Modal>
   )
 }
 
@@ -188,28 +170,6 @@ const UserImageWrapper = styled.figure`
   div {
     border: 2px solid white;
     border-radius: 50%;
-  }
-`
-
-const Modal = styled.div`
-  position: absolute;
-  top: 5rem;
-  right: 1rem;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 12px;
-  z-index: 10;
-  nav {
-    a,
-    a:visited {
-      color: black;
-    }
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    button {
-      transform-origin: left;
-    }
   }
 `
 

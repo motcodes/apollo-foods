@@ -1,10 +1,12 @@
 import styled from 'styled-components'
-import { useSession } from 'next-auth/client'
+import Head from 'next/head'
+import { signOut, useSession } from 'next-auth/client'
 import useMedia from 'use-media'
 import Layout from '../../../components/Layout'
 import { ProfileImage } from '../../../components/ProfileImage'
 import { GenerateCard } from '../../../components/GenerateCard'
 import { MealCard } from '../../../components/MealCard'
+import { AccountModal } from '../../../components/AccountModal'
 import { Typography, LinkExt, Link, CardGrid } from '../../../utils'
 import {
   TwitterIcon,
@@ -17,6 +19,7 @@ import {
 } from '../../../components/Icons'
 
 import prisma from '../../../prisma/prisma'
+import { useState } from 'react'
 
 export async function getServerSideProps({ params }) {
   const user = await prisma.user.findUnique({
@@ -47,6 +50,7 @@ export default function User(props) {
   const { meals } = user
   const [session] = useSession()
   const isLarge = useMedia({ minWidth: 768 })
+  const [isModalOpen, toggleModalOpen] = useState(false)
 
   const checkLinks =
     user.twitter ||
@@ -58,12 +62,31 @@ export default function User(props) {
 
   return (
     <Layout>
-      <ProfileContainer>
-        {session && session.user.username === user.username && (
-          <Settings href={`/u/${user.username}/settings`}>
-            <SettingIcon />
-          </Settings>
+      <Head>
+        {session && (
+          <title>Profile of @{session.user.username} on Apollo Foods 🚀</title>
         )}
+      </Head>
+      <ProfileContainer>
+        {session &&
+          session.user.username === user.username &&
+          (isLarge ? (
+            <Settings href={`/u/${user.username}/settings`}>
+              <SettingIcon />
+            </Settings>
+          ) : (
+            <Settings
+              as="div"
+              type="button"
+              onClick={() => toggleModalOpen(!isModalOpen)}
+            >
+              <SettingIcon />
+            </Settings>
+          ))}
+        {isModalOpen && (
+          <AccountModal session={session} signOut={signOut} top="2.6rem" />
+        )}
+
         <ProfileImage src={user.image} alt={user.name} />
         <Name as="h1">{user.name}</Name>
 

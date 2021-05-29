@@ -7,14 +7,85 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 
 import '../styles/font.css'
+import router, { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
       <Head>
-        <title>Apollo Foods 🚀</title>
-        {/* <link rel="preload" href="/Blatant.woff2" as="font" crossOrigin="" /> */}
+        <title>
+          Apollo Foods 🚀 - A random astronaut food recipe generator
+        </title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        {/* <base href={origin} /> */}
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#f93406" />
+
+        <meta
+          name="description"
+          content="A random astronaut food recipe generator for your interstellar space missions. Each Pouch will be uniquely created for you."
+        />
+        <meta name="robots" content="index,follow" />
+        <meta name="googlebot" content="index,follow" />
+
+        <meta
+          property="og:url"
+          content="https://apollofoods.matthiasoberholzer.com"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Apollo Foods 🚀" />
+        <meta
+          property="og:description"
+          content="A random astronaut food recipe generator for your interstellar space missions. Each Pouch will be uniquely created for you."
+        />
+        <meta property="og:site_name" content="Apollo Foods" />
+        <meta property="og:image" content="og-image.jpeg" />
+        <meta property="og:image:width" content="1140" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta
+          property="og:image:alt"
+          content="The Apollo Foods logo with name and decscription and a sample 3d pouch"
+        />
+        <meta property="article:author" content="@motcodes" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@motcodes" />
+        <meta name="twitter:creator" content="@motcodes" />
+        <meta
+          name="twitter:url"
+          content="https://apollofoods.matthiasoberholzer.com"
+        />
+        <meta name="twitter:title" content="Apollo Foods 🚀" />
+        <meta
+          name="twitter:description"
+          content="A random astronaut food recipe generator for your interstellar space missions. Each Pouch will be uniquely created for you."
+        />
+        <meta name="twitter:image" content="og-image.jpeg" />
+        <meta
+          name="twitter:image:alt"
+          content="The Apollo Foods logo with name and decscription and a sample 3d pouch"
+        />
       </Head>
       <ThemeProvider theme={themeStyles}>
         <Provider session={pageProps.session}>
