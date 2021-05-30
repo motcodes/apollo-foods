@@ -4,11 +4,14 @@ import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
 import { Button, Typography, Input, Textarea } from '../utils'
-import { fetcher, server, useUser, useUserState } from '../lib'
+import {
+  fetcher,
+  server,
+  useUser,
+  useUserState,
+  usernameValidation,
+} from '../lib'
 import { FallbackProfileImage, ProfileImage } from '../components/ProfileImage'
-
-const usernameValidation = (str) =>
-  new RegExp(/^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/, str)
 
 function ProfileSetup() {
   const [session] = useSession()
