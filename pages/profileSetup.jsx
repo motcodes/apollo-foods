@@ -7,6 +7,9 @@ import { Button, Typography, Input, Textarea } from '../utils'
 import { fetcher, server, useUser, useUserState } from '../lib'
 import { FallbackProfileImage, ProfileImage } from '../components/ProfileImage'
 
+const usernameValidation = (str) =>
+  new RegExp(/^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/, str)
+
 function ProfileSetup() {
   const [session] = useSession()
   const user = useUser()
@@ -19,6 +22,8 @@ function ProfileSetup() {
   async function saveUser(e) {
     e.preventDefault()
 
+    userData.username = userData.username?.replace('@', '')
+    const isUnvalidUsername = usernameValidation(userData.username)
     if (
       userData.name === '' ||
       userData.name === ' ' ||
@@ -35,7 +40,7 @@ function ProfileSetup() {
       userData.username === '' ||
       userData.username === ' ' ||
       userData.username === null ||
-      userData.username.length < 3
+      isUnvalidUsername
     ) {
       setUsernameError(true)
       setButtonText('Try again')
@@ -59,7 +64,6 @@ function ProfileSetup() {
     }
     setButtonText('Save my data')
 
-    userData.username = userData.username?.replace('@', '')
     userData.twitter = userData.twitter?.replace('@', '')
     userData.instagram = userData.instagram?.replace('@', '')
     userData.dribbble = userData.dribbble?.replace('@', '')
