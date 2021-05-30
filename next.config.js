@@ -1,9 +1,8 @@
-const withImages = require('next-images')
-module.exports = withImages({
+module.exports = {
   future: {
     webpack5: true,
   },
   images: {
     domains: ['pbs.twimg.com', 'lh3.googleusercontent.com'],
   },
-})
+}
