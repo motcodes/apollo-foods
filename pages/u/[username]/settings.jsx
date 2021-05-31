@@ -3,7 +3,7 @@ import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import styled from 'styled-components'
 import Layout from '../../../components/Layout'
-import { fetcher, server, useUserState } from '../../../lib'
+import { fetcher, server, usernameValidation, useUserState } from '../../../lib'
 import { Button, Typography, Input, Textarea } from '../../../utils'
 
 import prisma from '../../../prisma/prisma'
@@ -27,6 +27,7 @@ function Settings(props) {
   const [userData, dispatchUser] = useUserState(user)
   const [usernameIsTaken, setUsernameIsTaken] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
+  const [nameError, setNameError] = useState(false)
   const [buttonText, setButtonText] = useState('Save my data')
   const [isDeleteModal, setDeleteModal] = useState(false)
 
@@ -34,10 +35,25 @@ function Settings(props) {
     e.preventDefault()
 
     if (
+      userData.name === '' ||
+      userData.name === ' ' ||
+      userData.name === null
+    ) {
+      setNameError(true)
+      setButtonText('Try again')
+      return
+    } else {
+      setNameError(true)
+    }
+
+    userData.username = userData.username?.replace('@', '')
+    const isUnvalidUsername = usernameValidation(userData.username)
+
+    if (
       userData.username === '' ||
       userData.username === ' ' ||
       userData.username === null ||
-      userData.username.length < 3
+      isUnvalidUsername
     ) {
       setUsernameError(true)
       setButtonText('Try again')
@@ -61,7 +77,6 @@ function Settings(props) {
     }
     setButtonText('Save my data')
 
-    userData.username = userData.username?.replace('@', '')
     userData.twitter = userData.twitter?.replace('@', '')
     userData.instagram = userData.instagram?.replace('@', '')
     userData.dribbble = userData.dribbble?.replace('@', '')
@@ -112,6 +127,7 @@ function Settings(props) {
             onChange={(e) =>
               dispatchUser({ type: 'name', value: e.target.value })
             }
+            error={nameError}
           />
           <Input
             id="username"
