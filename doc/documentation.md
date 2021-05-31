@@ -27,8 +27,6 @@ npx prisma studio
 
 Die Ordner Struktur ist nach dem Prinzip eines typischen NextJs Projektes aufgebaut.
 
-### Erklärung der Ordner
-
 - .next/
   - ist eine Caching Ordner und dient zum schnellen Laden und Interpretieren des Codes
 - components/
@@ -49,7 +47,7 @@ Die Ordner Struktur ist nach dem Prinzip eines typischen NextJs Projektes aufgeb
     - credits.jsx -> apollofoods.matthiasoberholzer.com/credits
   - im Kompilierungsprozess werden die Dateien, je nach Funktion, die die Seite erfüllt, bereits zu einem HTML-File erstellt. Das hilft der Performance und dem SEO
   - api/
-    - diese Ordner umfasst alle API-Routen, wie das Speichern und Löschen von Benutztern
+    - diese Ordner umfasst alle API-Routen, wie das Speichern und Löschen von Benutzern
     - Die API greift auf die DB zu.
   - cook/[id].jsx
     - Die eckigen Klammern sind eine Eigenheit von NextJS
@@ -73,16 +71,16 @@ Die Ordner Struktur ist nach dem Prinzip eines typischen NextJs Projektes aufgeb
     - alles was im public Ordner ist wird dem Besucher beim Laden mitgeliefert und ist auch von der Domain aufrufbar
     - enthält favicon, manifest, font und das 3D-Pouch-Model
   - styles/
-    - wird verwendet um den lokalen Font zu laden
+    - wird verwendet, um den lokalen Font zu laden
   - utils/
     - umfasst eine Reihe von UI-Elementen, wie Button, Input, Link, Typography ...
     - alle Dateien werden in einer `index.js` Datei gesammelt, um beim Importierne nur den Ordner referenzieren zu müssen.
   - .babelrc
     - ist die Konfigurationsdatei vom JS Compiler Babel
-    - besitzt die Konfiguration um Styled-Components Server Seitig zu laden.
+    - besitzt die Konfiguration, um Styled-Components Server Seitig zu laden.
   - .env
     - enthält vertrauliche API-Keys und die Domain zum Datenbanken Server
-    - soll unter keinen umständen an nicht autorisierte Personen weiter gegeben werden
+    - soll unter keinen Umständen an nicht autorisierte Personen weitergegeben werden
   - .gitignore
     - welche Dateien nicht an das Repository hochgeladen werden sollten.
   - next.config.js
@@ -91,9 +89,51 @@ Die Ordner Struktur ist nach dem Prinzip eines typischen NextJs Projektes aufgeb
     - auch die Image-Provider werden hier angegeben, um nicht registrierte Bilder-Domain zu blockieren.
   - package-lock.json & package.json
     - ist die Konfigurationsdatei für NodeJs
-    - enthält Informationen zum Projekt und eine List von Paketen die verwendet werden.
+    - enthält Informationen zum Projekt und eine List von Paketen, die verwendet werden.
   - prettier.config.js
     - ist die Konfigurationsdatei von Prettier
     - dient zur benutzerdefinierten Formatierung von Code Zeilen
   - README.md
     - Kurz Info zum Projekt
+
+## Datenbank
+
+### ER-Diagram
+
+![Datenbank Schema](./prisma-erd.png)
+Diagram wurde von [prisma-erd.simonknott.de](https://prisma-erd.simonknott.de/) generiert
+
+### Beschreibung
+
+Apollo Foods besitzt 4 Tables.
+
+- Von NextAuth vorgegeben
+  - Account
+  - Session
+  - VerificationRequest
+  - NextAuth speichert in diesen Tabellen alle Informationen, die für das passwort-lose Anmelden benötigt werden
+- Benutzerdefiniert
+  - User
+    - steht in einer indirekten Verbindung mit den obigen Tabellen
+    - verwendet userId zur Erkennung
+  - Meal
+    - verwendet userId und das User Objekt zur Zuweisung
+
+## 3D mit ThreeJs in React
+
+Die Attraktion von Apollo Foods ist natürlich das 3D-Model. Dafür wird das WebGl Framework `ThreeJs` verwendet, des Weiteren werden auch noch die Libraries `@react-three/fiber` und `@react-three/drei` benutzt. Während `ThreeJs` alle Grundfunktionen für das Darstellen von 3D Inhalten im Web liefert, kümmern sich die Pakete von `@react-three` um eine einfach Nutzung dieser Funktionen, sowie die Möglichkeit zum Beispiel Meshes oder Lichter als `JSX` anzuschreiben.  
+Hinter der Generierung des Beutels stecke trotzdem noch einige Prozessen.
+
+1. Daten von der MealDB API holen
+   - `pages/cook/[id].jsx`
+2. HTML Etikett im Hintergrund mit den Daten befüllen, während User einen Loading Screen sieht
+   - `pages/cook/[id].jsx`
+   - `components/Label/`
+3. HTML Node zu einem Canvas umwandeln und einen Abdruck des Canvas machen
+   - `pages/cook/[id].jsx`
+4. Bild zu einer 3D Textur parsen
+   - `components/Pouch.jsx`
+5. Auf das 3D Model laden, dazu wird ein `.gltf` File geladen, welches als 3D Model fungiert. Mit Hilfe von ThreeJS kann man externe Object ebenfalls im Web darstellen.
+   - `components/Pouch.jsx`
+6. Nachdem das 3D Model bereit ist, wird zusätzlich noch ein weiter Abdruck des Beutels gemacht, um es als Vorschaubild in `/expedtion` oder `/u/[username]` darzustellen.
+   - `components/Stage/`
