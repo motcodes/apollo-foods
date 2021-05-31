@@ -27,7 +27,7 @@ export default function Expedition(props) {
   return (
     <Layout>
       <Typography variant="h1">Expedition</Typography>
-      <Typography variant="h6" as="h2">
+      <Typography variant="h6" as="h2" style={{ marginBottom: 32 }}>
         Discover and see which recipes your astronaut colleagues want to cook.
       </Typography>
       <CardGrid>
