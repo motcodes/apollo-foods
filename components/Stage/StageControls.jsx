@@ -6,6 +6,7 @@ import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
 import { Dots } from '../../utils'
 import { useRouter } from 'next/router'
+import toast from 'react-hot-toast'
 
 export function StageControls({
   elementId,
@@ -29,10 +30,12 @@ export function StageControls({
           body: JSON.stringify(query.id),
         })
         if (json.success === true) {
+          toast.success('Successfully removed from Account!')
           setIsSaved(false)
           toggleLoading(false)
           console.log('removed')
         } else {
+          toast.success('Could not removed from Account!')
           toggleLoading(false)
           console.log('error')
         }
@@ -42,10 +45,12 @@ export function StageControls({
           body: JSON.stringify(mealProps),
         })
         if (json.success === true) {
+          toast.success('Successfully saved to Account!')
           setIsSaved(true)
           toggleLoading(false)
           console.log('saved')
         } else {
+          toast.success('Could not save to Account!')
           toggleLoading(false)
           console.log('error')
         }

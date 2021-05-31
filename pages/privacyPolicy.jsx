@@ -227,7 +227,7 @@ function PrivacyPolicy() {
               rel="external nofollow noopener"
               target="_blank"
             >
-              https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_
+              https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html
             </a>
           </li>
           <li>

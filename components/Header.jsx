@@ -102,7 +102,7 @@ const NavItem = ({ href, children }) => {
   return (
     <NavLink
       href={href}
-      color={router.pathname === href ? 'var(--orange-30)' : 'white'}
+      color={router.pathname === href ? 'var(--orange-40)' : 'var(--grey-20)'}
     >
       {children}
     </NavLink>
