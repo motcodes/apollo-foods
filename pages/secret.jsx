@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'

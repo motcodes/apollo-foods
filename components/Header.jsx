@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'

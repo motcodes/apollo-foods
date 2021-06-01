@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { getSession } from 'next-auth/client'
 
 export default async (req, res) => {

@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import styled, { keyframes } from 'styled-components'
 import Image from 'next/image'
 import { default as NextLink } from 'next/link'

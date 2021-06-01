@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useState } from 'react'
 import styled from 'styled-components'
 import router from 'next/router'

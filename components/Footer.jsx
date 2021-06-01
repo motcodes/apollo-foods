@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import styled from 'styled-components'
 import { Typography, Link, LinkExt } from '../utils'
 
@@ -25,6 +30,9 @@ export default function Footer() {
           </li>
           <li>
             <Link href="/credits">Credits</Link>
+          </li>
+          <li>
+            <Link href="/imprint">Imprint</Link>
           </li>
         </List>
         <List>

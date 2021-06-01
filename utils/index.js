@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 export * from './Button'
 export * from './CardGrid'
 export * from './DocumentTextStyles'

@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 import Link from 'next/link'

@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { Suspense, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Canvas } from '@react-three/fiber'

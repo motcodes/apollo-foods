@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import Document from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 

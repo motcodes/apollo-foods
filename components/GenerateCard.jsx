@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import router from 'next/router'
 import styled, { css } from 'styled-components'
 import { Typography, Button } from '../utils'

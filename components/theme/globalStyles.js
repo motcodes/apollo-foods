@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { createGlobalStyle } from 'styled-components'
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 

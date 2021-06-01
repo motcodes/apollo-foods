@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useEffect } from 'react'
 import router from 'next/router'
 import { fetcher, formatMeal, mealDbRandom } from '../lib'

@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useRef } from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
 
