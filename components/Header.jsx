@@ -45,7 +45,7 @@ const Header = () => {
               <li>
                 {!session && <Button onClick={signIn}>Sign In</Button>}
                 {session && (
-                  <>
+                  <UserImageContainer>
                     <UserImageWrapper onClick={() => toggleHover(!isHover)}>
                       {session.user.image ? (
                         <Image
@@ -61,13 +61,15 @@ const Header = () => {
                         />
                       )}
                     </UserImageWrapper>
-                    {isHover && session && (
+                    {isHover && (
                       <AccountModal
                         onMouseLeave={() => toggleHover(false)}
                         signOut={signOut}
+                        top="3.5rem"
+                        right="0rem"
                       />
                     )}
-                  </>
+                  </UserImageContainer>
                 )}
               </li>
             </LinkList>
@@ -177,6 +179,10 @@ const LinkList = styled.ul`
   }
 `
 
+const UserImageContainer = styled.div`
+  position: relative;
+`
+
 const UserImageWrapper = styled.figure`
   cursor: pointer;
   div {
@@ -189,7 +195,6 @@ const MobileNavigation = styled.nav`
   position: fixed;
   bottom: -1px;
   width: 100%;
-  /* height: 48px; */
   padding: 0.5rem 0 1.5rem;
   background: rgba(249, 249, 249, 0.7);
   border-top: 1px solid var(--grey-80);
@@ -201,6 +206,7 @@ const MobileNavigation = styled.nav`
   align-items: center;
   z-index: 10;
 `
+
 const NavLink = styled(LinkInt)`
   flex-direction: column;
   width: 40px;

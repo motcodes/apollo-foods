@@ -50,6 +50,7 @@ const Modal = styled.div`
   position: absolute;
   top: ${({ top }) => top};
   right: ${({ right }) => right};
+  width: auto;
   padding: 1rem;
   background-color: white;
   border-radius: 12px;
@@ -58,6 +59,7 @@ const Modal = styled.div`
     a,
     a:visited {
       color: black;
+      width: max-content;
     }
     display: flex;
     flex-direction: column;

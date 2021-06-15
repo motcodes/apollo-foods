@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Head from 'next/head'
+import router from 'next/router'
 import { signOut, useSession } from 'next-auth/client'
 import useMedia from 'use-media'
 import Layout from '../../../components/Layout'
@@ -8,7 +9,7 @@ import { GenerateCard } from '../../../components/GenerateCard'
 import { MealCard } from '../../../components/MealCard'
 import { AccountModal } from '../../../components/AccountModal'
 import { FallbackProfileImage } from '../../../components/ProfileImage'
-import { Typography, LinkExt, Link, CardGrid } from '../../../utils'
+import { Typography, LinkExt, Link, CardGrid, Button } from '../../../utils'
 import {
   TwitterIcon,
   InstagramIcon,
@@ -67,28 +68,28 @@ export default function User(props) {
   return (
     <Layout>
       <Head>
-        {session && (
-          <title>Profile of @{session.user.username} on Apollo Foods 🚀</title>
-        )}
+        {user && <title>Profile of @{user.username} on Apollo Foods 🚀</title>}
       </Head>
       <ProfileContainer>
         {sessionUser &&
           sessionUser.username === user.username &&
           (isLarge ? (
-            <Settings href={`/u/${user.username}/settings`}>
+            <Settings
+              style={{ padding: 12 }}
+              onClick={() => router.push(`/u/${user.username}/settings`)}
+            >
               <SettingIcon />
             </Settings>
           ) : (
             <Settings
-              as="div"
-              type="button"
+              style={{ padding: 8 }}
               onClick={() => toggleModalOpen(!isModalOpen)}
             >
               <SettingIcon />
             </Settings>
           ))}
         {isModalOpen && (
-          <AccountModal session={session} signOut={signOut} top="2.6rem" />
+          <AccountModal session={session} signOut={signOut} top="4rem" />
         )}
 
         {user.image ? (
@@ -185,9 +186,9 @@ const Bio = styled(Typography)`
   font-size: var(--body-large);
 `
 
-const Settings = styled(Link)`
+const Settings = styled(Button)`
   position: absolute;
-  right: 1rem;
+  right: 0;
   top: 1rem;
 `
 
