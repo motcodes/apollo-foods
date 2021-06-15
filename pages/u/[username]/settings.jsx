@@ -1,9 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import router from 'next/router'
-import { useSession } from 'next-auth/client'
+import { signOut, useSession } from 'next-auth/client'
 import styled from 'styled-components'
 import Layout from '../../../components/Layout'
-import { fetcher, server, usernameValidation, useUserState } from '../../../lib'
+import {
+  fetcher,
+  isEmptyOrSpaces,
+  server,
+  usernameValidation,
+  useUserState,
+} from '../../../lib'
 import { Button, Typography, Input, Textarea } from '../../../utils'
 
 import prisma from '../../../prisma/prisma'
@@ -34,27 +40,18 @@ function Settings(props) {
   async function updateUser(e) {
     e.preventDefault()
 
-    if (
-      userData.name === '' ||
-      userData.name === ' ' ||
-      userData.name === null
-    ) {
+    if (isEmptyOrSpaces(userData.name)) {
       setNameError(true)
       setButtonText('Try again')
       return
     } else {
-      setNameError(true)
+      setNameError(false)
     }
 
     userData.username = userData.username?.replace('@', '')
-    const isUnvalidUsername = usernameValidation(userData.username)
+    const isValidUsername = usernameValidation(userData.username)
 
-    if (
-      userData.username === '' ||
-      userData.username === ' ' ||
-      userData.username === null ||
-      isUnvalidUsername
-    ) {
+    if (isEmptyOrSpaces(userData.username) || !isValidUsername) {
       setUsernameError(true)
       setButtonText('Try again')
       return
@@ -67,7 +64,6 @@ function Settings(props) {
       body: JSON.stringify(userData.username),
     })
 
-    // console.log('checkUsername :', checkUsername)
     if (checkUsername.isTaken) {
       setUsernameIsTaken(true)
       setButtonText('Try again')
@@ -89,7 +85,7 @@ function Settings(props) {
       method: 'POST',
       body: JSON.stringify(userData),
     })
-    // console.log('infoData :', infoData)
+
     if (infoData.message === 'success') {
       if (router.query.callbackUrl) {
         const callbackUrl = new URL(router.query.callbackUrl)
@@ -106,11 +102,9 @@ function Settings(props) {
 
   async function deleteUser(e) {
     e.stopPropagation()
-
     const deleteUser = await fetcher(`${server}/api/user/delete`)
-    // console.log('deleteUser :', deleteUser)
     if (deleteUser.message === 'success') {
-      router.push('/')
+      signOut({ callbackUrl: '/' })
     }
   }
 

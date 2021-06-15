@@ -33,9 +33,7 @@ const options = {
   ],
   adapter: Adapters.Prisma.Adapter({ prisma }),
   pages: {
-    // signIn: '/auth/signin',
-    // signOut: '/auth/signout',
-    newUser: '/profileSetup', // If set, new users will be directed here on first sign in
+    newUser: '/profileSetup',
   },
   callbacks: {
     async session(session, user) {
@@ -43,13 +41,10 @@ const options = {
       session.user.image = user.image
       return session
     },
+    async redirect(url, baseUrl) {
+      return url.startsWith(baseUrl) ? url : baseUrl
+    },
   },
-  // redirect: async (url, _) => {
-  //   if (url === '/api/auth/signin') {
-  //     return Promise.resolve('/demo')
-  //   }
-  //   return Promise.resolve('/api/auth/signin')
-  // },
 }
 
 export default (req, res) => NextAuth(req, res, options)

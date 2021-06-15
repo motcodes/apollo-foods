@@ -14,12 +14,7 @@ export default async (req, res) => {
       username: session.user.username,
     },
   })
-  // const meals = await prisma.meal.findMany({
-  //   where: {
-  //     userId: user.id,
-  //   },
-  // })
-  // console.log('meals :', meals)
+
   const removeMeals = prisma.meal.deleteMany({
     where: {
       userId: parseInt(user.id),

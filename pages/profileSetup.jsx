@@ -15,6 +15,7 @@ import {
   useUser,
   useUserState,
   usernameValidation,
+  isEmptyOrSpaces,
 } from '../lib'
 import { FallbackProfileImage, ProfileImage } from '../components/ProfileImage'
 
@@ -22,6 +23,7 @@ function ProfileSetup() {
   const [session] = useSession()
   const user = useUser()
   const [userData, dispatchUser] = useUserState(user)
+  console.log('userData :', userData)
   const [usernameIsTaken, setUsernameIsTaken] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
   const [nameError, setNameError] = useState(false)
@@ -30,26 +32,18 @@ function ProfileSetup() {
   async function saveUser(e) {
     e.preventDefault()
 
-    userData.username = userData.username?.replace('@', '')
-    const isUnvalidUsername = usernameValidation(userData.username)
-    if (
-      userData.name === '' ||
-      userData.name === ' ' ||
-      userData.name === null
-    ) {
+    if (isEmptyOrSpaces(userData.name)) {
       setNameError(true)
       setButtonText('Try again')
       return
     } else {
-      setNameError(true)
+      setNameError(false)
     }
 
-    if (
-      userData.username === '' ||
-      userData.username === ' ' ||
-      userData.username === null ||
-      isUnvalidUsername
-    ) {
+    userData.username = userData.username?.replace('@', '')
+    const isValidUsername = usernameValidation(userData.username)
+
+    if (isEmptyOrSpaces(userData.username) || !isValidUsername) {
       setUsernameError(true)
       setButtonText('Try again')
       return
@@ -136,7 +130,7 @@ function ProfileSetup() {
             label="Email"
             type="email"
             name="email"
-            value={userData.email}
+            value={user.email}
             disabled
           />
           <Textarea
