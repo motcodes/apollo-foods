@@ -28,11 +28,8 @@ export async function getServerSideProps() {
 
 const Index = (props) => {
   useEffect(() => {
-    router.prefetch(`/cook/[id]`, `/cook/${props.data.idMeal}`)
+    router.prefetch(`/cook/${props.data.idMeal}`)
   }, [])
-  function handleGenerate() {
-    router.push(`/cook/[id]`, `/cook/${props.data.idMeal}`)
-  }
 
   const isDesktop = useMedia({ minWidth: 1024 })
 
@@ -66,7 +63,9 @@ const Index = (props) => {
             for your interstellar space missions.
             <br /> Each Pouch will be uniquely created for you.
           </Typography>
-          <GenButton onClick={handleGenerate}>Generate Now</GenButton>
+          <GenButton onClick={() => router.push(`/cook/${props.data.idMeal}`)}>
+            Generate Now
+          </GenButton>
         </Container>
       </Grid>
     </Layout>
