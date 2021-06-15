@@ -86,14 +86,6 @@ export const GlobalStyle = createGlobalStyle({
     },
   },
 
-  // '@font-face': {
-  //   fontFamily: 'Blatant',
-  //   src: `url('fonts/Blatant.woff2') format('woff2'), url('fonts/Blatant.ttf') format('ttf')`,
-  //   fontWeight: 400,
-  //   fontStyle: 'normal',
-  //   fontDisplay: 'swap',
-  // },
-
   '*': {
     margin: 0,
     padding: 0,
@@ -101,14 +93,16 @@ export const GlobalStyle = createGlobalStyle({
     fontWeight: 400,
   },
   html: {
-    fontFamily: 'Blatant',
+    fontFamily:
+      "Blatant, -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif",
     lineHeight: 1.15,
     '-webkit-text-size-adjust': '100%',
     height: '100%',
     color: 'white',
   },
   body: {
-    fontFamily: 'Blatant',
+    fontFamily:
+      "Blatant, -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif",
     margin: 0,
     background: 'black',
   },
@@ -119,27 +113,21 @@ export const GlobalStyle = createGlobalStyle({
     display: 'block',
   },
   h1: {
-    // fontSize: 'var(--h1)',
     margin: 0,
   },
   h2: {
-    // fontSize: 'var(--h2)',
     margin: 0,
   },
   h3: {
-    // fontSize: 'var(--h3)',
     margin: 0,
   },
   h4: {
-    // fontSize: 'var(--h4)',
     margin: 0,
   },
   h5: {
-    // fontSize: 'var(--h5)',
     margin: 0,
   },
   h6: {
-    // fontSize: 'var(--h6)',
     margin: 0,
   },
 
