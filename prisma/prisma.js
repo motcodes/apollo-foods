@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 /*
 Author: Matthias Oberholzer
 Multimedia Project 1 - Web

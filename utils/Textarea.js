@@ -3,7 +3,7 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Typography } from './Typography'
 
 export function Textarea({

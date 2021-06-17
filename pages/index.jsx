@@ -3,7 +3,7 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import router from 'next/router'
 import dynamic from 'next/dynamic'
 import styled from 'styled-components'
@@ -26,10 +26,10 @@ export async function getServerSideProps() {
   }
 }
 
-const Index = (props) => {
+const Index = ({ data }) => {
   useEffect(() => {
-    router.prefetch(`/cook/${props.data.idMeal}`)
-  }, [])
+    router.prefetch(`/cook/${data.idMeal}`)
+  }, [data.idMeal])
 
   const isDesktop = useMedia({ minWidth: 1024 })
 
@@ -63,7 +63,7 @@ const Index = (props) => {
             for your interstellar space missions.
             <br /> Each Pouch will be uniquely created for you.
           </Typography>
-          <GenButton onClick={() => router.push(`/cook/${props.data.idMeal}`)}>
+          <GenButton onClick={() => router.push(`/cook/${data.idMeal}`)}>
             Generate Now
           </GenButton>
         </Container>

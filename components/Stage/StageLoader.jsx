@@ -17,7 +17,7 @@ export function StageLoader({
 }) {
   return (
     <LoaderContainer
-      style={{ width: 'calc(100vw - 48px)', height: height, ...style }}
+      style={{ width: 'calc(100vw - 48px)', height, ...style }}
       center={center}
     >
       <Image

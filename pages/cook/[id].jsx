@@ -6,6 +6,7 @@ Salzburg University of Applied Sciences
 import { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { Label as Ettiket } from '../../components/Label/Label'
 import Layout from '../../components/Layout'
 import Stage from '../../components/Stage/Stage'
@@ -14,18 +15,30 @@ import PouchModel from '../../components/Pouch'
 import {
   fetcher,
   formatMeal,
-  formatNewMeal,
   getRandomItem,
   mealDbById,
   server,
   useHtmlToImage,
-  useMealById,
 } from '../../lib'
 import { Typography } from '../../utils'
 
 import prisma from '../../prisma/prisma'
-import useSWR from 'swr'
-import { useRouter } from 'next/router'
+
+const colors = [
+  'var(--orange-20)',
+  'var(--orange-30)',
+  'var(--orange-40)',
+  'var(--orange-40)',
+  'var(--orange-50)',
+  'var(--blue-20)',
+  'var(--blue-30)',
+  'var(--blue-40)',
+  'var(--blue-50)',
+  'var(--purple-20)',
+  'var(--purple-30)',
+  'var(--purple-40)',
+  'var(--purple-50)',
+]
 
 export async function getServerSideProps(context) {
   const { query } = context
@@ -70,15 +83,20 @@ export async function getServerSideProps(context) {
       },
       mealIngredients: data.mealIngredients,
       mealMeasure: data.mealMeasure,
-      isMealSaved: isMealSaved,
+      isMealAlreadySaved: isMealSaved,
     },
   }
 }
 
-export default function Meal(props) {
-  props.data.mealIngredients = props.mealIngredients
-  props.data.mealMeasure = props.mealMeasure
-  const initialData = props.data
+export default function Meal({
+  data,
+  mealIngredients,
+  mealMeasure,
+  isMealAlreadySaved,
+}) {
+  data.mealIngredients = mealIngredients
+  data.mealMeasure = mealMeasure
+  const initialData = data
   const { query } = useRouter()
 
   // const { data: newMealData } = useSWR(
@@ -89,14 +107,17 @@ export default function Meal(props) {
 
   const [mealData, setMealData] = useState(initialData)
 
-  const [randomColor] = useState(props.isMealSaved?.textureColor)
-  const [isMealSaved] = useState(props.isMealSaved?.isSaved)
+  const [randomColor] = useState(isMealAlreadySaved?.textureColor)
+  const [isMealSaved] = useState(isMealAlreadySaved?.isSaved)
 
   const [generateImage, appRef, imageUrl, isLoading] = useHtmlToImage(2048)
 
-  useEffect((e) => {
-    generateImage(e)
-  }, [])
+  useEffect(
+    (e) => {
+      generateImage(e)
+    },
+    [generateImage]
+  )
 
   useEffect(() => {
     async function refetchMeal() {
@@ -107,7 +128,7 @@ export default function Meal(props) {
     if (mealData?.mealIngredients || mealData?.mealMeasure) {
       refetchMeal()
     }
-  }, [mealData])
+  }, [mealData, query.id])
 
   const mealProps = {
     id: mealData?.mealId,
@@ -140,97 +161,94 @@ export default function Meal(props) {
         )}
       </div>
     )
-  } else {
-    return (
-      <Layout>
-        <Stage
-          canvasProps={canvasProps}
-          controlsProps={controlsProps}
-          mealProps={mealProps}
-          isMealSaved={isMealSaved}
-          bookmark
-          isPlaceholderImage
-        >
-          <PouchModel textureUrl={imageUrl} rotation={[0, Math.PI, 0]} />
-        </Stage>
+  }
+  return (
+    <Layout>
+      <Stage
+        canvasProps={canvasProps}
+        controlsProps={controlsProps}
+        mealProps={mealProps}
+        isMealSaved={isMealSaved}
+        bookmark
+        isPlaceholderImage
+      >
+        <PouchModel textureUrl={imageUrl} rotation={[0, Math.PI, 0]} />
+      </Stage>
 
-        {mealData && (
-          <>
-            <Head>
-              <title>
-                {mealData.mealName} #{mealData.mealId} by Apollo Foods 🚀
-              </title>
-            </Head>
-            <RecipeContainer>
-              <Section randomColor={randomColor}>
-                <Typography variant="h1">#{mealData.mealId}</Typography>
+      {mealData && (
+        <>
+          <Head>
+            <title>
+              {mealData.mealName} #{mealData.mealId} by Apollo Foods 🚀
+            </title>
+          </Head>
+          <RecipeContainer>
+            <Section randomColor={randomColor}>
+              <Typography variant="h1">#{mealData.mealId}</Typography>
+              <Item>
+                <Label font="Blatant" as="label">
+                  Recipe Name:
+                </Label>
+                <Typography variant="h2">{mealData.mealName}</Typography>
+              </Item>
+              <Item inline>
                 <Item>
                   <Label font="Blatant" as="label">
-                    Recipe Name:
+                    Category:
                   </Label>
-                  <Typography variant="h2">{mealData.mealName}</Typography>
+                  <Typography variant="h3">{mealData.mealCategory}</Typography>
                 </Item>
-                <Item inline>
-                  <Item>
-                    <Label font="Blatant" as="label">
-                      Category:
-                    </Label>
-                    <Typography variant="h3">
-                      {mealData.mealCategory}
-                    </Typography>
-                  </Item>
-                  <Item>
-                    <Label font="Blatant" as="label">
-                      Area:
-                    </Label>
-                    <Typography variant="h3">{mealData.mealArea}</Typography>
-                  </Item>
+                <Item>
+                  <Label font="Blatant" as="label">
+                    Area:
+                  </Label>
+                  <Typography variant="h3">{mealData.mealArea}</Typography>
                 </Item>
-              </Section>
-              {mealData.mealIngredients?.length !== 0 &&
-                mealData.mealMeasure?.length !== 0 && (
-                  <Section randomColor={randomColor}>
-                    <Typography variant="h2">Ingredients</Typography>
-                    <Item inline isList>
-                      <Item as="ul">
-                        {mealData.mealIngredients?.map((ingredient, index) => (
-                          <ListItem key={ingredient + index}>
-                            {ingredient}
-                          </ListItem>
-                        ))}
-                      </Item>
-                      <Item as="ul" style={{ listStyle: 'none' }}>
-                        {mealData.mealMeasure?.map((measure, index) => (
-                          <ListItem key={measure + index} paddingLeft>
-                            {measure}
-                          </ListItem>
-                        ))}
-                      </Item>
-                    </Item>
-                  </Section>
-                )}
-              {mealData.mealInstructions && (
+              </Item>
+            </Section>
+            {mealData.mealIngredients?.length !== 0 &&
+              mealData.mealMeasure?.length !== 0 && (
                 <Section randomColor={randomColor}>
-                  <Typography variant="h2">Instructions</Typography>
-                  <Typography
-                    style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}
-                  >
-                    {mealData.mealInstructions}
-                  </Typography>
+                  <Typography variant="h2">Ingredients</Typography>
+                  <Item inline isList>
+                    <Item as="ul">
+                      {mealData.mealIngredients?.map((ingredient, index) => (
+                        <ListItem key={ingredient + index}>
+                          {ingredient}
+                        </ListItem>
+                      ))}
+                    </Item>
+                    <Item as="ul" style={{ listStyle: 'none' }}>
+                      {mealData.mealMeasure?.map((measure, index) => (
+                        <ListItem key={measure + index} paddingLeft>
+                          {measure}
+                        </ListItem>
+                      ))}
+                    </Item>
+                  </Item>
                 </Section>
               )}
-            </RecipeContainer>
-          </>
-        )}
-        <GenerateCard
-          heading="Do you want to discover more recipes?"
-          text="Just click the button below."
-          buttonText="Generate now!"
-          bgColor={randomColor}
-        />
-      </Layout>
-    )
-  }
+            {mealData.mealInstructions && (
+              <Section randomColor={randomColor}>
+                <Typography variant="h2">Instructions</Typography>
+                <Typography
+                  style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}
+                >
+                  {mealData.mealInstructions}
+                </Typography>
+              </Section>
+            )}
+          </RecipeContainer>
+        </>
+      )}
+      <GenerateCard
+        heading="Do you want to discover more recipes?"
+        text="Just click the button below."
+        buttonText="Generate now!"
+        bgColor={randomColor}
+      />
+    </Layout>
+  )
 }
 
 const RecipeContainer = styled.article`
@@ -251,19 +269,19 @@ const Section = styled.section`
         color: var(--orange-90);
         border-color: var(--orange-90);
       `
-    } else if (randomColor.includes('blue')) {
+    }
+    if (randomColor.includes('blue')) {
       return css`
         background-color: hsla(193, 100%, 50%, 10%);
         color: var(--blue-90);
         border-color: var(--blue-90);
       `
-    } else {
-      return css`
-        background-color: hsla(248, 43%, 50%, 10%);
-        color: var(--purple-90);
-        border-color: var(--purple-90);
-      `
     }
+    return css`
+      background-color: hsla(248, 43%, 50%, 10%);
+      color: var(--purple-90);
+      border-color: var(--purple-90);
+    `
   }};
 `
 const Item = styled.div`
@@ -309,19 +327,3 @@ const Label = styled(Typography)`
   margin-bottom: 8px;
   font-size: var(--body-large);
 `
-
-const colors = [
-  'var(--orange-20)',
-  'var(--orange-30)',
-  'var(--orange-40)',
-  'var(--orange-40)',
-  'var(--orange-50)',
-  'var(--blue-20)',
-  'var(--blue-30)',
-  'var(--blue-40)',
-  'var(--blue-50)',
-  'var(--purple-20)',
-  'var(--purple-30)',
-  'var(--purple-40)',
-  'var(--purple-50)',
-]

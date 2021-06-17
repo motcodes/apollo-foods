@@ -1,15 +1,18 @@
+import { useState } from 'react'
 import styled from 'styled-components'
 import Head from 'next/head'
 import router from 'next/router'
 import { signOut, useSession } from 'next-auth/client'
 import useMedia from 'use-media'
 import Layout from '../../../components/Layout'
-import { ProfileImage } from '../../../components/ProfileImage'
 import { GenerateCard } from '../../../components/GenerateCard'
 import { MealCard } from '../../../components/MealCard'
 import { AccountModal } from '../../../components/AccountModal'
-import { FallbackProfileImage } from '../../../components/ProfileImage'
-import { Typography, LinkExt, Link, CardGrid, Button } from '../../../utils'
+import {
+  ProfileImage,
+  FallbackProfileImage,
+} from '../../../components/ProfileImage'
+import { Typography, LinkExt, CardGrid, Button } from '../../../utils'
 import {
   TwitterIcon,
   InstagramIcon,
@@ -21,7 +24,6 @@ import {
 } from '../../../components/Icons'
 
 import prisma from '../../../prisma/prisma'
-import { useState } from 'react'
 import { useUser } from '../../../lib'
 
 export async function getServerSideProps({ params }) {

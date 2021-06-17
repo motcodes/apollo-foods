@@ -14,20 +14,18 @@ export const Button = ({
   disabled = false,
   children = 'Button',
   ...rest
-}) => {
-  return (
-    <Btn
-      {...rest}
-      size={size}
-      variant={variant}
-      scale={scale}
-      disabled={disabled}
-      fullWidth={fullWidth}
-    >
-      {children}
-    </Btn>
-  )
-}
+}) => (
+  <Btn
+    {...rest}
+    size={size}
+    variant={variant}
+    scale={scale}
+    disabled={disabled}
+    fullWidth={fullWidth}
+  >
+    {children}
+  </Btn>
+)
 
 // export const IconButton = ({
 //   size = 'medium',
@@ -53,14 +51,18 @@ export const Button = ({
 // }
 
 const ButtonProps = {
-  padding: ({ size }) =>
-    size === 'large'
-      ? '0.8rem 3rem'
-      : size === 'medium'
-      ? '0.9rem 1rem'
-      : size === 'small'
-      ? '0.5rem 0.8rem'
-      : '0.8rem',
+  padding: ({ size }) => {
+    if (size === 'large') {
+      return '0.8rem 3rem'
+    }
+    if (size === 'medium') {
+      return '0.9rem 1rem'
+    }
+    if (size === 'small') {
+      return '0.5rem 0.8rem'
+    }
+    return '0.8rem'
+  },
   borderRadius: '12px',
   fontFamily: ({ theme }) => theme.font.primary,
   fontStyle: 'normal',
@@ -78,26 +80,24 @@ const ButtonProps = {
   backgroundColor: ({ theme, variant, color }) => {
     if (variant === 'text') {
       return 'transparent'
-    } else if (variant === 'outlined') {
-      return color ? color : 'transparent'
-    } else {
-      return theme.orange50
     }
+    if (variant === 'outlined') {
+      return color || 'transparent'
+    }
+    return theme.orange50
   },
 
   color: ({ theme, variant }) => {
     if (variant === 'outlined' || variant === 'text') {
       return theme.orange50
-    } else {
-      return 'white'
     }
+    return 'white'
   },
   border: ({ theme, variant }) => {
     if (variant === 'text') {
       return '2px solid transparent'
-    } else {
-      return `2px solid ${theme.orange50}`
     }
+    return `2px solid ${theme.orange50}`
   },
   transform: ({ scale }) => (scale ? `scale(${scale})` : 'scale(1)'),
   transfromOrigin: 'center',
@@ -111,16 +111,14 @@ const ButtonProps = {
     backgroundColor: ({ theme, variant, transparent }) => {
       if (transparent || variant === 'text') {
         return 'rgba(255,255,255,0.15)'
-      } else {
-        return theme.orange60
       }
+      return theme.orange60
     },
     borderColor: ({ theme, variant, transparent }) => {
       if (transparent || variant === 'text') {
         return 'rgba(255,255,255,0.15)'
-      } else {
-        return theme.orange60
       }
+      return theme.orange60
     },
   },
 }

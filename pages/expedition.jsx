@@ -9,7 +9,7 @@ import { CardGrid, Typography } from '../utils'
 
 import prisma from '../prisma/prisma'
 
-export async function getServerSideProps({}) {
+export async function getServerSideProps() {
   const meals = await prisma.meal.findMany({
     include: {
       user: {

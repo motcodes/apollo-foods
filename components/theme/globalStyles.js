@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 /*
 Author: Matthias Oberholzer
 Multimedia Project 1 - Web

@@ -83,8 +83,8 @@ const headingOption = {
   alignItems: 'center',
   lineHeight: '130%',
   fontWeight: 400,
-  color: ({ color }) => (color ? color : 'inherit'),
-  fontFamily: ({ font, theme }) => (font ? font : theme.font.primary),
+  color: ({ color }) => color || 'inherit',
+  fontFamily: ({ font, theme }) => font || theme.font.primary,
 }
 
 const H1 = styled('h1')({
@@ -121,8 +121,8 @@ const P = styled.p`
   display: flex;
   align-items: center;
   font-weight: 400;
-  color: ${({ color }) => (color ? color : 'currentColor')};
-  font-family: ${({ font, theme }) => (font ? font : theme.font.body)};
+  color: ${({ color }) => color || 'currentColor'};
+  font-family: ${({ font, theme }) => font || theme.font.body};
   line-height: 120%;
 `
 

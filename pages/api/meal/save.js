@@ -6,7 +6,8 @@ Salzburg University of Applied Sciences
 import { getSession } from 'next-auth/client'
 
 import prisma from '../../../prisma/prisma'
-export default async (req, res) => {
+
+export default async function (req, res) {
   const session = await getSession({ req })
   const body = JSON.parse(req.body)
 
@@ -23,7 +24,7 @@ export default async (req, res) => {
         id: parseInt(body.id),
         name: body.name,
         createdAt: body.createdAt,
-        userId: userId,
+        userId,
         textureColor: body.textureColor,
         placeholderImage: body.placeholderImage,
       },

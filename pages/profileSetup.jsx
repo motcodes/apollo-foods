@@ -36,9 +36,8 @@ function ProfileSetup() {
       setNameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setNameError(false)
     }
+    setNameError(false)
 
     userData.username = userData.username?.replace('@', '')
     const isValidUsername = usernameValidation(userData.username)
@@ -47,9 +46,8 @@ function ProfileSetup() {
       setUsernameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameError(false)
     }
+    setUsernameError(false)
 
     const checkUsername = await fetcher(`${server}/api/user/check`, {
       method: 'POST',
@@ -61,9 +59,9 @@ function ProfileSetup() {
       setUsernameIsTaken(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameIsTaken(false)
     }
+    setUsernameIsTaken(false)
+
     setButtonText('Save my data')
 
     userData.twitter = userData.twitter?.replace('@', '')

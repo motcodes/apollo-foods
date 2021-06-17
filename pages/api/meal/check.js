@@ -6,7 +6,7 @@ Salzburg University of Applied Sciences
 
 import prisma from '../../../prisma/prisma'
 
-export default async (req, res) => {
+export default async function (req, res) {
   const id = JSON.parse(req.body)
 
   const checkMeal = await prisma.meal.findMany({

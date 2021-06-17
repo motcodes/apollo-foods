@@ -5,67 +5,63 @@ Salzburg University of Applied Sciences
 */
 import styled, { keyframes } from 'styled-components'
 import Image from 'next/image'
-import { default as NextLink } from 'next/link'
+import NextLink from 'next/link'
 import { Link, Typography } from '../utils'
 
-export const MealCard = ({ id, placeholderImage, name, user = {} }) => {
-  return (
-    <NextLink href={`/cook/${id}`}>
-      <MealLink>
-        <Card>
-          <MealImageWrapper>
-            <MealImage
-              src={placeholderImage || '/PouchPreload.png'}
-              alt={name}
-              layout="fill"
-              objectFit="contain"
-              objectPosition="50% 50%"
-            />
-          </MealImageWrapper>
-          <TextContainer>
-            <MealTitle variant="h3">
-              {name} #{id}
-            </MealTitle>
-            {user !== {} && user.image && (
-              <UserLink href={`/u/${user.username}`}>
-                <Image
-                  src={user.image}
-                  alt={user.username}
-                  width="32"
-                  height="32"
-                />
-                @{user.username}
-              </UserLink>
-            )}
-          </TextContainer>
-        </Card>
-      </MealLink>
-    </NextLink>
-  )
-}
+export const MealCard = ({ id, placeholderImage, name, user = {} }) => (
+  <NextLink href={`/cook/${id}`}>
+    <MealLink>
+      <Card>
+        <MealImageWrapper>
+          <MealImage
+            src={placeholderImage || '/PouchPreload.png'}
+            alt={name}
+            layout="fill"
+            objectFit="contain"
+            objectPosition="50% 50%"
+          />
+        </MealImageWrapper>
+        <TextContainer>
+          <MealTitle variant="h3">
+            {name} #{id}
+          </MealTitle>
+          {user !== {} && user.image && (
+            <UserLink href={`/u/${user.username}`}>
+              <Image
+                src={user.image}
+                alt={user.username}
+                width="32"
+                height="32"
+              />
+              @{user.username}
+            </UserLink>
+          )}
+        </TextContainer>
+      </Card>
+    </MealLink>
+  </NextLink>
+)
 
-export const MealCardSkeleton = () => {
-  return (
-    <Card>
-      <MealImageWrapper>
-        <MealImage
-          src="/PouchPreload.png"
-          alt="placeholder pouch image"
-          layout="fill"
-          objectFit="contain"
-          objectPosition="50% 50%"
-        />
-      </MealImageWrapper>
-      <TextContainerSkeleton>
-        <TitleSkeleton />
-        <Flex>
-          <ProfileSkeleton />
-          <NameSkeleton />
-        </Flex>
-      </TextContainerSkeleton>
-    </Card>
-  )
-}
+export const MealCardSkeleton = () => (
+  <Card>
+    <MealImageWrapper>
+      <MealImage
+        src="/PouchPreload.png"
+        alt="placeholder pouch image"
+        layout="fill"
+        objectFit="contain"
+        objectPosition="50% 50%"
+      />
+    </MealImageWrapper>
+    <TextContainerSkeleton>
+      <TitleSkeleton />
+      <Flex>
+        <ProfileSkeleton />
+        <NameSkeleton />
+      </Flex>
+    </TextContainerSkeleton>
+  </Card>
+)
 
 const MealLink = styled.a`
   text-decoration: none;

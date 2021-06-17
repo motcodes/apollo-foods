@@ -9,7 +9,7 @@ import FormatedList from './FormatedList'
 import FormatedText from './FormatedText'
 import LabelLoader from './LabelLoader'
 
-export const Label = (props) => {
+export const Label = ({ meal, randomColor, labelRef, style }) => {
   const {
     mealId = 52837,
     mealName = 'Ilchard Puttanesca',
@@ -18,16 +18,11 @@ export const Label = (props) => {
     mealInstructions = 'cook :]',
     mealIngredients = ['Spaghettig', 'Olive Oil'],
     mealMeasure = ['300g', '1 tbls'],
-  } = props.meal
-  const { randomColor } = props
+  } = meal
 
   return (
     <>
-      <Container
-        ref={props.labelRef}
-        style={props.style}
-        randColor={randomColor}
-      >
+      <Container ref={labelRef} style={style} randColor={randomColor}>
         <Front>
           <LabelHero />
           <Description>

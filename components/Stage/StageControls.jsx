@@ -3,15 +3,15 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { signIn, useSession } from 'next-auth/client'
+import toast from 'react-hot-toast'
 import { fetcher, useFullscreen } from '../../lib'
 import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
 import { Dots } from '../../utils'
-import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
 
 export function StageControls({
   elementId,
@@ -24,7 +24,20 @@ export function StageControls({
   const { isFullscreenEnabled, toggleFullscreen } = useFullscreen(elementId)
   const [isSaved, setIsSaved] = useState(isMealSaved)
   const [isLoading, toggleLoading] = useState(false)
+  const [buttonText, setButtonText] = useState('Sign In to Save')
   const { query } = useRouter()
+
+  useEffect(() => {
+    if (session) {
+      if (isSaved) {
+        setButtonText('Remove from Account')
+      } else {
+        setButtonText('Save to Account')
+      }
+    } else {
+      setButtonText('Sign In to Save')
+    }
+  }, [session, isSaved])
 
   async function handleSaveMeal() {
     toggleLoading(true)
@@ -78,13 +91,7 @@ export function StageControls({
       )}
       {bookmark && (
         <StageControlsButton
-          text={
-            session
-              ? isSaved
-                ? 'Remove from Account'
-                : 'Save to Account'
-              : 'Sign In to Save'
-          }
+          text={buttonText}
           onClick={handleSaveMeal}
           enableHover
         >

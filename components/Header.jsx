@@ -3,7 +3,7 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <>
       <Container>
-        <Link href="/">
+        <Link href="/" passHref>
           <LogoWrapper>
             <NavLogo />
             <Typography variant="h6">Apollo Foods</Typography>
@@ -92,7 +92,7 @@ const Header = () => {
               <span>Account</span>
             </NavItem>
           ) : (
-            <NavItem href={`/api/auth/signin`}>
+            <NavItem href="/api/auth/signin">
               <AccountIcon />
               <span>Account</span>
             </NavItem>

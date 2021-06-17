@@ -18,7 +18,7 @@ export async function getServerSideProps(context) {
   const { username } = context.query
   const user = await prisma.user.findUnique({
     where: {
-      username: username,
+      username,
     },
   })
 
@@ -44,9 +44,8 @@ function Settings(props) {
       setNameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setNameError(false)
     }
+    setNameError(false)
 
     userData.username = userData.username?.replace('@', '')
     const isValidUsername = usernameValidation(userData.username)
@@ -55,9 +54,8 @@ function Settings(props) {
       setUsernameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameError(false)
     }
+    setUsernameError(false)
 
     const checkUsername = await fetcher(`${server}/api/user/check`, {
       method: 'POST',
@@ -68,9 +66,9 @@ function Settings(props) {
       setUsernameIsTaken(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameIsTaken(false)
     }
+    setUsernameIsTaken(false)
+
     setButtonText('Save my data')
 
     userData.twitter = userData.twitter?.replace('@', '')
@@ -102,8 +100,8 @@ function Settings(props) {
 
   async function deleteUser(e) {
     e.stopPropagation()
-    const deleteUser = await fetcher(`${server}/api/user/delete`)
-    if (deleteUser.message === 'success') {
+    const deleteUserRes = await fetcher(`${server}/api/user/delete`)
+    if (deleteUserRes.message === 'success') {
       signOut({ callbackUrl: '/' })
     }
   }

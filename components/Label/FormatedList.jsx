@@ -18,6 +18,7 @@ const FormatedList = ({ ingredients, measure }) => {
       setIngredientsList([firstHalf, secondHalf])
     }
   }, [ingredients])
+
   useEffect(() => {
     if (measure.length > 6) {
       const half = Math.ceil(measure.length / 2)

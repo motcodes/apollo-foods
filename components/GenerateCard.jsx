@@ -12,17 +12,15 @@ export const GenerateCard = ({
   text = 'and save it to your personal account',
   buttonText = 'Test it out now!',
   bgColor = 'var(--orange-50)',
-}) => {
-  return (
-    <Container bgColor={bgColor}>
-      <Typography variant="h4">{heading}</Typography>
-      <Typography font="Blatant">{text}</Typography>
-      <TestItButton bgColor={bgColor} onClick={() => router.push('/generate')}>
-        {buttonText}
-      </TestItButton>
-    </Container>
-  )
-}
+}) => (
+  <Container bgColor={bgColor}>
+    <Typography variant="h4">{heading}</Typography>
+    <Typography font="Blatant">{text}</Typography>
+    <TestItButton bgColor={bgColor} onClick={() => router.push('/generate')}>
+      {buttonText}
+    </TestItButton>
+  </Container>
+)
 
 const Container = styled.section`
   width: 100%;
@@ -52,7 +50,8 @@ const TestItButton = styled(Button)`
           background-color: var(--purple-80);
         }
       `
-    } else if (bgColor.includes('blue')) {
+    }
+    if (bgColor.includes('blue')) {
       return css`
         background-color: var(--blue-90);
         color: var(--blue-20);
@@ -60,14 +59,13 @@ const TestItButton = styled(Button)`
           background-color: var(--blue-80);
         }
       `
-    } else {
-      return css`
-        background-color: var(--orange-90);
-        color: var(--orange-20);
-        &:hover {
-          background-color: var(--orange-80);
-        }
-      `
     }
+    return css`
+      background-color: var(--orange-90);
+      color: var(--orange-20);
+      &:hover {
+        background-color: var(--orange-80);
+      }
+    `
   }};
 `

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /*
 Author: Matthias Oberholzer
 Multimedia Project 1 - Web

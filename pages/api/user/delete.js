@@ -6,7 +6,7 @@ Salzburg University of Applied Sciences
 import { getSession } from 'next-auth/client'
 import prisma from '../../../prisma/prisma'
 
-export default async (req, res) => {
+export default async function (req, res) {
   const session = await getSession({ req })
 
   const user = await prisma.user.findUnique({

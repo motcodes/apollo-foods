@@ -3,7 +3,7 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { fetcher, mealDbById, mealDbRandom } from '../../../lib'
+import { fetcher, mealDbById } from '../../../lib'
 
 export default async function (req, res) {
   const mealId = req.query.id
