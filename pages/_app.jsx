@@ -8,15 +8,17 @@ import { useState } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { Provider } from 'next-auth/client'
 import { Toaster } from 'react-hot-toast'
+import reactUseCookie from 'react-use-cookie'
 import { GlobalStyle } from '../components/theme/globalStyles'
 import { themeStyles } from '../components/theme/theme'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { Typography, Button, Link } from '../utils'
+// import { useLocalStorage } from '../lib'
 import '../styles/font.css'
 
 export default function App({ Component, pageProps }) {
-  const [isAccepted, setAccepted] = useState(false)
+  const [isAccepted, setAccepted] = reactUseCookie('cookieBanner', false)
 
   return (
     <>
