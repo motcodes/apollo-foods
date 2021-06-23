@@ -56,10 +56,11 @@ const Index = ({ data }) => {
         </Stage>
 
         <Container>
-          <Typography variant="h4" as="h1">
-            A random astronaut food recipe generator
+          <Typography variant="h2" as="h1" color="var(--orange-60)">
+            A random
+            <br /> astronaut food recipe generator
           </Typography>
-          <Typography variant="h5" as="h2">
+          <Typography variant="p" as="h2" fontSize="var(--body-large)">
             for your interstellar space missions.
             <br /> Each Pouch will be uniquely created for you.
           </Typography>
@@ -78,7 +79,7 @@ const Grid = styled.div`
   @media (min-width: 1024px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 4rem;
+    /* column-gap: 4rem; */
     align-items: center;
     max-width: 1280px;
     height: 70vh;
@@ -101,7 +102,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   h2 {
-    color: var(--orange-90);
+    color: var(--grey-90);
   }
   @media (min-width: 1024px) {
     grid-column: 1;
@@ -110,7 +111,6 @@ const Container = styled.div`
     text-align: left;
     margin-left: 2rem;
     h1 {
-      font-size: 3.5rem;
       margin-bottom: 0.5rem;
     }
   }

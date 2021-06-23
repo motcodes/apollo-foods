@@ -10,7 +10,13 @@ import {
   usernameValidation,
   useUserState,
 } from '../../../lib'
-import { Button, Typography, Input, Textarea } from '../../../utils'
+import {
+  Button,
+  Typography,
+  Input,
+  Textarea,
+  UserContainer,
+} from '../../../utils'
 
 import prisma from '../../../prisma/prisma'
 
@@ -261,14 +267,6 @@ function Settings(props) {
   )
 }
 export default Settings
-
-const UserContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 720px;
-  margin: 2rem auto 4rem;
-  padding: 0 0.5rem;
-`
 
 const SaveButton = styled(Button)`
   margin-top: 2rem;

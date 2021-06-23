@@ -5,7 +5,7 @@ Salzburg University of Applied Sciences
 */
 import Layout from '../components/Layout'
 import { MealCard, MealCardSkeleton } from '../components/MealCard'
-import { CardGrid, Typography } from '../utils'
+import { CardGrid, Typography, Intro } from '../utils'
 
 import prisma from '../prisma/prisma'
 
@@ -31,10 +31,12 @@ export default function Expedition(props) {
   const { mealData } = props
   return (
     <Layout>
-      <Typography variant="h1">Expedition</Typography>
-      <Typography variant="h6" as="h2" style={{ marginBottom: 32 }}>
-        Discover and see which recipes your astronaut colleagues want to cook.
-      </Typography>
+      <Intro>
+        <Typography variant="h1">Expedition</Typography>
+        <Typography as="h2">
+          Discover and see which recipes your astronaut colleagues want to cook.
+        </Typography>
+      </Intro>
       <CardGrid>
         {!mealData
           ? [0, 1, 2, 3, 4, 5].map((meal) => <MealCardSkeleton key={meal} />)
