@@ -27,7 +27,6 @@ import prisma from '../../prisma/prisma'
 export async function getServerSideProps(context) {
   const { query } = context
   const id = parseInt(query.id)
-  const { user } = await getSession(context)
 
   let mealData
   const isMealSaved = {
@@ -44,7 +43,6 @@ export async function getServerSideProps(context) {
       customRecipe: true,
     },
   })
-  // console.log('meal :', meal)
 
   if (meal?.customRecipe) {
     isMealSaved.isSaved = true
