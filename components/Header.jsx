@@ -43,6 +43,17 @@ const Header = () => {
                 </Link>
               </li>
               <li>
+                {session ? (
+                  <Link href="/create">
+                    <a>Add Recipe</a>
+                  </Link>
+                ) : (
+                  <Link href="/api/auth/signin">
+                    <a>Add Recipe</a>
+                  </Link>
+                )}
+              </li>
+              <li>
                 {!session && <Button onClick={signIn}>Sign In</Button>}
                 {session && (
                   <UserImageContainer>
@@ -63,6 +74,7 @@ const Header = () => {
                     </UserImageWrapper>
                     {isHover && (
                       <AccountModal
+                        session={session}
                         onMouseLeave={() => toggleHover(false)}
                         signOut={signOut}
                         top="3.5rem"
@@ -126,6 +138,7 @@ const Container = styled.nav`
   margin: 0 auto;
   height: 3rem;
   padding: 0.5rem 1rem;
+  z-index: 10;
 
   .navIcon {
     width: 3rem;

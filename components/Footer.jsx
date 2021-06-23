@@ -9,7 +9,7 @@ import { Typography, Link, LinkExt } from '../utils'
 export default function Footer() {
   return (
     <Container>
-      <Typography variant="h5">Apollo Foods</Typography>
+      <Typography variant="h3">Apollo Foods</Typography>
       <ListContainer>
         <List>
           <li>
@@ -18,16 +18,8 @@ export default function Footer() {
           <li>
             <Link href="/expedition">Expedition</Link>
           </li>
-          <li>
-            <Link href="/about">About</Link>
-          </li>
         </List>
         <List>
-          <li>
-            <LinkExt href="https://github.com/motcodes/apollo-foods">
-              Github
-            </LinkExt>
-          </li>
           <li>
             <Link href="/credits">Credits</Link>
           </li>
@@ -43,6 +35,18 @@ export default function Footer() {
             <Link href="/tos">Terms of Service</Link>
           </li>
         </List>
+        <List>
+          <li>
+            <LinkExt href="https://github.com/motcodes/apollo-foods">
+              Github
+            </LinkExt>
+          </li>
+          <li>
+            <LinkExt href="https://github.com/motcodes/apollo-foods">
+              Portfolio
+            </LinkExt>
+          </li>
+        </List>
       </ListContainer>
     </Container>
   )
@@ -52,7 +56,7 @@ const Container = styled.footer`
   width: 100%;
   margin: 0 auto;
   padding: 1.5rem 1rem 2rem;
-  max-width: 1312px;
+  max-width: 1280px;
   display: flex;
   flex-direction: column;
   gap: 1rem;

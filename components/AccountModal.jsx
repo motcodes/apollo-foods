@@ -3,7 +3,6 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { useSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styled from 'styled-components'
@@ -11,13 +10,13 @@ import { Button } from '../utils'
 import { useUser } from '../lib'
 
 export const AccountModal = ({
+  session,
   onMouseEnter,
   onMouseLeave,
   signOut,
   top = '5rem',
   right = '1rem',
 }) => {
-  const [session] = useSession()
   const user = useUser()
   const router = useRouter()
   return (
