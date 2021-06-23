@@ -6,17 +6,20 @@ Salzburg University of Applied Sciences
 import prisma from '../../../prisma/prisma'
 
 export default async function (req, res) {
-  const id = JSON.parse(req.body)
+  const body = JSON.parse(req.body)
 
   try {
-    const removeMeal = await prisma.meal.delete({
+    const saveMeal = await prisma.meal.update({
       where: {
-        id: parseInt(id),
+        id: parseInt(body.id),
+      },
+      data: {
+        textureColor: body.textureColor,
+        placeholderImage: body.placeholderImage,
       },
     })
-    console.log('removeMeal :', removeMeal)
 
-    if (removeMeal.id === parseInt(id)) {
+    if (saveMeal) {
       res.json({ message: 'success', success: true })
     } else {
       res.json({ message: 'error', success: false })

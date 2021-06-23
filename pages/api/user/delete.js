@@ -9,20 +9,20 @@ import prisma from '../../../prisma/prisma'
 export default async function (req, res) {
   const session = await getSession({ req })
 
-  const user = await prisma.user.findUnique({
+  // const user = await prisma.user.findUnique({
+  //   where: {
+  //     username: session.user.username,
+  //   },
+  // })
+
+  const removeMeals = prisma.meal.deleteMany({
     where: {
       username: session.user.username,
     },
   })
-
-  const removeMeals = prisma.meal.deleteMany({
-    where: {
-      userId: parseInt(user.id),
-    },
-  })
   const removeUser = prisma.user.delete({
     where: {
-      id: user.id,
+      username: session.user.username,
     },
   })
 

@@ -9,7 +9,6 @@ import prisma from '../../../prisma/prisma'
 
 export default async function (req, res) {
   const session = await getSession({ req })
-  console.log('session :', session)
   const body = JSON.parse(req.body)
 
   try {
@@ -17,14 +16,23 @@ export default async function (req, res) {
       data: {
         id: parseInt(body.id),
         name: body.name,
-        createdAt: body.createdAt,
         username: session.user.username,
-        textureColor: body.textureColor,
-        placeholderImage: body.placeholderImage,
       },
     })
 
-    if (session && saveMeal) {
+    const saveCustomRecipe = await prisma.customRecipe.create({
+      data: {
+        area: body.area,
+        category: body.category,
+        instruction: body.instruction,
+        ingredients: body.ingredients,
+        measure: body.measure,
+        mealId: saveMeal.id,
+        ownerUsername: session.user.username,
+      },
+    })
+
+    if (session && saveMeal && saveCustomRecipe) {
       res.json({ message: 'success', success: true })
     } else {
       res.json({ message: 'error', success: false })
