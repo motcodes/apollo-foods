@@ -85,6 +85,7 @@ model User {
   dribbble      String?
   github        String?
   meals         Meal[]
+  customRecipe  CustomRecipe[]
 
   @@map(name: "users")
 }
@@ -107,6 +108,22 @@ model Meal {
   placeholderImage    String?     
   textureColor        String?     
   createdAt           DateTime    @default(now()) @map(name: "created_at")
-  user                User?       @relation(fields: [userId], references:[id])
-  userId              Int
+  user                User?       @relation(fields: [username], references:[username])
+  username            String
+  customRecipe        CustomRecipe?
+}
+
+model CustomRecipe {
+  category            String
+  area                String
+  instruction         String?
+  createdAt           DateTime    @default(now()) @map(name: "created_at")
+  ingredients         String[]
+  measure             String[]
+  meal                Meal?       @relation(fields: [mealId], references:[id])
+  mealId              Int
+  owner               User?       @relation(fields: [ownerUsername], references:[username])
+  ownerUsername       String
+
+  @@id([mealId])
 }
