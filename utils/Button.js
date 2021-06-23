@@ -27,29 +27,6 @@ export const Button = ({
   </Btn>
 )
 
-// export const IconButton = ({
-//   size = 'medium',
-//   variant = 'filled',
-//   scale = 1,
-//   fullWidth = false,
-//   children = 'Text',
-//   ...rest
-// }) => {
-//   return (
-//     <IconBtn
-//       {...rest}
-//       size={size}
-//       variant={variant}
-//       scale={scale}
-//       style={{
-//         width: fullWidth ? '100%' : 'fit-content',
-//       }}
-//     >
-//       {children}
-//     </IconBtn>
-//   )
-// }
-
 const ButtonProps = {
   padding: ({ size }) => {
     if (size === 'large') {
@@ -112,11 +89,17 @@ const ButtonProps = {
       if (transparent || variant === 'text') {
         return 'rgba(255,255,255,0.15)'
       }
+      if (variant === 'outlined') {
+        return theme.orange20
+      }
       return theme.orange60
     },
     borderColor: ({ theme, variant, transparent }) => {
       if (transparent || variant === 'text') {
         return 'rgba(255,255,255,0.15)'
+      }
+      if (variant === 'outlined') {
+        return theme.orange40
       }
       return theme.orange60
     },

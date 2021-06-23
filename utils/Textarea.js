@@ -4,11 +4,12 @@ Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
 import styled from 'styled-components'
+import { isEmptyOrSpaces } from '../lib'
 import { Typography } from './Typography'
 
 export function Textarea({
   id,
-  label = 'Label',
+  label = '',
   type = 'text',
   name,
   value,
@@ -16,11 +17,14 @@ export function Textarea({
   placeholder,
   disabled = false,
   error = false,
+  areaHeight = 80,
   ...rest
 }) {
   return (
     <Container htmlFor={id}>
-      <Typography variant="h5">{label}:</Typography>
+      {!isEmptyOrSpaces(label) && (
+        <Typography variant="h5">{label}:</Typography>
+      )}
       <InputField
         {...rest}
         type={type}
@@ -30,6 +34,7 @@ export function Textarea({
         onChange={onChange}
         placeholder={placeholder || label}
         disabled={disabled}
+        areaHeight={areaHeight}
       />
     </Container>
   )
@@ -50,7 +55,7 @@ const Container = styled.label`
 `
 
 const InputField = styled.textarea`
-  --height: 5rem;
+  --height: ${({ areaHeight }) => areaHeight}px;
   --width: 100%;
   --padding: 0.5rem 0.5rem;
   --fSize: 1rem;
