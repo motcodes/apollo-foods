@@ -81,7 +81,9 @@ export default function Stage({
         id={canvasProps.id}
         gl={{ preserveDrawingBuffer: true }}
         dpr={[1, 1.5]}
-        style={{ height: isLarge ? '100vh' : '100%' }}
+        style={{
+          height: pathname.includes('cook') && isLarge ? '100vh' : '100%',
+        }}
       >
         <ambientLight ambientIntensity={0.65} />
         <OrbitControls
@@ -120,7 +122,7 @@ const Container = styled.section`
   position: relative;
   height: ${({ height }) => height || 'initial'};
   cursor: pointer;
-
+  z-index: 10;
   @media (min-width: 1024px) {
     margin-bottom: 11rem;
   }

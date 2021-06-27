@@ -7,8 +7,9 @@ import styled, { keyframes } from 'styled-components'
 import Image from 'next/image'
 import NextLink from 'next/link'
 import { Link, Typography } from '../utils'
+import { FallbackProfileImageIcon } from './ProfileImage'
 
-export const MealCard = ({ id, placeholderImage, name, user = {} }) => (
+export const MealCard = ({ id, placeholderImage, name, user, creator }) => (
   <NextLink href={`/cook/${id}`}>
     <MealLink>
       <Card>
@@ -25,17 +26,22 @@ export const MealCard = ({ id, placeholderImage, name, user = {} }) => (
           <MealTitle variant="h3">
             {name} #{id}
           </MealTitle>
-          {user !== {} && user.image && (
+          {user && (
             <UserLink href={`/u/${user.username}`}>
-              <Image
-                src={user.image}
-                alt={user.username}
-                width="32"
-                height="32"
-              />
+              {user.image ? (
+                <Image
+                  src={user.image}
+                  alt={user.username}
+                  width="32"
+                  height="32"
+                />
+              ) : (
+                <FallbackProfileImageIcon size="32" />
+              )}
               @{user.username}
             </UserLink>
           )}
+          {creator && <UserLink href={`/u/${creator}`}>by @{creator}</UserLink>}
         </TextContainer>
       </Card>
     </MealLink>

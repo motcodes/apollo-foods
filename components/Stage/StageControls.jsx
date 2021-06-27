@@ -60,6 +60,7 @@ export function StageControls({
           console.log('error')
         }
       } else {
+        console.log('mealProps :', mealProps)
         const json = await fetcher('/api/meal/save', {
           method: 'POST',
           body: JSON.stringify(mealProps),
@@ -81,7 +82,7 @@ export function StageControls({
   }
 
   return (
-    <ControlContainer bottom={isLarge ? '3rem' : '1rem'}>
+    <ControlContainer isLarge={isLarge}>
       {enableFullscreen && isFullscreenEnabled && (
         <StageControlsButton
           text="Enter Fullscreen"
@@ -109,9 +110,9 @@ export function StageControls({
 }
 
 const ControlContainer = styled.div`
-  position: sticky;
+  position: ${({ isLarge }) => (isLarge ? 'sticky' : 'absolute')};
+  bottom: ${({ isLarge }) => (isLarge ? '3rem' : '1rem')};
   right: 0;
-  bottom: ${({ bottom }) => bottom};
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-end;

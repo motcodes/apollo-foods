@@ -96,7 +96,7 @@ const Header = () => {
           </NavItem>
           <NavItem href="/generate">
             <BeakonIcon />
-            <span>Gengerate</span>
+            <span>Generate</span>
           </NavItem>
           {session ? (
             <NavItem href={`/u/${session.user.username}`}>
@@ -138,7 +138,7 @@ const Container = styled.nav`
   margin: 0 auto;
   height: 3rem;
   padding: 0.5rem 1rem;
-  z-index: 10;
+  z-index: 100;
 
   .navIcon {
     width: 3rem;
@@ -165,6 +165,7 @@ const LogoWrapper = styled.a`
   color: white;
   text-decoration: none;
   cursor: pointer;
+  z-index: 100;
   &:visited {
     color: white;
   }

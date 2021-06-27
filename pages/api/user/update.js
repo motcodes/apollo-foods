@@ -9,7 +9,6 @@ import prisma from '../../../prisma/prisma'
 export default async function (req, res) {
   const session = await getSession({ req })
   const body = JSON.parse(req.body)
-  // console.log('req.body :', session)
 
   if (body && body.emailVerified === '') {
     body.emailVerified = null

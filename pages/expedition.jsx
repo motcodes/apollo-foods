@@ -12,7 +12,7 @@ import prisma from '../prisma/prisma'
 export async function getServerSideProps() {
   const meals = await prisma.meal.findMany({
     include: {
-      user: {
+      creator: {
         select: {
           username: true,
           image: true,
@@ -46,7 +46,7 @@ export default function Expedition(props) {
                 id={meal.id}
                 name={meal.name}
                 placeholderImage={meal.placeholderImage}
-                user={meal.user}
+                user={meal.creator}
               />
             ))}
       </CardGrid>

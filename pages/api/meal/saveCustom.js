@@ -16,7 +16,7 @@ export default async function (req, res) {
       data: {
         id: parseInt(body.id),
         name: body.name,
-        username: session.user.username,
+        creatorUsername: session.user.username,
       },
     })
 

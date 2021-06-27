@@ -1,7 +1,8 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import useMedia from 'use-media'
+import router from 'next/router'
 
 export default function PouchModel({
   textureUrl,
@@ -14,17 +15,30 @@ export default function PouchModel({
   receiveShadow = true,
   ...rest
 }) {
+  const isLarge = useMedia({ minWidth: 1024 })
+  const [scaleXYZ, setScale] = useState(scale)
+  const [posY, setPosY] = useState(-10)
+
   const group = useRef()
   const { nodes } = useGLTF('/gltf/pouchDefault.gltf')
   const texture = useTexture(textureUrl)
   texture.flipY = false
-  const isLarge = useMedia({ minWidth: 1024 })
-  useFrame(() => {
-    group.current.scale.x = isLarge ? 1.5 : scale
-    group.current.scale.y = isLarge ? 1.5 : scale
-    group.current.scale.z = isLarge ? 1.5 : scale
 
-    group.current.position.y = isLarge ? -40 : -10
+  useEffect(() => {
+    if (router.pathname.includes('cook') && isLarge) {
+      setScale(1.5)
+    }
+    if (router.pathname.includes('cook') && isLarge) {
+      setPosY(-40)
+    }
+  }, [isLarge])
+
+  useFrame(() => {
+    group.current.scale.x = scaleXYZ
+    group.current.scale.y = scaleXYZ
+    group.current.scale.z = scaleXYZ
+
+    group.current.position.y = posY
   })
 
   return (

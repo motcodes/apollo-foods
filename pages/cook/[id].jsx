@@ -3,10 +3,11 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import Head from 'next/head'
 import { getSession } from 'next-auth/client'
+import router from 'next/router'
 import { Label as Ettiket } from '../../components/Label/Label'
 import Layout from '../../components/Layout'
 import Stage from '../../components/Stage/Stage'
@@ -27,12 +28,14 @@ import prisma from '../../prisma/prisma'
 export async function getServerSideProps(context) {
   const { query } = context
   const id = parseInt(query.id)
+  const session = await getSession(context)
 
-  let mealData
-  const isMealSaved = {
+  const mealMetadata = {
     textureColor: getRandomItem(colors),
     isSaved: false,
     needsPlaceholder: false,
+    canSave: true,
+    isInDb: false,
   }
 
   const meal = await prisma.meal.findUnique({
@@ -41,12 +44,32 @@ export async function getServerSideProps(context) {
     },
     include: {
       customRecipe: true,
+      likedByUser: {
+        select: {
+          username: true,
+        },
+      },
     },
   })
+  // console.log('meal :', meal)
 
+  if (meal) {
+    mealMetadata.isInDb = true
+  }
+
+  let mealData
   if (meal?.customRecipe) {
-    isMealSaved.isSaved = true
-    isMealSaved.needsPlaceholder = true
+    mealMetadata.needsPlaceholder = true
+
+    // owner
+    if (session.user.username === meal.customRecipe.ownerUsername) {
+      mealMetadata.isSaved = true
+      mealMetadata.canSave = false
+    }
+    // liked user
+    if (meal.likedByUser.some((u) => u.username === session.user.username)) {
+      mealMetadata.isSaved = true
+    }
     mealData = {
       mealId: meal.id,
       mealName: meal.name,
@@ -66,8 +89,13 @@ export async function getServerSideProps(context) {
     mealData = formatMeal(fetchById.meals[0])
 
     if (meal?.id === id) {
-      isMealSaved.textureColor = meal.textureColor
-      isMealSaved.isSaved = true
+      mealMetadata.textureColor = meal.textureColor
+      mealMetadata.isSaved = true
+    }
+    if (session?.user.username === meal?.creatorUsername) {
+      mealMetadata.isSaved = true
+    } else {
+      mealMetadata.isSaved = false
     }
   }
 
@@ -76,7 +104,7 @@ export async function getServerSideProps(context) {
       data: mealData,
       mealIngredients: mealData.mealIngredients.toString(),
       mealMeasure: mealData.mealMeasure.toString(),
-      isMealAlreadySaved: isMealSaved,
+      mealMetadata,
     },
   }
 }
@@ -85,13 +113,11 @@ export default function Meal({
   data: mealData,
   mealIngredients,
   mealMeasure,
-  isMealAlreadySaved,
+  mealMetadata,
 }) {
+  const { textureColor, isSaved, canSave, isInDb } = mealMetadata
   mealData.mealIngredients = mealIngredients.split(',')
   mealData.mealMeasure = mealMeasure.split(',')
-
-  const [randomColor] = useState(isMealAlreadySaved?.textureColor)
-  const [isMealSaved] = useState(isMealAlreadySaved?.isSaved)
 
   const [generateImage, appRef, imageUrl, isLoading] = useHtmlToImage(2048)
 
@@ -105,9 +131,10 @@ export default function Meal({
   const mealProps = {
     id: mealData?.mealId,
     name: mealData?.mealName,
-    textureColor: randomColor,
+    textureColor,
     createdAt: new Date(),
     placeholderImage: '',
+    isInDb,
   }
 
   const canvasProps = {
@@ -128,7 +155,7 @@ export default function Meal({
           <Ettiket
             meal={mealData}
             labelRef={appRef}
-            randomColor={randomColor}
+            randomColor={textureColor}
           />
         )}
       </div>
@@ -137,14 +164,14 @@ export default function Meal({
 
   return (
     <Layout>
-      <Container>
+      <Container isIndex={router.pathname === '/'}>
         <Stage
           canvasProps={canvasProps}
           controlsProps={controlsProps}
           mealProps={mealProps}
-          isMealSaved={isMealSaved}
-          bookmark
-          needsPlaceholderImage={isMealAlreadySaved.needsPlaceholder}
+          isMealSaved={isSaved}
+          bookmark={canSave}
+          needsPlaceholderImage={mealMetadata.needsPlaceholder}
         >
           <PouchModel textureUrl={imageUrl} rotation={[0, Math.PI, 0]} />
         </Stage>
@@ -157,7 +184,7 @@ export default function Meal({
               </title>
             </Head>
             <RecipeContainer>
-              <Section randomColor={randomColor}>
+              <Section randomColor={textureColor}>
                 <Typography variant="h2" as="h1">
                   #{mealData.mealId}
                 </Typography>
@@ -190,7 +217,7 @@ export default function Meal({
               </Section>
               {mealData.mealIngredients?.length !== 0 &&
                 mealData.mealMeasure?.length !== 0 && (
-                  <Section randomColor={randomColor}>
+                  <Section randomColor={textureColor}>
                     <Typography variant="h3" as="h2">
                       Ingredients
                     </Typography>
@@ -213,7 +240,7 @@ export default function Meal({
                   </Section>
                 )}
               {mealData.mealInstructions && (
-                <Section randomColor={randomColor}>
+                <Section randomColor={textureColor}>
                   <Typography variant="h3" as="h2">
                     Instructions
                   </Typography>
@@ -234,23 +261,25 @@ export default function Meal({
         heading="Do you want to discover more recipes?"
         text="Just click the button below."
         buttonText="Generate now!"
-        bgColor={randomColor}
+        bgColor={textureColor}
+        marginBottom
+        createButton
       />
     </Layout>
   )
 }
 
 const Container = styled.div`
+  z-index: 10;
   @media (min-width: 1024px) {
     display: grid;
     grid-template-columns: 4fr 3fr;
-    gap: 2rem;
+    gap: 3rem;
     margin-bottom: 4rem;
     #canvasContainer {
       position: sticky;
       top: 0px;
-      /* height: calc(100vh - 128px); */
-      height: calc(100vh);
+      height: 100vh;
       margin-top: -128px;
     }
   }
@@ -318,7 +347,7 @@ const Item = styled.div`
 `
 const ListItem = styled.li`
   border-bottom: 1px solid white;
-  font-size: var(--body);
+  font-size: var(--body-small);
   ${({ paddingLeft }) => {
     if (paddingLeft) {
       return css`

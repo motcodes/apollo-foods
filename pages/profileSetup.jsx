@@ -23,7 +23,6 @@ function ProfileSetup() {
   const [session] = useSession()
   const user = useUser()
   const [userData, dispatchUser] = useUserState(user)
-  console.log('userData :', userData)
   const [usernameIsTaken, setUsernameIsTaken] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
   const [nameError, setNameError] = useState(false)
@@ -54,7 +53,6 @@ function ProfileSetup() {
       body: JSON.stringify(userData.username),
     })
 
-    console.log('checkUsername :', checkUsername)
     if (checkUsername.isTaken) {
       setUsernameIsTaken(true)
       setButtonText('Try again')

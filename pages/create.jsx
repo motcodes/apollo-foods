@@ -40,6 +40,7 @@ export default function Create() {
   const [nameError, setNameError] = useState(false)
   const [categoryError, setCategoryError] = useState(false)
   const [areaError, setAreaError] = useState(false)
+  const [instructionError, setInstructionError] = useState(false)
   const [buttonText, setButtonText] = useState('save recipe')
   const isLarge = useMedia({ minWidth: 768 })
 
@@ -95,6 +96,13 @@ export default function Create() {
       return
     }
     setAreaError(false)
+    if (isEmptyOrSpaces(recipeData.instruction)) {
+      toast.error('Add an instruction to recipe.')
+      setInstructionError(true)
+      setButtonText('Try again')
+      return
+    }
+    setInstructionError(false)
     setButtonText('Save recipe')
 
     if (recipeData.ingredients.length === 0) {
@@ -108,7 +116,7 @@ export default function Create() {
     })
     if (recipeResponse.success === true) {
       toast.success('Successfully created recipe!')
-      console.log('saved')
+      // console.log('saved')
       router.push({
         pathname: '/cook/[id]',
         query: { id: recipeData.id, custom: true },
@@ -116,7 +124,7 @@ export default function Create() {
     } else {
       toast.error('Could not create Recipe! Try again.')
       setButtonText('Try again')
-      console.log('error')
+      // console.log('error')
     }
   }
 
@@ -233,6 +241,7 @@ export default function Create() {
             }
             placeholder="Enter all the steps to cook this meal"
             areaHeight={200}
+            error={instructionError}
           />
         </InputContainer>
         <Button fullWidth type="submit">

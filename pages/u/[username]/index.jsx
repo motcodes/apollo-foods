@@ -32,7 +32,26 @@ export async function getServerSideProps({ params }) {
       username: params.username,
     },
     include: {
-      meals: true,
+      createdMeals: {
+        select: {
+          id: true,
+          name: true,
+          placeholderImage: true,
+        },
+      },
+      savedMeals: {
+        where: {
+          creatorUsername: {
+            not: params.username,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          placeholderImage: true,
+          creatorUsername: true,
+        },
+      },
     },
   })
 
@@ -52,7 +71,8 @@ export async function getServerSideProps({ params }) {
 
 export default function User(props) {
   const { user } = props
-  const { meals } = user
+  const { savedMeals, createdMeals } = user
+  // console.log('savedMeals :', savedMeals)
   const [session] = useSession()
   const sessionUser = useUser()
 
@@ -154,21 +174,39 @@ export default function User(props) {
         <Typography variant="h3" as="h2">
           Creations
         </Typography>
-        {meals.length !== 0 && (
+        {createdMeals.length !== 0 && (
           <CardGrid>
-            {meals &&
-              meals.map((meal, index) => (
+            {createdMeals &&
+              createdMeals.map((meal, index) => (
                 <MealCard
                   key={meal.id * index}
                   id={meal.id}
                   name={meal.name}
                   placeholderImage={meal.placeholderImage}
-                  user={meal.user}
                 />
               ))}
           </CardGrid>
         )}
-        {meals.length === 0 && session && <GenerateCard />}
+        {createdMeals.length === 0 && session && <GenerateCard />}
+        {savedMeals.length !== 0 && (
+          <>
+            <Typography variant="h3" as="h2">
+              Saved Recipes
+            </Typography>
+            <CardGrid>
+              {savedMeals &&
+                savedMeals.map((meal, index) => (
+                  <MealCard
+                    key={meal.id * index}
+                    id={meal.id}
+                    name={meal.name}
+                    placeholderImage={meal.placeholderImage}
+                    creator={meal.creatorUsername}
+                  />
+                ))}
+            </CardGrid>
+          </>
+        )}
       </ProfileContainer>
     </Layout>
   )

@@ -6,10 +6,10 @@ Salzburg University of Applied Sciences
 import styled from 'styled-components'
 import { Logo } from '../../utils'
 
-const LabelLoader = () => (
-  <Loader>
+const LabelLoader = ({ randomColor }) => (
+  <Loader randomColor={randomColor}>
     <Logo size={160} />
-    <h1>Rendering in the background</h1>
+    <h1>Cooking your new recipe in the background</h1>
   </Loader>
 )
 
@@ -22,7 +22,7 @@ const Loader = styled.div`
   width: 100vw;
   height: 100vh;
   padding: 1rem;
-  background-color: var(--blue-10);
+  background-color: ${({ randomColor }) => randomColor};
   display: grid;
   place-content: center;
   place-items: center;

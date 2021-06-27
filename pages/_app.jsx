@@ -165,7 +165,7 @@ const Background = styled.div`
       rgba(50, 11, 1, 0.59) 0%,
       rgba(50, 11, 1, 0) 100%
     ),
-    linear-gradient(240.31deg, #002833 18.97%, rgba(0, 40, 51, 0) 63.29%),
+    linear-gradient(240.31deg, #00151b 18.97%, rgba(0, 40, 51, 0) 63.29%),
     radial-gradient(
       14.55% 40.14% at 26.88% 9.86%,
       rgba(75, 16, 1, 0.69) 0%,

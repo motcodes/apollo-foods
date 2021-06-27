@@ -14,7 +14,7 @@ export default async function (req, res) {
         id: parseInt(id),
       },
     })
-    console.log('removeMeal :', removeMeal)
+    // console.log('removeMeal :', removeMeal)
 
     if (removeMeal.id === parseInt(id)) {
       res.json({ message: 'success', success: true })

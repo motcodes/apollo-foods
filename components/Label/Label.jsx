@@ -57,7 +57,7 @@ export const Label = ({ meal, randomColor, labelRef, style }) => {
           </Description>
         </Back>
       </Container>
-      <LabelLoader />
+      <LabelLoader randomColor={randomColor} />
     </>
   )
 }
