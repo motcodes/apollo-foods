@@ -66,7 +66,7 @@ const Index = ({ data }) => {
             for astronauts
           </Typography>
           <Typography variant="p" as="h2" fontSize="var(--body-large)">
-            for your interstellar space missions.
+            Perfect for your next interstellar space mission.
             <br /> Each Pouch will be uniquely created for you.
           </Typography>
           <GenButton onClick={() => router.push(`/cook/${data.idMeal}`)}>
@@ -106,7 +106,7 @@ const Index = ({ data }) => {
             </Typography>
             <Typography>
               Just hit the "Generate Now" Button and let Apollo Foods pick your
-              next favourite recipe to cook.
+              next favorite recipe to cook.
             </Typography>
           </Copy>
           <GenButtonContainer>
@@ -140,7 +140,7 @@ const Index = ({ data }) => {
               {!isLarge && <br />} recipe
             </Typography>
             <Typography>
-              Check out the recipe, if it suits your mission save it ot your
+              Check out the recipe, if it suits your mission save it to your
               profile
             </Typography>
           </Copy>
@@ -184,7 +184,7 @@ const Index = ({ data }) => {
               Add your own Recipe
             </Typography>
             <Typography>
-              Already have a favourite recipe but want it saved on Apollo Foods?
+              Already have a favorite recipe but want it saved on Apollo Foods?
               <br /> No problem, just add it to your account manually.
             </Typography>
           </Copy>
@@ -231,7 +231,7 @@ const Index = ({ data }) => {
             </Typography>
             <Typography>
               See what your fellow astronaut colleagues have created and saved
-              on our <Link href="/expedition">Expedtion Page</Link>
+              on our <Link href="/expedition">Expedition Page</Link>
             </Typography>
           </Copy>
           <div>
