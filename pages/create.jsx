@@ -3,7 +3,7 @@ Author: Matthias Oberholzer
 Multimedia Project 1 - Web
 Salzburg University of Applied Sciences
 */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import useMedia from 'use-media'
 import toast from 'react-hot-toast'
@@ -41,8 +41,9 @@ export default function Create() {
   const [categoryError, setCategoryError] = useState(false)
   const [areaError, setAreaError] = useState(false)
   const [instructionError, setInstructionError] = useState(false)
-  const [buttonText, setButtonText] = useState('save recipe')
+  const [buttonText, setButtonText] = useState('Save Recipe')
   const isLarge = useMedia({ minWidth: 768 })
+  const formRef = useRef()
 
   function handleIngredientChange(e, index) {
     const { name, value } = e.target
@@ -63,13 +64,31 @@ export default function Create() {
   }
   function removeIngredient(e, index) {
     e.preventDefault()
+
     const list = [...ingredientsList]
     list.splice(index, 1)
     setIngredientsList(list)
   }
 
+  useEffect(() => {
+    function preventEnter(e) {
+      const code = e.keyCode || e.which
+      if (code === 13) {
+        e.preventDefault()
+      }
+    }
+
+    if (formRef.current) {
+      const formEl = formRef.current
+      formEl.addEventListener('keydown', preventEnter)
+
+      return () => formEl.removeEventListener('keydown', preventEnter)
+    }
+  })
+
   async function saveMeal(e) {
     e.preventDefault()
+    console.log(e)
     const data = recipeData
     data.ingredients = ingredientsList.map((i) => i.ingredient).filter(Boolean)
     data.measure = ingredientsList.map((i) => i.measure).filter(Boolean)
@@ -103,12 +122,12 @@ export default function Create() {
       return
     }
     setInstructionError(false)
-    setButtonText('Save recipe')
 
     if (recipeData.ingredients.length === 0) {
       toast.error('Add at least one ingredient.')
       setButtonText('Try again')
     }
+    setButtonText('Save Recipe')
 
     const recipeResponse = await fetcher('/api/meal/saveCustom', {
       method: 'POST',
@@ -148,7 +167,7 @@ export default function Create() {
           and save it to your account or share it to the rest of the world.
         </Typography>
       </Intro>
-      <UserContainer onSubmit={saveMeal} aria-label="form">
+      <UserContainer onSubmit={saveMeal} aria-label="form" ref={formRef}>
         <Typography variant="h3" as="h2">
           Information
         </Typography>
@@ -215,6 +234,7 @@ export default function Create() {
               {ingredientsList.length !== 1 && (
                 <RemoveButton
                   variant="outlined"
+                  type="button"
                   onClick={(e) => removeIngredient(e, index)}
                 >
                   <XIcon />
@@ -223,7 +243,11 @@ export default function Create() {
             </li>
           ))}
           <IngredientButtonContainer>
-            <Button onClick={addIngredient} style={{ padding: 10 }}>
+            <Button
+              onClick={addIngredient}
+              type="button"
+              style={{ padding: 10 }}
+            >
               <PlusIcon size={32} />
             </Button>
           </IngredientButtonContainer>
