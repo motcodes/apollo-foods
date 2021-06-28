@@ -74,7 +74,6 @@ const Header = () => {
                     </UserImageWrapper>
                     {isHover && (
                       <AccountModal
-                        session={session}
                         onMouseLeave={() => toggleHover(false)}
                         signOut={signOut}
                         top="3.5rem"
@@ -116,12 +115,12 @@ const Header = () => {
 }
 
 const NavItem = ({ href, children }) => {
-  const router = useRouter()
+  const { pathname } = useRouter()
 
   return (
     <NavLink
       href={href}
-      color={router.pathname === href ? 'var(--orange-40)' : 'var(--grey-20)'}
+      color={pathname === href ? 'var(--orange-40)' : 'var(--grey-20)'}
     >
       {children}
     </NavLink>

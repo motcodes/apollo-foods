@@ -6,17 +6,19 @@ Salzburg University of Applied Sciences
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styled from 'styled-components'
+import { useSession } from 'next-auth/client'
 import { Button } from '../utils'
 
 export const AccountModal = ({
-  session,
   onMouseEnter,
   onMouseLeave,
   signOut,
   top = '5rem',
   right = '1rem',
 }) => {
-  const router = useRouter()
+  const { asPath } = useRouter()
+  const [session] = useSession()
+
   return (
     <Modal
       onMouseEnter={onMouseEnter}
@@ -25,7 +27,7 @@ export const AccountModal = ({
       right={right}
     >
       <nav>
-        {router.asPath !== `/u/${session.user.username}` && (
+        {asPath !== `/u/${session.user.username}` && (
           <Link href={`/u/${session.user.username}`}>
             <a>View profile</a>
           </Link>
