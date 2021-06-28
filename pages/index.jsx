@@ -109,12 +109,29 @@ const Index = ({ data }) => {
               next favourite recipe to cook.
             </Typography>
           </Copy>
-          <GenButton2
-            className="left"
-            onClick={() => router.push(`/cook/${data.idMeal}`)}
-          >
-            Generate Now
-          </GenButton2>
+          <GenButtonContainer>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              id="beaker"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+              />
+            </svg>
+            <GenButton2
+              className="left"
+              onClick={() => router.push(`/cook/${data.idMeal}`)}
+            >
+              Generate Now
+            </GenButton2>
+          </GenButtonContainer>
         </HowToContainer>
         <HowToContainer>
           <Copy>
@@ -382,9 +399,6 @@ const Copy = styled(GridTemplate)`
     max-width: unset;
   }
 `
-const Figure = styled.figure`
-  width: 100%;
-`
 
 const RecipePreviewContainer = styled.div`
   display: grid;
@@ -467,4 +481,39 @@ const DualInput = styled.div`
   display: flex;
   flex-direction: row;
   gap: 16px;
+`
+
+const GenButtonContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  #beaker {
+    position: absolute;
+    height: 12rem;
+    width: 12rem;
+    color: hsla(11, 96%, 95%, 100%);
+  }
+  button {
+    margin-top: 0;
+  }
+
+  @media (min-width: 768px) {
+    #beaker {
+      left: -2rem;
+      top: -6rem;
+      height: 16rem;
+      width: 16rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    #beaker {
+      left: 0rem;
+      top: -8rem;
+      height: 20rem;
+      width: 20rem;
+    }
+  }
 `
