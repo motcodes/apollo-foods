@@ -60,7 +60,7 @@ export function StageControls({
           console.log('error')
         }
       } else {
-        console.log('mealProps :', mealProps)
+        // console.log('mealProps :', mealProps)
         const json = await fetcher('/api/meal/save', {
           method: 'POST',
           body: JSON.stringify(mealProps),
