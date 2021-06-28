@@ -86,11 +86,7 @@ export default function Stage({
         }}
       >
         <ambientLight ambientIntensity={0.65} />
-        <OrbitControls
-          ref={controlsRef}
-          enableZoom={false}
-          autoRotate={isAutoRotating}
-        />
+        <OrbitControls ref={controlsRef} autoRotate={isAutoRotating} />
         <Suspense
           fallback={
             <StageLoader
