@@ -82,7 +82,7 @@ const Index = ({ data }) => {
               <br /> Recipe Problems
             </Typography>
             <Typography>
-              Everybody knows how tought a space mission can be and the last
+              Everybody knows how tough a space mission can be and the last
               thing you want to care about is your next meal.
             </Typography>
           </Copy>
