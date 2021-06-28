@@ -216,7 +216,7 @@ const Index = ({ data }) => {
                 label="Instructions"
                 defaultValue="Melt 1 1/2 tablespoons butter with oil in..."
                 readonly="readonly"
-                areaHeight="200px"
+                areaHeight={200}
               />
               <Button fullWidth size="small">
                 {session ? 'Create Recipe' : 'Create Account to try'}

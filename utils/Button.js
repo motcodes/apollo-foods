@@ -84,7 +84,7 @@ const ButtonProps = {
   },
 
   '&:hover': {
-    transition: 'all 0.3 ease-out',
+    transition: 'all 0.3s ease-out',
     backgroundColor: ({ theme, variant, transparent }) => {
       if (transparent || variant === 'text') {
         return 'rgba(255,255,255,0.15)'

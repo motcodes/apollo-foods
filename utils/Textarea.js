@@ -10,7 +10,6 @@ import { Typography } from './Typography'
 export function Textarea({
   id,
   label = '',
-  type = 'text',
   name,
   value,
   onChange,
@@ -27,7 +26,6 @@ export function Textarea({
       )}
       <InputField
         {...rest}
-        type={type}
         name={name}
         id={id}
         value={value}

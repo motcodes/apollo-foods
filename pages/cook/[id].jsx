@@ -62,13 +62,15 @@ export async function getServerSideProps(context) {
     mealMetadata.needsPlaceholder = true
 
     // owner
-    if (session.user.username === meal.customRecipe.ownerUsername) {
-      mealMetadata.isSaved = true
-      mealMetadata.canSave = false
-    }
-    // liked user
-    if (meal.likedByUser.some((u) => u.username === session.user.username)) {
-      mealMetadata.isSaved = true
+    if (session) {
+      if (session.user.username === meal.customRecipe.ownerUsername) {
+        mealMetadata.isSaved = true
+        mealMetadata.canSave = false
+      }
+      // liked user
+      if (meal.likedByUser.some((u) => u.username === session.user.username)) {
+        mealMetadata.isSaved = true
+      }
     }
     mealData = {
       mealId: meal.id,
@@ -221,21 +223,28 @@ export default function Meal({
                     <Typography variant="h3" as="h2">
                       Ingredients
                     </Typography>
-                    <Item inline isList>
-                      <Item as="ul">
-                        {mealData.mealIngredients?.map((ingredient, index) => (
-                          <ListItem key={ingredient + index}>
-                            {ingredient}
-                          </ListItem>
-                        ))}
-                      </Item>
-                      <Item as="ul" style={{ listStyle: 'none' }}>
-                        {mealData.mealMeasure?.map((measure, index) => (
-                          <ListItem key={measure + index} paddingLeft>
-                            {measure}
-                          </ListItem>
-                        ))}
-                      </Item>
+                    <Item inline isList as="ul">
+                      {mealData.mealIngredients?.map((ingredient, index) => (
+                        <ListItem
+                          key={ingredient + index}
+                          style={{ gridColumn: 1, gridRow: index + 1 }}
+                        >
+                          {ingredient}
+                        </ListItem>
+                      ))}
+                      {mealData.mealMeasure?.map((measure, index) => (
+                        <ListItem
+                          key={measure + index}
+                          paddingLeft
+                          style={{
+                            gridColumn: 2,
+                            gridRow: index + 1,
+                            listStyle: 'none',
+                          }}
+                        >
+                          {measure}
+                        </ListItem>
+                      ))}
                     </Item>
                   </Section>
                 )}
