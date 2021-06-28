@@ -66,29 +66,6 @@ model Session {
   @@map(name: "sessions")
 }
 
-model User {
-  id            Int           @default(autoincrement()) @id
-  name          String?   
-  email         String?       @unique
-  emailVerified DateTime?     @map(name: "email_verified")
-  image         String?   
-  createdAt     DateTime      @default(now()) @map(name: "created_at")
-  updatedAt     DateTime      @default(now()) @map(name: "updated_at")
-
-  // Custom Fields    
-  bio           String?   
-  username      String?       @unique
-  website       String?
-  twitter       String?
-  instagram     String?
-  reddit        String?
-  dribbble      String?
-  github        String?
-  meals         Meal[]
-
-  @@map(name: "users")
-}
-
 model VerificationRequest {
   id         Int       @default(autoincrement()) @id
   identifier String
@@ -100,6 +77,33 @@ model VerificationRequest {
   @@map(name: "verification_requests")
 }
 
+model User {
+  id            Int           @default(autoincrement()) @id
+  name          String?   
+  email         String?       @unique
+  emailVerified DateTime?     @map(name: "email_verified")
+  image         String?   
+  createdAt     DateTime      @default(now()) @map(name: "created_at")
+  updatedAt     DateTime      @default(now()) @map(name: "updated_at")
+
+  // Custom Fields    
+  username      String?       @unique
+  bio           String?   
+  website       String?
+  twitter       String?
+  instagram     String?
+  reddit        String?
+  dribbble      String?
+  github        String?
+  createdMeals  Meal[]          @relation("createdMeals")
+  savedMeals    Meal[]          //@relation("savedMeals")
+
+  customRecipe  CustomRecipe[]
+
+  @@map(name: "users")
+}
+
+
 // Custom Models
 model Meal {
   id                  Int         @id
@@ -107,6 +111,37 @@ model Meal {
   placeholderImage    String?     
   textureColor        String?     
   createdAt           DateTime    @default(now()) @map(name: "created_at")
-  user                User?       @relation(fields: [userId], references:[id])
-  userId              Int
+  creator             User        @relation("createdMeals", fields: [creatorUsername], references:[username])
+  creatorUsername     String
+  likedByUser         User[]       //@relation("savedMeals", fields: [likedByUsername], references:[username])
+  customRecipe        CustomRecipe?
 }
+
+model CustomRecipe {
+  category            String
+  area                String
+  instruction         String?
+  createdAt           DateTime    @default(now()) @map(name: "created_at")
+  ingredients         String[]
+  measure             String[]
+  meal                Meal?       @relation(fields: [mealId], references:[id])
+  mealId              Int
+  owner               User?       @relation(fields: [ownerUsername], references:[username])
+  ownerUsername       String
+
+  @@id([mealId])
+}
+
+// model Post {
+//   id                          Int   @id @default(autoincrement())
+//   author                      Int
+//   favoritedBy                 Int?
+//   User_Post_authorToUser      Author  @relation("Post_authorToUser", fields: [author], references: [id])
+//   User_Post_favoritedByToUser Author? @relation("Post_favoritedByToUser", fields: [favoritedBy], references: [id])
+// }
+
+// model Author {
+//   id                          Int    @id @default(autoincrement())
+//   Post_Post_authorToUser      Post[] @relation("Post_authorToUser")
+//   Post_Post_favoritedByToUser Post[] @relation("Post_favoritedByToUser")
+// }

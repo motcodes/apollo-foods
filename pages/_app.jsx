@@ -8,15 +8,17 @@ import { useState } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { Provider } from 'next-auth/client'
 import { Toaster } from 'react-hot-toast'
+import reactUseCookie from 'react-use-cookie'
 import { GlobalStyle } from '../components/theme/globalStyles'
 import { themeStyles } from '../components/theme/theme'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { Typography, Button, Link } from '../utils'
+// import { useLocalStorage } from '../lib'
 import '../styles/font.css'
 
 export default function App({ Component, pageProps }) {
-  const [isAccepted, setAccepted] = useState(false)
+  const [isAccepted, setAccepted] = reactUseCookie('cookieBanner', false)
 
   return (
     <>
@@ -163,7 +165,7 @@ const Background = styled.div`
       rgba(50, 11, 1, 0.59) 0%,
       rgba(50, 11, 1, 0) 100%
     ),
-    linear-gradient(240.31deg, #002833 18.97%, rgba(0, 40, 51, 0) 63.29%),
+    linear-gradient(240.31deg, #00151b 18.97%, rgba(0, 40, 51, 0) 63.29%),
     radial-gradient(
       14.55% 40.14% at 26.88% 9.86%,
       rgba(75, 16, 1, 0.69) 0%,

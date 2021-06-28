@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
-import { Button, Typography, Input, Textarea } from '../utils'
+import { Button, Typography, Input, Textarea, UserContainer } from '../utils'
 import {
   fetcher,
   server,
@@ -23,7 +23,6 @@ function ProfileSetup() {
   const [session] = useSession()
   const user = useUser()
   const [userData, dispatchUser] = useUserState(user)
-  console.log('userData :', userData)
   const [usernameIsTaken, setUsernameIsTaken] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
   const [nameError, setNameError] = useState(false)
@@ -54,7 +53,6 @@ function ProfileSetup() {
       body: JSON.stringify(userData.username),
     })
 
-    console.log('checkUsername :', checkUsername)
     if (checkUsername.isTaken) {
       setUsernameIsTaken(true)
       setButtonText('Try again')
@@ -221,14 +219,6 @@ function ProfileSetup() {
 }
 
 export default ProfileSetup
-
-const UserContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 720px;
-  margin: 2rem auto 4rem;
-  padding: 0 0.5rem;
-`
 
 const SaveButton = styled(Button)`
   margin-top: 2rem;

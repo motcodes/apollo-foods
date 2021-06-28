@@ -83,7 +83,7 @@ export const GlobalStyle = createGlobalStyle({
       '--h5': '1.414rem',
       '--body-large': '1.414rem',
       '--body': '18px',
-      '--body-small': '16px',
+      '--body-small': '18px',
     },
   },
 

@@ -40,10 +40,10 @@ export function Input({
       />
       {error && (
         <ErrorContainer>
-          {value === '' && <Typography>A {name} is required</Typography>}
+          {value === '' && <Typography>{label || name} is required</Typography>}
           {value <= minLength && (
             <Typography>
-              The {name} must inclued at least 3 characters
+              The {label || name} must inclued at least {minLength} characters
             </Typography>
           )}
         </ErrorContainer>

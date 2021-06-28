@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { signIn, useSession } from 'next-auth/client'
 import toast from 'react-hot-toast'
+import useMedia from 'use-media'
 import { fetcher, useFullscreen } from '../../lib'
 import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
@@ -26,6 +27,7 @@ export function StageControls({
   const [isLoading, toggleLoading] = useState(false)
   const [buttonText, setButtonText] = useState('Sign In to Save')
   const { query } = useRouter()
+  const isLarge = useMedia({ minWidth: 1024 })
 
   useEffect(() => {
     if (session) {
@@ -58,6 +60,7 @@ export function StageControls({
           console.log('error')
         }
       } else {
+        console.log('mealProps :', mealProps)
         const json = await fetcher('/api/meal/save', {
           method: 'POST',
           body: JSON.stringify(mealProps),
@@ -68,7 +71,7 @@ export function StageControls({
           toggleLoading(false)
           console.log('saved')
         } else {
-          toast.success('Could not save to Account!')
+          toast.error('Could not save to Account!')
           toggleLoading(false)
           console.log('error')
         }
@@ -79,7 +82,7 @@ export function StageControls({
   }
 
   return (
-    <ControlContainer>
+    <ControlContainer isLarge={isLarge}>
       {enableFullscreen && isFullscreenEnabled && (
         <StageControlsButton
           text="Enter Fullscreen"
@@ -107,9 +110,9 @@ export function StageControls({
 }
 
 const ControlContainer = styled.div`
-  position: absolute;
+  position: ${({ isLarge }) => (isLarge ? 'sticky' : 'absolute')};
+  bottom: ${({ isLarge }) => (isLarge ? '3rem' : '1rem')};
   right: 0;
-  bottom: 1rem;
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-end;

@@ -85,6 +85,7 @@ const headingOption = {
   fontWeight: 400,
   color: ({ color }) => color || 'inherit',
   fontFamily: ({ font, theme }) => font || theme.font.primary,
+  letterSpacing: '1px',
 }
 
 const H1 = styled('h1')({
@@ -123,7 +124,8 @@ const P = styled.p`
   font-weight: 400;
   color: ${({ color }) => color || 'currentColor'};
   font-family: ${({ font, theme }) => font || theme.font.body};
-  line-height: 120%;
+  font-size: ${({ fontSize, theme }) => fontSize || theme.fontSizes.body};
+  line-height: ${({ lineHeight }) => lineHeight || '120%'};
 `
 
 const Small = styled(P)`

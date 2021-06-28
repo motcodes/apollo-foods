@@ -33,4 +33,9 @@ export const StageControlsButton = ({
   )
 }
 
-const IconButton = styled(Button)``
+const IconButton = styled(Button)`
+  padding: 0.75rem;
+  @media (min-width: 768px) {
+    padding: 1rem;
+  }
+`

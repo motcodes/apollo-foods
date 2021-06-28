@@ -15,6 +15,10 @@ export default async function (req, res) {
     where: {
       email,
     },
+    include: {
+      createdMeals: true,
+      savedMeals: true,
+    },
   })
 
   Object.keys(user).forEach((key) => {
@@ -22,14 +26,6 @@ export default async function (req, res) {
       user[key] = ''
     }
   })
-
-  const meals = await prisma.meal.findMany({
-    where: {
-      userId: user.id,
-    },
-  })
-
-  user.meals = [...meals]
 
   if (session) {
     res.json({
