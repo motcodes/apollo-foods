@@ -5,22 +5,13 @@ Salzburg University of Applied Sciences
 */
 import { useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import {
-  OrbitControls,
-  Stage as DreiStage,
-  useGLTF,
-  useTexture,
-} from '@react-three/drei'
+import { OrbitControls, useGLTF } from '@react-three/drei'
 import styled from 'styled-components'
 import Layout from '../components/Layout'
 import PouchModel from '../components/Pouch'
 
 const StagePage = () => {
   const controlsRef = useRef()
-
-  // const group = useRef()
-  // const { nodes } = useGLTF('/gltf/pouchDefault.gltf')
-  // const texture1 = useTexture('LabelPurple.png')
   return (
     <Layout2>
       <Container id="canvasContainer" width="100vw" height="100vh">
