@@ -1,10 +1,15 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import styled from 'styled-components'
 import LabelHero from './LabelHero'
 import FormatedList from './FormatedList'
 import FormatedText from './FormatedText'
 import LabelLoader from './LabelLoader'
 
-export const Label = (props) => {
+export const Label = ({ meal, randomColor, labelRef, style }) => {
   const {
     mealId = 52837,
     mealName = 'Ilchard Puttanesca',
@@ -13,16 +18,11 @@ export const Label = (props) => {
     mealInstructions = 'cook :]',
     mealIngredients = ['Spaghettig', 'Olive Oil'],
     mealMeasure = ['300g', '1 tbls'],
-  } = props.meal
-  const { randomColor } = props
+  } = meal
 
   return (
     <>
-      <Container
-        ref={props.labelRef}
-        style={props.style}
-        randColor={randomColor}
-      >
+      <Container ref={labelRef} style={style} randColor={randomColor}>
         <Front>
           <LabelHero />
           <Description>
@@ -57,7 +57,7 @@ export const Label = (props) => {
           </Description>
         </Back>
       </Container>
-      <LabelLoader />
+      <LabelLoader randomColor={randomColor} />
     </>
   )
 }

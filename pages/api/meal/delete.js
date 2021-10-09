@@ -1,6 +1,11 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import prisma from '../../../prisma/prisma'
 
-export default async (req, res) => {
+export default async function (req, res) {
   const id = JSON.parse(req.body)
 
   try {
@@ -9,6 +14,7 @@ export default async (req, res) => {
         id: parseInt(id),
       },
     })
+    // console.log('removeMeal :', removeMeal)
 
     if (removeMeal.id === parseInt(id)) {
       res.json({ message: 'success', success: true })

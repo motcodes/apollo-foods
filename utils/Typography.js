@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import styled from 'styled-components'
 
 export const Typography = ({
@@ -78,8 +83,9 @@ const headingOption = {
   alignItems: 'center',
   lineHeight: '130%',
   fontWeight: 400,
-  color: ({ color }) => (color ? color : 'inherit'),
-  fontFamily: ({ font, theme }) => (font ? font : theme.font.primary),
+  color: ({ color }) => color || 'inherit',
+  fontFamily: ({ font, theme }) => font || theme.font.primary,
+  letterSpacing: '1px',
 }
 
 const H1 = styled('h1')({
@@ -116,9 +122,10 @@ const P = styled.p`
   display: flex;
   align-items: center;
   font-weight: 400;
-  color: ${({ color }) => (color ? color : 'currentColor')};
-  font-family: ${({ font, theme }) => (font ? font : theme.font.body)};
-  line-height: 120%;
+  color: ${({ color }) => color || 'currentColor'};
+  font-family: ${({ font, theme }) => font || theme.font.body};
+  font-size: ${({ fontSize, theme }) => fontSize || theme.fontSizes.body};
+  line-height: ${({ lineHeight }) => lineHeight || '120%'};
 `
 
 const Small = styled(P)`

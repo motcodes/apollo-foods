@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
@@ -13,6 +18,7 @@ const FormatedList = ({ ingredients, measure }) => {
       setIngredientsList([firstHalf, secondHalf])
     }
   }, [ingredients])
+
   useEffect(() => {
     if (measure.length > 6) {
       const half = Math.ceil(measure.length / 2)

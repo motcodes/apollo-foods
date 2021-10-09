@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-const Layout = (props) => (
-  <Main marginTop={props.marginTop}>{props.children}</Main>
+const Layout = ({ marginTop, children }) => (
+  <Main marginTop={marginTop}>{children}</Main>
 )
 
 export default Layout

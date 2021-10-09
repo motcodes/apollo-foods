@@ -1,115 +1,142 @@
-import { useEffect, useState } from 'react'
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
+import { useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import Head from 'next/head'
+import { getSession } from 'next-auth/client'
+import router from 'next/router'
 import { Label as Ettiket } from '../../components/Label/Label'
 import Layout from '../../components/Layout'
 import Stage from '../../components/Stage/Stage'
 import { GenerateCard } from '../../components/GenerateCard'
 import PouchModel from '../../components/Pouch'
 import {
+  colors,
   fetcher,
   formatMeal,
-  formatNewMeal,
   getRandomItem,
   mealDbById,
-  server,
   useHtmlToImage,
-  useMealById,
 } from '../../lib'
 import { Typography } from '../../utils'
 
 import prisma from '../../prisma/prisma'
-import useSWR from 'swr'
-import { useRouter } from 'next/router'
 
 export async function getServerSideProps(context) {
   const { query } = context
+  const id = parseInt(query.id)
+  const session = await getSession(context)
 
-  const fetchById = await fetcher(`${mealDbById}${query.id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': '*',
-    },
-  })
-  const data = formatMeal(fetchById.meals[0])
+  const mealMetadata = {
+    textureColor: getRandomItem(colors),
+    isSaved: false,
+    needsPlaceholder: false,
+    canSave: true,
+    isInDb: false,
+  }
 
-  const id = JSON.parse(query.id)
-  let checkMeal = await prisma.meal.findMany({
+  const meal = await prisma.meal.findUnique({
     where: {
-      id: {
-        equals: parseInt(id),
+      id,
+    },
+    include: {
+      customRecipe: true,
+      likedByUser: {
+        select: {
+          username: true,
+        },
       },
     },
   })
+  // console.log('meal :', meal)
 
-  checkMeal = JSON.parse(JSON.stringify(checkMeal))
-  let isMealSaved
-  if (checkMeal[0]?.id === parseInt(id)) {
-    isMealSaved = { textureColor: checkMeal[0].textureColor, isSaved: true }
+  if (meal) {
+    mealMetadata.isInDb = true
+  }
+
+  let mealData
+  if (meal?.customRecipe) {
+    mealMetadata.needsPlaceholder = true
+
+    // owner
+    if (session) {
+      if (session.user.username === meal.customRecipe.ownerUsername) {
+        mealMetadata.isSaved = true
+        mealMetadata.canSave = false
+      }
+      // liked user
+      if (meal.likedByUser.some((u) => u.username === session.user.username)) {
+        mealMetadata.isSaved = true
+      }
+    }
+    mealData = {
+      mealId: meal.id,
+      mealName: meal.name,
+      mealCategory: meal.customRecipe.category,
+      mealArea: meal.customRecipe.area,
+      mealInstructions: meal.customRecipe.instruction,
+      mealIngredients: meal.customRecipe.ingredients,
+      mealMeasure: meal.customRecipe.measure,
+    }
   } else {
-    isMealSaved = { textureColor: getRandomItem(colors), isSaved: false }
+    const fetchById = await fetcher(`${mealDbById}${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': '*',
+      },
+    })
+    mealData = formatMeal(fetchById.meals[0])
+
+    if (meal?.id === id) {
+      mealMetadata.textureColor = meal.textureColor
+      mealMetadata.isSaved = true
+    }
+    if (session?.user.username === meal?.creatorUsername) {
+      mealMetadata.isSaved = true
+    } else {
+      mealMetadata.isSaved = false
+    }
   }
 
   return {
     props: {
-      data: {
-        mealId: data.mealId,
-        mealName: data.mealName,
-        mealCategory: data.mealCategory,
-        mealArea: data.mealArea,
-        mealInstructions: data.mealInstructions,
-        mealRecipeSource: data.mealRecipeSource,
-        mealImageLink: data.mealImageLink,
-        mealIngredients: data.mealIngredients,
-        mealMeasure: data.mealMeasure,
-      },
-      mealIngredients: data.mealIngredients,
-      mealMeasure: data.mealMeasure,
-      isMealSaved: isMealSaved,
+      data: mealData,
+      mealIngredients: mealData.mealIngredients.toString(),
+      mealMeasure: mealData.mealMeasure.toString(),
+      mealMetadata,
     },
   }
 }
 
-export default function Meal(props) {
-  props.data.mealIngredients = props.mealIngredients
-  props.data.mealMeasure = props.mealMeasure
-  const initialData = props.data
-  const { query } = useRouter()
-
-  // const { data: newMealData } = useSWR(
-  //   `${server}/api/meal/${query.id}`,
-  //   fetcher,
-  //   { initialData: initialData }
-  // )
-
-  const [mealData, setMealData] = useState(initialData)
-
-  const [randomColor] = useState(props.isMealSaved?.textureColor)
-  const [isMealSaved] = useState(props.isMealSaved?.isSaved)
+export default function Meal({
+  data: mealData,
+  mealIngredients,
+  mealMeasure,
+  mealMetadata,
+}) {
+  const { textureColor, isSaved, canSave, isInDb } = mealMetadata
+  mealData.mealIngredients = mealIngredients.split(',')
+  mealData.mealMeasure = mealMeasure.split(',')
 
   const [generateImage, appRef, imageUrl, isLoading] = useHtmlToImage(2048)
 
-  useEffect((e) => {
-    generateImage(e)
-  }, [])
-
-  useEffect(() => {
-    async function refetchMeal() {
-      const refetchedMeal = await fetcher(`${server}/api/meal/${query.id}`)
-      const newMeal = formatMeal(refetchedMeal)
-      setMealData(newMeal)
-    }
-    if (mealData?.mealIngredients || mealData?.mealMeasure) {
-      refetchMeal()
-    }
-  }, [mealData])
+  useEffect(
+    (e) => {
+      generateImage(e)
+    },
+    [generateImage]
+  )
 
   const mealProps = {
     id: mealData?.mealId,
     name: mealData?.mealName,
-    textureColor: randomColor,
+    textureColor,
     createdAt: new Date(),
     placeholderImage: '',
+    isInDb,
   }
 
   const canvasProps = {
@@ -130,21 +157,23 @@ export default function Meal(props) {
           <Ettiket
             meal={mealData}
             labelRef={appRef}
-            randomColor={randomColor}
+            randomColor={textureColor}
           />
         )}
       </div>
     )
-  } else {
-    return (
-      <Layout>
+  }
+
+  return (
+    <Layout>
+      <Container isIndex={router.pathname === '/'}>
         <Stage
           canvasProps={canvasProps}
           controlsProps={controlsProps}
           mealProps={mealProps}
-          isMealSaved={isMealSaved}
-          bookmark
-          isPlaceholderImage
+          isMealSaved={isSaved}
+          bookmark={canSave}
+          needsPlaceholderImage={mealMetadata.needsPlaceholder}
         >
           <PouchModel textureUrl={imageUrl} rotation={[0, Math.PI, 0]} />
         </Stage>
@@ -157,20 +186,24 @@ export default function Meal(props) {
               </title>
             </Head>
             <RecipeContainer>
-              <Section randomColor={randomColor}>
-                <Typography variant="h1">#{mealData.mealId}</Typography>
+              <Section randomColor={textureColor}>
+                <Typography variant="h2" as="h1">
+                  #{mealData.mealId}
+                </Typography>
                 <Item>
                   <Label font="Blatant" as="label">
                     Recipe Name:
                   </Label>
-                  <Typography variant="h2">{mealData.mealName}</Typography>
+                  <Typography variant="h3" as="h2">
+                    {mealData.mealName}
+                  </Typography>
                 </Item>
                 <Item inline>
                   <Item>
                     <Label font="Blatant" as="label">
                       Category:
                     </Label>
-                    <Typography variant="h3">
+                    <Typography variant="h4" as="h3">
                       {mealData.mealCategory}
                     </Typography>
                   </Item>
@@ -178,37 +211,52 @@ export default function Meal(props) {
                     <Label font="Blatant" as="label">
                       Area:
                     </Label>
-                    <Typography variant="h3">{mealData.mealArea}</Typography>
+                    <Typography variant="h4" as="h3">
+                      {mealData.mealArea}
+                    </Typography>
                   </Item>
                 </Item>
               </Section>
               {mealData.mealIngredients?.length !== 0 &&
                 mealData.mealMeasure?.length !== 0 && (
-                  <Section randomColor={randomColor}>
-                    <Typography variant="h2">Ingredients</Typography>
-                    <Item inline isList>
-                      <Item as="ul">
-                        {mealData.mealIngredients?.map((ingredient, index) => (
-                          <ListItem key={ingredient + index}>
-                            {ingredient}
-                          </ListItem>
-                        ))}
-                      </Item>
-                      <Item as="ul" style={{ listStyle: 'none' }}>
-                        {mealData.mealMeasure?.map((measure, index) => (
-                          <ListItem key={measure + index} paddingLeft>
-                            {measure}
-                          </ListItem>
-                        ))}
-                      </Item>
+                  <Section randomColor={textureColor}>
+                    <Typography variant="h3" as="h2">
+                      Ingredients
+                    </Typography>
+                    <Item inline isList as="ul">
+                      {mealData.mealIngredients?.map((ingredient, index) => (
+                        <ListItem
+                          key={ingredient + index}
+                          style={{ gridColumn: 1, gridRow: index + 1 }}
+                        >
+                          {ingredient}
+                        </ListItem>
+                      ))}
+                      {mealData.mealMeasure?.map((measure, index) => (
+                        <ListItem
+                          key={measure + index}
+                          paddingLeft
+                          style={{
+                            gridColumn: 2,
+                            gridRow: index + 1,
+                            listStyle: 'none',
+                          }}
+                        >
+                          {measure}
+                        </ListItem>
+                      ))}
                     </Item>
                   </Section>
                 )}
               {mealData.mealInstructions && (
-                <Section randomColor={randomColor}>
-                  <Typography variant="h2">Instructions</Typography>
+                <Section randomColor={textureColor}>
+                  <Typography variant="h3" as="h2">
+                    Instructions
+                  </Typography>
                   <Typography
                     style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}
+                    variant="p"
+                    lineHeight="150%"
                   >
                     {mealData.mealInstructions}
                   </Typography>
@@ -217,16 +265,34 @@ export default function Meal(props) {
             </RecipeContainer>
           </>
         )}
-        <GenerateCard
-          heading="Do you want to discover more recipes?"
-          text="Just click the button below."
-          buttonText="Generate now!"
-          bgColor={randomColor}
-        />
-      </Layout>
-    )
-  }
+      </Container>
+      <GenerateCard
+        heading="Do you want to discover more recipes?"
+        text="Just click the button below."
+        buttonText="Generate now!"
+        bgColor={textureColor}
+        marginBottom
+        createButton
+      />
+    </Layout>
+  )
 }
+
+const Container = styled.div`
+  z-index: 10;
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 4fr 3fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+    #canvasContainer {
+      position: sticky;
+      top: 0px;
+      height: 100vh;
+      margin-top: -128px;
+    }
+  }
+`
 
 const RecipeContainer = styled.article`
   margin: 2rem 0;
@@ -246,19 +312,19 @@ const Section = styled.section`
         color: var(--orange-90);
         border-color: var(--orange-90);
       `
-    } else if (randomColor.includes('blue')) {
+    }
+    if (randomColor.includes('blue')) {
       return css`
         background-color: hsla(193, 100%, 50%, 10%);
         color: var(--blue-90);
         border-color: var(--blue-90);
       `
-    } else {
-      return css`
-        background-color: hsla(248, 43%, 50%, 10%);
-        color: var(--purple-90);
-        border-color: var(--purple-90);
-      `
     }
+    return css`
+      background-color: hsla(248, 43%, 50%, 10%);
+      color: var(--purple-90);
+      border-color: var(--purple-90);
+    `
   }};
 `
 const Item = styled.div`
@@ -290,6 +356,7 @@ const Item = styled.div`
 `
 const ListItem = styled.li`
   border-bottom: 1px solid white;
+  font-size: var(--body-small);
   ${({ paddingLeft }) => {
     if (paddingLeft) {
       return css`
@@ -302,21 +369,6 @@ const ListItem = styled.li`
 
 const Label = styled(Typography)`
   margin-bottom: 8px;
-  font-size: var(--body-large);
+  font-size: var(--body);
+  letter-spacing: 0.5px;
 `
-
-const colors = [
-  'var(--orange-20)',
-  'var(--orange-30)',
-  'var(--orange-40)',
-  'var(--orange-40)',
-  'var(--orange-50)',
-  'var(--blue-20)',
-  'var(--blue-30)',
-  'var(--blue-40)',
-  'var(--blue-50)',
-  'var(--purple-20)',
-  'var(--purple-30)',
-  'var(--purple-40)',
-  'var(--purple-50)',
-]

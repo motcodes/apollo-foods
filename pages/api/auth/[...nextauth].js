@@ -1,20 +1,13 @@
-// const { PrismaClient } = require('@prisma/client')
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import NextAuth from 'next-auth'
 import Adapters from 'next-auth/adapters'
 import Providers from 'next-auth/providers'
 
 import prisma from '../../../prisma/prisma'
-
-// let prisma
-
-// if (process.env.NODE_ENV === 'production') {
-//   prisma = new PrismaClient()
-// } else {
-//   if (!global.prisma) {
-//     global.prisma = new PrismaClient()
-//   }
-//   prisma = global.prisma
-// }
 
 const options = {
   providers: [
@@ -40,9 +33,7 @@ const options = {
   ],
   adapter: Adapters.Prisma.Adapter({ prisma }),
   pages: {
-    // signIn: '/auth/signin',
-    // signOut: '/auth/signout',
-    newUser: '/profileSetup', // If set, new users will be directed here on first sign in
+    newUser: '/profileSetup',
   },
   callbacks: {
     async session(session, user) {
@@ -50,13 +41,10 @@ const options = {
       session.user.image = user.image
       return session
     },
+    async redirect(url, baseUrl) {
+      return url.startsWith(baseUrl) ? url : baseUrl
+    },
   },
-  // redirect: async (url, _) => {
-  //   if (url === '/api/auth/signin') {
-  //     return Promise.resolve('/demo')
-  //   }
-  //   return Promise.resolve('/api/auth/signin')
-  // },
 }
 
 export default (req, res) => NextAuth(req, res, options)

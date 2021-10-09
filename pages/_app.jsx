@@ -1,15 +1,25 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import Head from 'next/head'
+import { useState } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { Provider } from 'next-auth/client'
+import { Toaster } from 'react-hot-toast'
+import reactUseCookie from 'react-use-cookie'
 import { GlobalStyle } from '../components/theme/globalStyles'
 import { themeStyles } from '../components/theme/theme'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-
+import { Typography, Button, Link } from '../utils'
+// import { useLocalStorage } from '../lib'
 import '../styles/font.css'
-import router, { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }) {
+  const [isAccepted, setAccepted] = reactUseCookie('cookieBanner', false)
+
   return (
     <>
       <GlobalStyle />
@@ -19,7 +29,7 @@ export default function App({ Component, pageProps }) {
         </title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        {/* <base href={origin} /> */}
+
         <link
           rel="apple-touch-icon"
           sizes="180x180"
@@ -93,6 +103,33 @@ export default function App({ Component, pageProps }) {
             <Header />
             <Component {...pageProps} />
             <Footer />
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: 'var(--orange-50)',
+                  color: '#fff',
+                },
+              }}
+            />
+            {!isAccepted && (
+              <ToasterContainer
+                className={`${!isAccepted ? 'animate-enter' : 'animate-leave'}`}
+              >
+                <section>
+                  <div>
+                    <Typography>
+                      This site uses cookies for the authentication.
+                      <wbr /> By clicking ok you approve the use of cookies.
+                    </Typography>
+                    <Link href="/privacyPolicy">Learn more about it.</Link>
+                  </div>
+                  <Button size="small" onClick={() => setAccepted(true)}>
+                    OK
+                  </Button>
+                </section>
+              </ToasterContainer>
+            )}
           </Background>
         </Provider>
       </ThemeProvider>
@@ -128,11 +165,71 @@ const Background = styled.div`
       rgba(50, 11, 1, 0.59) 0%,
       rgba(50, 11, 1, 0) 100%
     ),
-    linear-gradient(240.31deg, #002833 18.97%, rgba(0, 40, 51, 0) 63.29%),
+    linear-gradient(240.31deg, #00151b 18.97%, rgba(0, 40, 51, 0) 63.29%),
     radial-gradient(
       14.55% 40.14% at 26.88% 9.86%,
       rgba(75, 16, 1, 0.69) 0%,
       rgba(75, 16, 1, 0) 100%
     ),
     linear-gradient(140.96deg, #001c24 0%, rgba(49, 53, 51, 0) 39.88%);
+`
+
+const ToasterContainer = styled.div`
+  position: fixed;
+  bottom: 5rem;
+  width: calc(100vw - 2rem);
+  margin: 0 1rem;
+  z-index: 20;
+  background-color: var(--orange-50);
+  /* background-color: hsla(11, 95%, 50%, 10%); */
+  background-color: #3e1109;
+  border: 2px solid var(--orange-50);
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  animation: all 0.4s ease-in-out;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.02),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.028), 0 12.5px 10px rgba(0, 0, 0, 0.035),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.042), 0 41.8px 33.4px rgba(0, 0, 0, 0.05),
+    0 100px 80px rgba(0, 0, 0, 0.07);
+
+  display: flex;
+  justify-content: center;
+  section {
+    display: flex;
+    gap: 1rem;
+    div {
+      display: flex;
+      flex-direction: column;
+      p {
+        font-size: 0.9rem;
+        display: inline;
+      }
+      a {
+        font-size: 0.9rem;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
+    }
+    button {
+      /* border-color: white;
+      &:hover {
+        border-color: white;
+      } */
+    }
+  }
+
+  &.animate-leave {
+    transform: translateY(200px);
+  }
+  @media (min-width: 768px) {
+    bottom: 1rem;
+    max-width: 720px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0%;
+  }
+  @media (min-width: 1024px) {
+    max-width: 720px;
+  }
 `

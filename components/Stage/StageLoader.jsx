@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import styled from 'styled-components'
 import Image from 'next/image'
 import { Html } from '@react-three/drei'
@@ -12,7 +17,7 @@ export function StageLoader({
 }) {
   return (
     <LoaderContainer
-      style={{ width: 'calc(100vw - 48px)', height: height, ...style }}
+      style={{ width: 'calc(100vw - 48px)', height, ...style }}
       center={center}
     >
       <Image

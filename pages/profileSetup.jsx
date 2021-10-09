@@ -1,15 +1,21 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useState } from 'react'
 import styled from 'styled-components'
 import router from 'next/router'
 import { useSession } from 'next-auth/client'
 import Layout from '../components/Layout'
-import { Button, Typography, Input, Textarea } from '../utils'
+import { Button, Typography, Input, Textarea, UserContainer } from '../utils'
 import {
   fetcher,
   server,
   useUser,
   useUserState,
   usernameValidation,
+  isEmptyOrSpaces,
 } from '../lib'
 import { FallbackProfileImage, ProfileImage } from '../components/ProfileImage'
 
@@ -25,46 +31,35 @@ function ProfileSetup() {
   async function saveUser(e) {
     e.preventDefault()
 
-    userData.username = userData.username?.replace('@', '')
-    const isUnvalidUsername = usernameValidation(userData.username)
-    if (
-      userData.name === '' ||
-      userData.name === ' ' ||
-      userData.name === null
-    ) {
+    if (isEmptyOrSpaces(userData.name)) {
       setNameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setNameError(true)
     }
+    setNameError(false)
 
-    if (
-      userData.username === '' ||
-      userData.username === ' ' ||
-      userData.username === null ||
-      isUnvalidUsername
-    ) {
+    userData.username = userData.username?.replace('@', '')
+    const isValidUsername = usernameValidation(userData.username)
+
+    if (isEmptyOrSpaces(userData.username) || !isValidUsername) {
       setUsernameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameError(false)
     }
+    setUsernameError(false)
 
     const checkUsername = await fetcher(`${server}/api/user/check`, {
       method: 'POST',
       body: JSON.stringify(userData.username),
     })
 
-    console.log('checkUsername :', checkUsername)
     if (checkUsername.isTaken) {
       setUsernameIsTaken(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameIsTaken(false)
     }
+    setUsernameIsTaken(false)
+
     setButtonText('Save my data')
 
     userData.twitter = userData.twitter?.replace('@', '')
@@ -131,7 +126,7 @@ function ProfileSetup() {
             label="Email"
             type="email"
             name="email"
-            value={userData.email}
+            value={user.email}
             disabled
           />
           <Textarea
@@ -224,14 +219,6 @@ function ProfileSetup() {
 }
 
 export default ProfileSetup
-
-const UserContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 720px;
-  margin: 2rem auto 4rem;
-  padding: 0 0.5rem;
-`
 
 const SaveButton = styled(Button)`
   margin-top: 2rem;

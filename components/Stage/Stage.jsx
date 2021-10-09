@@ -1,4 +1,10 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { Suspense, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Canvas } from '@react-three/fiber'
 import {
@@ -6,34 +12,29 @@ import {
   Stage as DreiStage,
   useProgress,
 } from '@react-three/drei'
+import useMedia from 'use-media'
 import { StageLoader } from './StageLoader'
 import { StageControls } from './StageControls'
-import { useRouter } from 'next/router'
+import { fetcher } from '../../lib'
 
 export default function Stage({
-  canvasProps = {},
-  lightProps = {},
-  controlsProps = {},
-  stageProps = {},
+  canvasProps = {
+    id: 'pouchCanvas',
+  },
   mealProps = {},
   bookmark = false,
-  isPlaceholderImage = false,
+  needsPlaceholderImage = false,
   isMealSaved = false,
   enableFullscreen = true,
   children,
 }) {
-  const {
-    canvasProps: cProps,
-    lightProps: lProps,
-    controlProps: ctrlProps,
-    stageProps: sProps,
-  } = setStageProps(canvasProps, lightProps, controlsProps, stageProps)
   const controlsRef = useRef()
 
   const { loaded, progress } = useProgress()
   const [isAutoRotating, setAutoRotate] = useState(false)
   const [mealData, setMealData] = useState(mealProps)
   const { pathname } = useRouter()
+  const isLarge = useMedia({ minWidth: 1024 })
 
   useEffect(() => {
     if (pathname === '/') {
@@ -42,137 +43,83 @@ export default function Stage({
   }, [pathname])
 
   useEffect(() => {
-    const canvasContainer = document.getElementById(cProps.id)
+    const canvasContainer = document.getElementById(canvasProps.id)
     const canvasRef = canvasContainer.firstChild
 
-    if (isPlaceholderImage && loaded && canvasRef && progress === 100) {
+    if (loaded && canvasRef && progress === 100) {
       setAutoRotate(true)
       setTimeout(() => {
         const modelImage = canvasRef.toDataURL('image/jpeg', 0.65)
-        // mealProps.placeholderImage = modelImage
         setMealData((prev) => ({ ...prev, placeholderImage: modelImage }))
       }, Math.floor(Math.random() * 1000) + 1000)
     }
-  }, [progress])
+  }, [canvasProps.id, loaded, progress])
+
+  useEffect(() => {
+    async function createPlaceholderImage() {
+      const json = await fetcher('/api/meal/save', {
+        method: 'POST',
+        body: JSON.stringify(mealData),
+      })
+      if (json.success === true) {
+        console.log('created image')
+      }
+    }
+
+    if (needsPlaceholderImage) {
+      createPlaceholderImage()
+    }
+  }, [mealData, needsPlaceholderImage])
 
   return (
-    <>
-      <Container
-        width={canvasProps.style?.width}
-        height={canvasProps.style?.height}
+    <Container
+      id="canvasContainer"
+      width={canvasProps.style?.width}
+      height={canvasProps.style?.height}
+    >
+      <Canvas
+        id={canvasProps.id}
+        gl={{ preserveDrawingBuffer: true }}
+        dpr={[1, 1.5]}
+        style={{
+          height: pathname.includes('cook') && isLarge ? '100vh' : '100%',
+        }}
       >
-        <Canvas //
-          {...cProps}
-          {...canvasProps}
+        <ambientLight ambientIntensity={0.65} />
+        <OrbitControls ref={controlsRef} autoRotate={isAutoRotating} />
+        <Suspense
+          fallback={
+            <StageLoader
+              height={canvasProps.style?.height}
+              progress={progress}
+            />
+          }
         >
-          <ambientLight //
-            {...lProps}
-            {...lightProps}
-          />
-          <OrbitControls //
-            ref={controlsRef}
-            {...ctrlProps}
-            {...controlsProps}
-            autoRotate={isAutoRotating}
-          />
-          <Suspense
-            fallback={
-              <StageLoader
-                height={canvasProps.style?.height}
-                progress={progress}
-              />
-            }
-          >
-            <DreiStage //
-              controls={controlsRef}
-              {...sProps}
-              {...stageProps}
-            >
-              {children}
-            </DreiStage>
-          </Suspense>
-        </Canvas>
-        {mealData.placeholderImage && (
-          <StageControls
-            elementId={cProps.id}
-            mealProps={mealData}
-            bookmark={bookmark}
-            isMealSaved={isMealSaved}
-            enableFullscreen={enableFullscreen}
-          />
-        )}
-      </Container>
-    </>
+          <DreiStage controls={controlsRef} intensity={1.5} environment="night">
+            {children}
+          </DreiStage>
+        </Suspense>
+      </Canvas>
+      {mealData.placeholderImage && (
+        <StageControls
+          elementId={canvasProps.id}
+          mealProps={mealData}
+          bookmark={bookmark}
+          isMealSaved={isMealSaved}
+          enableFullscreen={enableFullscreen}
+        />
+      )}
+    </Container>
   )
 }
 
 const Container = styled.section`
   width: 100%;
   position: relative;
-  margin-bottom: 1rem;
-  height: ${({ height }) => (height ? height : 'initial')};
+  height: ${({ height }) => height || 'initial'};
+  cursor: pointer;
+  z-index: 10;
+  @media (min-width: 1024px) {
+    margin-bottom: 11rem;
+  }
 `
-
-// default props
-function setStageProps(canProps, lProps, ctrlProps, sProps) {
-  const canvasProps = {
-    gl: canProps.gl || defaultCanvasProps.gl,
-    shadows: canProps.shadows || defaultCanvasProps.shadows,
-    dpr: canProps.dpr || defaultCanvasProps.dpr,
-    camera: canProps.camera || defaultCanvasProps.camera,
-    style: canProps.style,
-    id: canProps.id,
-  }
-  const lightProps = {
-    intensity: lProps.ambientIntensity || defaultLightProps.ambientIntensity,
-  }
-  const controlProps = {
-    autoRotate: ctrlProps.autoRotate || defaultControlsProps.autoRotate,
-    enableDamping:
-      ctrlProps.enableDamping || defaultControlsProps.enableDamping,
-    enableZoom: ctrlProps.enableZoom || defaultControlsProps.enableZoom,
-    enablePan: ctrlProps.enablePan || defaultControlsProps.enablePan,
-  }
-  const stageProps = {
-    contactShadow: sProps.contactShadow || defaultStageProps.contactShadow,
-    shadows: sProps.shadows || defaultStageProps.shadows,
-    adjustCamera: sProps.adjustCamera || defaultStageProps.adjustCamera,
-    intensity: sProps.intensity || defaultStageProps.intensity,
-    environment: sProps.environment || defaultStageProps.environment,
-    preset: sProps.preset || defaultStageProps.preset,
-  }
-
-  return { canvasProps, lightProps, controlProps, stageProps }
-}
-
-// canvas
-const defaultCanvasProps = {
-  gl: { preserveDrawingBuffer: true },
-  shadows: true,
-  dpr: [1, 1.5],
-  camera: {
-    position: [0, -10, 10],
-    fov: 45,
-  },
-}
-
-// ambientLight
-const defaultLightProps = { ambientIntensity: 0.65 }
-
-// controls
-const defaultControlsProps = {
-  autoRotate: true,
-  enableDamping: true,
-  enablePan: true,
-  enableZoom: false,
-}
-
-// stage
-const defaultStageProps = {
-  contactShadow: true, // Optional: creates a contactshadow underneath the content (default=true)
-  shadows: true, // Optional: lights cast shadow (default=true)
-  adjustCamera: true, // Optional: zooms the content in (default=true)
-  intensity: 1.5, // Optional: light intensity (default=1)
-  environment: 'night', // Optional: environment (default=city)
-  preset: 'rembrandt', // Optional: rembrandt (default) | portrait | upfront | soft
-}

@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 export const themeStyles = {
   white: 'hsla(0,0%,0%,100%)',
   black: 'hsla(0,0%,100%,100%)',
@@ -59,14 +64,4 @@ export const themeStyles = {
   bp2: '(min-width: 768px)',
   bp3: '(min-width: 1024px)',
   bp4: '(min-width: 1280px)',
-  // space: {},
-  // lineHeights: {},
-  // letterSpacings: {},
-  // sizes: {},
-  // borderWidths: {},
-  // borderStyles: {},
-  // radii: {},
-  // shadows: {},
-  // zIndices: {},
-  // transitions: {},
 }

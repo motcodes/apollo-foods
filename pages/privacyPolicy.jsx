@@ -1,5 +1,11 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import Layout from '../components/Layout'
 import { DocumentTextStyles, Typography } from '../utils'
+
 function PrivacyPolicy() {
   return (
     <Layout>
@@ -20,6 +26,7 @@ function PrivacyPolicy() {
           <a
             href="https://www.privacypolicies.com/privacy-policy-generator/"
             target="_blank"
+            rel="noreferrer"
           >
             Privacy Policy Generator
           </a>
@@ -109,7 +116,7 @@ function PrivacyPolicy() {
               <strong>Website</strong> refers to Apollo Foods, accessible from{' '}
               <a
                 href="https://apollofoods.matthiasoberholzer.com"
-                rel="external nofollow noopener"
+                rel="external nofollow noopener noreferrer"
                 target="_blank"
               >
                 https://apollofoods.matthiasoberholzer.com
@@ -224,10 +231,10 @@ function PrivacyPolicy() {
             disabling, or deleting local shared objects?&quot; available at{' '}
             <a
               href="https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_"
-              rel="external nofollow noopener"
+              rel="external nofollow noopener noreferrer"
               target="_blank"
             >
-              https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_
+              https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html
             </a>
           </li>
           <li>
@@ -248,6 +255,7 @@ function PrivacyPolicy() {
           <a
             href="https://www.privacypolicies.com/blog/cookies/"
             target="_blank"
+            rel="noreferrer"
           >
             What Are Cookies?
           </a>

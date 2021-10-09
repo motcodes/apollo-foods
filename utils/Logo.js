@@ -1,4 +1,8 @@
-import styled from 'styled-components'
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 
 export const Logo = ({ size = 48, variant = 'white', ...rest }) => {
   switch (variant) {

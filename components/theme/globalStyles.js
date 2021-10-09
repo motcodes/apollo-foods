@@ -1,3 +1,9 @@
+/* eslint-disable no-dupe-keys */
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { createGlobalStyle } from 'styled-components'
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
@@ -77,17 +83,9 @@ export const GlobalStyle = createGlobalStyle({
       '--h5': '1.414rem',
       '--body-large': '1.414rem',
       '--body': '18px',
-      '--body-small': '16px',
+      '--body-small': '18px',
     },
   },
-
-  // '@font-face': {
-  //   fontFamily: 'Blatant',
-  //   src: `url('fonts/Blatant.woff2') format('woff2'), url('fonts/Blatant.ttf') format('ttf')`,
-  //   fontWeight: 400,
-  //   fontStyle: 'normal',
-  //   fontDisplay: 'swap',
-  // },
 
   '*': {
     margin: 0,
@@ -96,14 +94,16 @@ export const GlobalStyle = createGlobalStyle({
     fontWeight: 400,
   },
   html: {
-    fontFamily: 'Blatant',
+    fontFamily:
+      "Blatant, -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif",
     lineHeight: 1.15,
     '-webkit-text-size-adjust': '100%',
     height: '100%',
     color: 'white',
   },
   body: {
-    fontFamily: 'Blatant',
+    fontFamily:
+      "Blatant, -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif",
     margin: 0,
     background: 'black',
   },
@@ -114,27 +114,21 @@ export const GlobalStyle = createGlobalStyle({
     display: 'block',
   },
   h1: {
-    // fontSize: 'var(--h1)',
     margin: 0,
   },
   h2: {
-    // fontSize: 'var(--h2)',
     margin: 0,
   },
   h3: {
-    // fontSize: 'var(--h3)',
     margin: 0,
   },
   h4: {
-    // fontSize: 'var(--h4)',
     margin: 0,
   },
   h5: {
-    // fontSize: 'var(--h5)',
     margin: 0,
   },
   h6: {
-    // fontSize: 'var(--h6)',
     margin: 0,
   },
 

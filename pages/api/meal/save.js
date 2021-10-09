@@ -1,47 +1,59 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { getSession } from 'next-auth/client'
-// const { PrismaClient } = require('@prisma/client')
 
-// let prisma
-// if (process.env.NODE_ENV !== 'production') {
-//   if (!global.prisma) {
-//     global.prisma = new PrismaClient({
-//       debug: true,
-//     })
-//   }
-//   prisma = global.prisma
-// } else {
-//   prisma = new PrismaClient()
-// }
 import prisma from '../../../prisma/prisma'
-export default async (req, res) => {
+
+export default async function (req, res) {
   const session = await getSession({ req })
   const body = JSON.parse(req.body)
 
   try {
-    const { id: userId } = await prisma.user.findUnique({
-      where: {
-        email: session.user.email,
-      },
-    })
-    // console.log('session && saveMeal :', userId)
-
-    const saveMeal = await prisma.meal.create({
-      data: {
-        id: parseInt(body.id),
-        name: body.name,
-        createdAt: body.createdAt,
-        userId: userId,
-        textureColor: body.textureColor,
-        placeholderImage: body.placeholderImage,
-      },
-    })
-
-    if (session && saveMeal) {
-      res.json({ message: 'success', success: true })
+    if (body.isInDb) {
+      const inDbMeal = await prisma.meal.findUnique({
+        where: {
+          id: parseInt(body.id),
+        },
+      })
+      const updatedUser = await prisma.user.update({
+        where: {
+          username: session.user.username,
+        },
+        data: {
+          savedMeals: {
+            connect: { id: inDbMeal.id },
+          },
+        },
+      })
+      if (updatedUser) {
+        res.json({ message: 'success', success: true })
+      } else {
+        res.json({ message: 'error', success: false })
+      }
     } else {
-      res.json({ message: 'error', success: false })
+      const saveMeal = await prisma.meal.create({
+        data: {
+          id: parseInt(body.id),
+          name: body.name,
+          createdAt: body.createdAt,
+          creatorUsername: session.user.username,
+          textureColor: body.textureColor,
+          placeholderImage: body.placeholderImage,
+        },
+      })
+      // console.log('saveMeal :', saveMeal)
+
+      if (session && saveMeal) {
+        res.json({ message: 'success', success: true })
+      } else {
+        res.json({ message: 'error', success: false })
+      }
     }
   } catch (error) {
+    console.log(error)
     res.json({ message: error, success: false })
   }
 }

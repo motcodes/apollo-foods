@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { resizeText } from '../../lib'

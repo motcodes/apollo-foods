@@ -1,10 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useState, Fragment } from 'react'
 import router from 'next/router'
-import { useSession } from 'next-auth/client'
+import { signOut, useSession } from 'next-auth/client'
 import styled from 'styled-components'
+import toast from 'react-hot-toast'
 import Layout from '../../../components/Layout'
-import { fetcher, server, usernameValidation, useUserState } from '../../../lib'
-import { Button, Typography, Input, Textarea } from '../../../utils'
+import {
+  fetcher,
+  isEmptyOrSpaces,
+  server,
+  usernameValidation,
+  useUserState,
+} from '../../../lib'
+import {
+  Button,
+  Typography,
+  Input,
+  Textarea,
+  UserContainer,
+} from '../../../utils'
 
 import prisma from '../../../prisma/prisma'
 
@@ -12,7 +25,20 @@ export async function getServerSideProps(context) {
   const { username } = context.query
   const user = await prisma.user.findUnique({
     where: {
-      username: username,
+      username,
+    },
+    include: {
+      createdMeals: {
+        where: {
+          customRecipe: {
+            isNot: null,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   })
 
@@ -23,6 +49,7 @@ export async function getServerSideProps(context) {
 
 function Settings(props) {
   const { user } = props
+  console.log('user :', user)
   const [session] = useSession()
   const [userData, dispatchUser] = useUserState(user)
   const [usernameIsTaken, setUsernameIsTaken] = useState(false)
@@ -30,51 +57,42 @@ function Settings(props) {
   const [nameError, setNameError] = useState(false)
   const [buttonText, setButtonText] = useState('Save my data')
   const [isDeleteModal, setDeleteModal] = useState(false)
+  const [isDeleteModalRecipe, setDeleteModalRecipe] = useState(false)
+  const [deleteRecipeId, setDeleteRecipeId] = useState('')
+  const [createdMeals, setCreatedMeals] = useState(user.createdMeals)
 
   async function updateUser(e) {
     e.preventDefault()
 
-    if (
-      userData.name === '' ||
-      userData.name === ' ' ||
-      userData.name === null
-    ) {
+    if (isEmptyOrSpaces(userData.name)) {
       setNameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setNameError(true)
     }
+    setNameError(false)
 
     userData.username = userData.username?.replace('@', '')
-    const isUnvalidUsername = usernameValidation(userData.username)
+    const isValidUsername = usernameValidation(userData.username)
 
-    if (
-      userData.username === '' ||
-      userData.username === ' ' ||
-      userData.username === null ||
-      isUnvalidUsername
-    ) {
+    if (isEmptyOrSpaces(userData.username) || !isValidUsername) {
       setUsernameError(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameError(false)
     }
+    setUsernameError(false)
 
     const checkUsername = await fetcher(`${server}/api/user/check`, {
       method: 'POST',
       body: JSON.stringify(userData.username),
     })
 
-    // console.log('checkUsername :', checkUsername)
     if (checkUsername.isTaken) {
       setUsernameIsTaken(true)
       setButtonText('Try again')
       return
-    } else {
-      setUsernameIsTaken(false)
     }
+    setUsernameIsTaken(false)
+
     setButtonText('Save my data')
 
     userData.twitter = userData.twitter?.replace('@', '')
@@ -84,12 +102,13 @@ function Settings(props) {
     userData.reddit = userData.reddit?.replace('@', '').replace('u/', '')
 
     delete userData.meals
+    delete userData.createdMeals
 
     const infoData = await fetcher(`${server}/api/user/update`, {
       method: 'POST',
       body: JSON.stringify(userData),
     })
-    // console.log('infoData :', infoData)
+
     if (infoData.message === 'success') {
       if (router.query.callbackUrl) {
         const callbackUrl = new URL(router.query.callbackUrl)
@@ -106,18 +125,38 @@ function Settings(props) {
 
   async function deleteUser(e) {
     e.stopPropagation()
+    const deleteUserRes = await fetcher(`${server}/api/user/delete`)
+    if (deleteUserRes.success) {
+      toast.success('Successfully deleted your account')
+      signOut({ callbackUrl: '/' })
+    } else {
+      toast.error('Error while deleting your account')
+    }
+  }
 
-    const deleteUser = await fetcher(`${server}/api/user/delete`)
-    // console.log('deleteUser :', deleteUser)
-    if (deleteUser.message === 'success') {
-      router.push('/')
+  async function deleteRecipe(e) {
+    e.preventDefault()
+
+    const deleteCustomRecipe = await fetcher(
+      `${server}/api/meal/deleteCustom`,
+      {
+        method: 'POST',
+        body: JSON.stringify(deleteRecipeId),
+      }
+    )
+    if (deleteCustomRecipe.success) {
+      setCreatedMeals(createdMeals.filter((m) => m.id !== deleteRecipeId))
+      toast.success('Successfully deleted recipe')
+    } else {
+      console.log(deleteCustomRecipe.message)
+      toast.error('Error while deleting your recipe')
     }
   }
 
   return (
     <Layout>
       {session && userData && (
-        <UserContainer onSubmit={updateUser} aria-label="form">
+        <UserContainer aria-label="form" onSubmit={updateUser}>
           <Typography variant="h1">Your Info</Typography>
           <Input
             id="fullname"
@@ -232,51 +271,81 @@ function Settings(props) {
           <SaveButton type="submit" fullWidth>
             {buttonText}
           </SaveButton>
-
-          <DangerContainer>
-            <Typography variant="h4">This is the danger zone!</Typography>
-            <DangerWrapper>
-              <Typography font="Blatant">
-                You can delete your Account here.
-              </Typography>
-              <Button
-                scale={0.8}
-                type="button"
-                onClick={() => setDeleteModal(true)}
-              >
-                Delete my Account
-              </Button>
-            </DangerWrapper>
-          </DangerContainer>
         </UserContainer>
       )}
-      {isDeleteModal && (
-        <DeletePanel onClick={() => setDeleteModal(false)}>
-          <DeleteModal>
-            <Typography variant="h4">
-              Are you sure you want to delete your Account?
+      <UserContainer as="section">
+        {createdMeals.length !== 0 && (
+          <>
+            <Typography variant="h3" as="h2" style={{ marginTop: 16 }}>
+              Custom Recipes
             </Typography>
-            <section>
-              <CancelButton onClick={() => setDeleteModal(false)}>
-                Cancel
-              </CancelButton>
-              <ConfirmButton onClick={deleteUser}>Delete</ConfirmButton>
-            </section>
-          </DeleteModal>
-        </DeletePanel>
+            <MealContainer>
+              {createdMeals.map((meal) => (
+                <Fragment key={meal.id}>
+                  <Typography variant="h5">{meal.name}</Typography>
+                  <DeleteButton
+                    onClick={() => {
+                      setDeleteModalRecipe(true)
+                      setDeleteRecipeId(meal.id)
+                    }}
+                  >
+                    Delete
+                  </DeleteButton>
+                </Fragment>
+              ))}
+            </MealContainer>
+          </>
+        )}
+
+        <DangerContainer>
+          <Typography variant="h4">This is the danger zone!</Typography>
+          <DangerWrapper>
+            <Typography font="Blatant">
+              You can delete your Account here.
+            </Typography>
+            <Button
+              scale={0.8}
+              type="button"
+              onClick={() => setDeleteModal(true)}
+            >
+              Delete my Account
+            </Button>
+          </DangerWrapper>
+        </DangerContainer>
+      </UserContainer>
+      {isDeleteModal && (
+        <DeleteModal
+          setDeleteModal={() => setDeleteModal(false)}
+          deleteFunction={deleteUser}
+        />
+      )}
+      {isDeleteModalRecipe && (
+        <DeleteModal
+          setDeleteModal={() => setDeleteModalRecipe(false)}
+          deleteFunction={deleteRecipe}
+          text="Are you sure you want to delete your Recipe?"
+        />
       )}
     </Layout>
   )
 }
 export default Settings
 
-const UserContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 720px;
-  margin: 2rem auto 4rem;
-  padding: 0 0.5rem;
-`
+const DeleteModal = ({
+  text = 'Are you sure you want to delete your Account?',
+  setDeleteModal,
+  deleteFunction,
+}) => (
+  <DeletePanel onClick={setDeleteModal}>
+    <DeleteContainer>
+      <Typography variant="h4">{text}</Typography>
+      <section>
+        <CancelButton onClick={setDeleteModal}>Cancel</CancelButton>
+        <ConfirmButton onClick={deleteFunction}>Delete</ConfirmButton>
+      </section>
+    </DeleteContainer>
+  </DeletePanel>
+)
 
 const SaveButton = styled(Button)`
   margin-top: 2rem;
@@ -314,7 +383,7 @@ const DeletePanel = styled.div`
   display: grid;
   place-content: center;
 `
-const DeleteModal = styled.div`
+const DeleteContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: 420px;
@@ -339,5 +408,26 @@ const ConfirmButton = styled(Button)`
   background-color: white;
   &:hover {
     background-color: var(--orange-90);
+  }
+`
+
+const MealContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--grey-80);
+  /* background-color: hsla(0, 0%, 100%, 20%); */
+  border-radius: 8px;
+  @media (min-width: 768px) {
+    border-radius: 12px;
+  }
+`
+const DeleteButton = styled(Button)`
+  /* padding: 0.75rem; */
+  @media (min-width: 768px) {
+    /* padding: 1rem; */
   }
 `

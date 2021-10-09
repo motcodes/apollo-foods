@@ -1,11 +1,18 @@
-import { useState } from 'react'
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { signIn, useSession } from 'next-auth/client'
+import toast from 'react-hot-toast'
+import useMedia from 'use-media'
 import { fetcher, useFullscreen } from '../../lib'
 import { BookmarkIcon, FullscreenIcon } from '../Icons'
 import { StageControlsButton } from './StageControlsButton'
 import { Dots } from '../../utils'
-import { useRouter } from 'next/router'
 
 export function StageControls({
   elementId,
@@ -18,7 +25,21 @@ export function StageControls({
   const { isFullscreenEnabled, toggleFullscreen } = useFullscreen(elementId)
   const [isSaved, setIsSaved] = useState(isMealSaved)
   const [isLoading, toggleLoading] = useState(false)
+  const [buttonText, setButtonText] = useState('Sign In to Save')
   const { query } = useRouter()
+  const isLarge = useMedia({ minWidth: 1024 })
+
+  useEffect(() => {
+    if (session) {
+      if (isSaved) {
+        setButtonText('Remove from Account')
+      } else {
+        setButtonText('Save to Account')
+      }
+    } else {
+      setButtonText('Sign In to Save')
+    }
+  }, [session, isSaved])
 
   async function handleSaveMeal() {
     toggleLoading(true)
@@ -29,23 +50,28 @@ export function StageControls({
           body: JSON.stringify(query.id),
         })
         if (json.success === true) {
+          toast.success('Successfully removed from Account!')
           setIsSaved(false)
           toggleLoading(false)
           console.log('removed')
         } else {
+          toast.success('Could not removed from Account!')
           toggleLoading(false)
           console.log('error')
         }
       } else {
+        // console.log('mealProps :', mealProps)
         const json = await fetcher('/api/meal/save', {
           method: 'POST',
           body: JSON.stringify(mealProps),
         })
         if (json.success === true) {
+          toast.success('Successfully saved to Account!')
           setIsSaved(true)
           toggleLoading(false)
           console.log('saved')
         } else {
+          toast.error('Could not save to Account!')
           toggleLoading(false)
           console.log('error')
         }
@@ -56,7 +82,7 @@ export function StageControls({
   }
 
   return (
-    <ControlContainer>
+    <ControlContainer isLarge={isLarge}>
       {enableFullscreen && isFullscreenEnabled && (
         <StageControlsButton
           text="Enter Fullscreen"
@@ -68,13 +94,7 @@ export function StageControls({
       )}
       {bookmark && (
         <StageControlsButton
-          text={
-            session
-              ? isSaved
-                ? 'Remove from Account'
-                : 'Save to Account'
-              : 'Sign In to Save'
-          }
+          text={buttonText}
           onClick={handleSaveMeal}
           enableHover
         >
@@ -90,9 +110,9 @@ export function StageControls({
 }
 
 const ControlContainer = styled.div`
-  position: absolute;
+  position: ${({ isLarge }) => (isLarge ? 'sticky' : 'absolute')};
+  bottom: ${({ isLarge }) => (isLarge ? '3rem' : '1rem')};
   right: 0;
-  bottom: 1rem;
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-end;

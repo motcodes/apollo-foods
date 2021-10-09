@@ -1,4 +1,9 @@
-import { useEffect, useState } from 'react'
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -18,7 +23,7 @@ const Header = () => {
   return (
     <>
       <Container>
-        <Link href="/">
+        <Link href="/" passHref>
           <LogoWrapper>
             <NavLogo />
             <Typography variant="h6">Apollo Foods</Typography>
@@ -38,9 +43,20 @@ const Header = () => {
                 </Link>
               </li>
               <li>
+                {session ? (
+                  <Link href="/create">
+                    <a>Add Recipe</a>
+                  </Link>
+                ) : (
+                  <Link href="/api/auth/signin">
+                    <a>Add Recipe</a>
+                  </Link>
+                )}
+              </li>
+              <li>
                 {!session && <Button onClick={signIn}>Sign In</Button>}
                 {session && (
-                  <>
+                  <UserImageContainer>
                     <UserImageWrapper onClick={() => toggleHover(!isHover)}>
                       {session.user.image ? (
                         <Image
@@ -56,13 +72,15 @@ const Header = () => {
                         />
                       )}
                     </UserImageWrapper>
-                    {isHover && session && (
+                    {isHover && (
                       <AccountModal
                         onMouseLeave={() => toggleHover(false)}
                         signOut={signOut}
+                        top="3.5rem"
+                        right="0rem"
                       />
                     )}
-                  </>
+                  </UserImageContainer>
                 )}
               </li>
             </LinkList>
@@ -77,7 +95,7 @@ const Header = () => {
           </NavItem>
           <NavItem href="/generate">
             <BeakonIcon />
-            <span>Gengerate</span>
+            <span>Generate</span>
           </NavItem>
           {session ? (
             <NavItem href={`/u/${session.user.username}`}>
@@ -85,7 +103,7 @@ const Header = () => {
               <span>Account</span>
             </NavItem>
           ) : (
-            <NavItem href={`/api/auth/signin`}>
+            <NavItem href="/api/auth/signin">
               <AccountIcon />
               <span>Account</span>
             </NavItem>
@@ -97,12 +115,12 @@ const Header = () => {
 }
 
 const NavItem = ({ href, children }) => {
-  const router = useRouter()
+  const { pathname } = useRouter()
 
   return (
     <NavLink
       href={href}
-      color={router.pathname === href ? 'var(--orange-30)' : 'white'}
+      color={pathname === href ? 'var(--orange-40)' : 'var(--grey-20)'}
     >
       {children}
     </NavLink>
@@ -119,6 +137,7 @@ const Container = styled.nav`
   margin: 0 auto;
   height: 3rem;
   padding: 0.5rem 1rem;
+  z-index: 100;
 
   .navIcon {
     width: 3rem;
@@ -145,6 +164,7 @@ const LogoWrapper = styled.a`
   color: white;
   text-decoration: none;
   cursor: pointer;
+  z-index: 100;
   &:visited {
     color: white;
   }
@@ -172,6 +192,10 @@ const LinkList = styled.ul`
   }
 `
 
+const UserImageContainer = styled.div`
+  position: relative;
+`
+
 const UserImageWrapper = styled.figure`
   cursor: pointer;
   div {
@@ -184,7 +208,6 @@ const MobileNavigation = styled.nav`
   position: fixed;
   bottom: -1px;
   width: 100%;
-  /* height: 48px; */
   padding: 0.5rem 0 1.5rem;
   background: rgba(249, 249, 249, 0.7);
   border-top: 1px solid var(--grey-80);
@@ -196,6 +219,7 @@ const MobileNavigation = styled.nav`
   align-items: center;
   z-index: 10;
 `
+
 const NavLink = styled(LinkInt)`
   flex-direction: column;
   width: 40px;

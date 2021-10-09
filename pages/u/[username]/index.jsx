@@ -1,14 +1,18 @@
+import { useState } from 'react'
 import styled from 'styled-components'
 import Head from 'next/head'
+import router from 'next/router'
 import { signOut, useSession } from 'next-auth/client'
 import useMedia from 'use-media'
 import Layout from '../../../components/Layout'
-import { ProfileImage } from '../../../components/ProfileImage'
 import { GenerateCard } from '../../../components/GenerateCard'
 import { MealCard } from '../../../components/MealCard'
 import { AccountModal } from '../../../components/AccountModal'
-import { FallbackProfileImage } from '../../../components/ProfileImage'
-import { Typography, LinkExt, Link, CardGrid } from '../../../utils'
+import {
+  ProfileImage,
+  FallbackProfileImage,
+} from '../../../components/ProfileImage'
+import { Typography, LinkExt, CardGrid, Button } from '../../../utils'
 import {
   TwitterIcon,
   InstagramIcon,
@@ -20,7 +24,6 @@ import {
 } from '../../../components/Icons'
 
 import prisma from '../../../prisma/prisma'
-import { useState } from 'react'
 import { useUser } from '../../../lib'
 
 export async function getServerSideProps({ params }) {
@@ -29,7 +32,26 @@ export async function getServerSideProps({ params }) {
       username: params.username,
     },
     include: {
-      meals: true,
+      createdMeals: {
+        select: {
+          id: true,
+          name: true,
+          placeholderImage: true,
+        },
+      },
+      savedMeals: {
+        where: {
+          creatorUsername: {
+            not: params.username,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          placeholderImage: true,
+          creatorUsername: true,
+        },
+      },
     },
   })
 
@@ -49,7 +71,8 @@ export async function getServerSideProps({ params }) {
 
 export default function User(props) {
   const { user } = props
-  const { meals } = user
+  const { savedMeals, createdMeals } = user
+  // console.log('savedMeals :', savedMeals)
   const [session] = useSession()
   const sessionUser = useUser()
 
@@ -67,28 +90,28 @@ export default function User(props) {
   return (
     <Layout>
       <Head>
-        {session && (
-          <title>Profile of @{session.user.username} on Apollo Foods 🚀</title>
-        )}
+        {user && <title>Profile of @{user.username} on Apollo Foods 🚀</title>}
       </Head>
       <ProfileContainer>
         {sessionUser &&
           sessionUser.username === user.username &&
           (isLarge ? (
-            <Settings href={`/u/${user.username}/settings`}>
+            <Settings
+              style={{ padding: 12 }}
+              onClick={() => router.push(`/u/${user.username}/settings`)}
+            >
               <SettingIcon />
             </Settings>
           ) : (
             <Settings
-              as="div"
-              type="button"
+              style={{ padding: 8 }}
               onClick={() => toggleModalOpen(!isModalOpen)}
             >
               <SettingIcon />
             </Settings>
           ))}
         {isModalOpen && (
-          <AccountModal session={session} signOut={signOut} top="2.6rem" />
+          <AccountModal session={session} signOut={signOut} top="4rem" />
         )}
 
         {user.image ? (
@@ -151,21 +174,39 @@ export default function User(props) {
         <Typography variant="h3" as="h2">
           Creations
         </Typography>
-        {meals.length !== 0 && (
+        {createdMeals.length !== 0 && (
           <CardGrid>
-            {meals &&
-              meals.map((meal, index) => (
+            {createdMeals &&
+              createdMeals.map((meal, index) => (
                 <MealCard
                   key={meal.id * index}
                   id={meal.id}
                   name={meal.name}
                   placeholderImage={meal.placeholderImage}
-                  user={meal.user}
                 />
               ))}
           </CardGrid>
         )}
-        {meals.length === 0 && session && <GenerateCard />}
+        {createdMeals.length === 0 && session && <GenerateCard />}
+        {savedMeals.length !== 0 && (
+          <>
+            <Typography variant="h3" as="h2">
+              Saved Recipes
+            </Typography>
+            <CardGrid>
+              {savedMeals &&
+                savedMeals.map((meal, index) => (
+                  <MealCard
+                    key={meal.id * index}
+                    id={meal.id}
+                    name={meal.name}
+                    placeholderImage={meal.placeholderImage}
+                    creator={meal.creatorUsername}
+                  />
+                ))}
+            </CardGrid>
+          </>
+        )}
       </ProfileContainer>
     </Layout>
   )
@@ -185,9 +226,9 @@ const Bio = styled(Typography)`
   font-size: var(--body-large);
 `
 
-const Settings = styled(Link)`
+const Settings = styled(Button)`
   position: absolute;
-  right: 1rem;
+  right: 0;
   top: 1rem;
 `
 

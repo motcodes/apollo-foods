@@ -1,3 +1,8 @@
+/*
+Author: Matthias Oberholzer
+Multimedia Project 1 - Web
+Salzburg University of Applied Sciences
+*/
 import Layout from '../components/Layout'
 import { DocumentTextStyles, Typography } from '../utils'
 
